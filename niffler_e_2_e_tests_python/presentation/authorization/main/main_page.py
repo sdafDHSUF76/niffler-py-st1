@@ -8,3 +8,7 @@ class MainPage(BaseLogic):
     logout = "//button[contains(@class,'button-icon_type_logout')]"
 
     text_header = 'Niffler. The coin keeper.'
+
+    def click_logout(self):
+        """Выход из аккаунта через UI."""
+        self.click(self.logout)

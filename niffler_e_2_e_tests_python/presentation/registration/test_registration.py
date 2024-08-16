@@ -5,7 +5,9 @@ from faker import Faker
 from playwright.sync_api import expect
 
 from niffler_e_2_e_tests_python.presentation.authorization.conftest import login_page  # noqa F401
-from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import main_page  # noqa F401
+from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
+    main_page,
+)
 
 if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage

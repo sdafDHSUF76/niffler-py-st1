@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 import pytest
 import requests
 from playwright.sync_api import Browser, Page, sync_playwright
-from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER, AUTH_URL
+
+from niffler_e_2_e_tests_python.configs import AUTH_URL, TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_auth  # noqa F401
-from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
 from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
 
 if TYPE_CHECKING:
@@ -15,7 +15,10 @@ if TYPE_CHECKING:
 
 @pytest.fixture(scope='class')
 def prepare_test_user(db_niffler_auth: 'DB'):
-    """Создаем тестового юзера."""
+    """Создаем тестового юзера.
+
+    Создаем через базу, если юзер есть, то не создаем.
+    """
     number_of_users: str = db_niffler_auth.get_value(
         'select count(*) from "user" where username = \'%s\'' % TEST_USER,
     )[0][0]
@@ -50,6 +53,3 @@ def driver() -> Page:
         yield page
         page.close()
         browser.close()
-
-
-

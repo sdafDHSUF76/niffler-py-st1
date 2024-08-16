@@ -7,6 +7,7 @@ from niffler_e_2_e_tests_python.presentation.registration.register_page import R
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
+
     from niffler_e_2_e_tests_python.fixtures.database import DB
 
 

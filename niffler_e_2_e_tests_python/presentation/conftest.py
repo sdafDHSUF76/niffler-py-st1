@@ -2,13 +2,15 @@ import re
 from typing import TYPE_CHECKING, Callable
 
 import pytest
-import requests
+from playwright.sync_api import expect
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL1, AUTH_URL
+from niffler_e_2_e_tests_python.configs import FRONT_URL1
 from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
+
+    from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
 
 
@@ -61,7 +63,7 @@ def go_login_page_function(presentation_page: PresentationPage) -> Callable[[], 
 def logout(main_page: 'MainPage'):
     """Выходим из под учетки юзера."""
     yield
-    main_page.click(main_page.logout)
+    main_page.click_logout()
 
 
 @pytest.fixture
@@ -72,34 +74,25 @@ def clear_storage(driver: 'Page'):
     driver.evaluate("() => localStorage.clear()")
 
 
-
 @pytest.fixture
-def get_token():
-    # a = ''
-    a = requests.get(f'{AUTH_URL}/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=http://frontend.niffler.dc/authorized&code_challenge=yQZ5hYhBkDMebq5lP-emyW2F_g7ejYZzOScPFfDVE_A&code_challenge_method=S256&continue')
-    # # cookies: str = requests.get(AUTH_URL).history[0].headers['Set-Cookie'].replace(', ', '').split(
-    # #         '; Path=/',
-    # #     )[1]
-    # cookie: str = '; '.join((
-    #     requests.get(f'{AUTH_URL}/oauth2/authorize?').history[0].headers['Set-Cookie'].replace(', ', '').split(
-    #         '; Path=/',
-    #     )[:2]
-    # ))
+def get_token(login_page: 'LoginPage', main_page: 'MainPage') -> Callable[[str, str], str]:
+    """Получаем Bearer токен, для api запросов.
 
-    cookie: str = '; '.join((
-        requests.get(AUTH_URL).history[0].headers['Set-Cookie'].replace(', ', '').split(
-            '; Path=/',
-        )[:2]
-    ))
-    s = requests.Session()
+    Пришлось делать через браузер, так как через api требуется работа bundle.js, который проставляет
+    id_token, codeVerifier, codeChallenge. Api требует в response Это указывая этот bundle.js
+    const verifier = (0,_api_utils__WEBPACK_IMPORTED_MODULE_1__.generateCodeVerifier)();
+    sessionStorage.setItem('codeVerifier', verifier);
+    const codeChallenge = (0,_api_utils__WEBPACK_IMPORTED_MODULE_1__.generateCodeChallenge)();
+    sessionStorage.setItem('codeChallenge', codeChallenge);
 
-    response = s.post(
-        f'{AUTH_URL}{LoginPage.path}',
-        data=dict(
-            _csrf=cookie.split('; ')[0].split('XSRF-TOKEN=')[1],
-            username=TEST_USER,
-            password=TEST_PASSWORD,
-        ),
-        headers={'Content-Type': 'application/x-www-form-urlencoded', 'Cookie': cookie}
-    )
-
+    ...
+    if (data?.id_token) {
+          sessionStorage.setItem('id_token', data.id_token);
+    """
+    def _method(user: str, password: str) -> str:
+        login_page.authorization(user, password)
+        expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
+        token: str = login_page.driver.evaluate("() => sessionStorage.getItem('id_token')")
+        main_page.click_logout()
+        return f'Bearer {token}'
+    return _method
