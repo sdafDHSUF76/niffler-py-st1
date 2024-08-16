@@ -2,8 +2,9 @@ import re
 from typing import TYPE_CHECKING, Callable
 
 import pytest
+import requests
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL1
+from niffler_e_2_e_tests_python.configs import FRONT_URL1, AUTH_URL
 from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 if TYPE_CHECKING:
@@ -69,3 +70,36 @@ def clear_storage(driver: 'Page'):
     yield
     driver.evaluate("() => sessionStorage.clear()")
     driver.evaluate("() => localStorage.clear()")
+
+
+
+@pytest.fixture
+def get_token():
+    # a = ''
+    a = requests.get(f'{AUTH_URL}/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=http://frontend.niffler.dc/authorized&code_challenge=yQZ5hYhBkDMebq5lP-emyW2F_g7ejYZzOScPFfDVE_A&code_challenge_method=S256&continue')
+    # # cookies: str = requests.get(AUTH_URL).history[0].headers['Set-Cookie'].replace(', ', '').split(
+    # #         '; Path=/',
+    # #     )[1]
+    # cookie: str = '; '.join((
+    #     requests.get(f'{AUTH_URL}/oauth2/authorize?').history[0].headers['Set-Cookie'].replace(', ', '').split(
+    #         '; Path=/',
+    #     )[:2]
+    # ))
+
+    cookie: str = '; '.join((
+        requests.get(AUTH_URL).history[0].headers['Set-Cookie'].replace(', ', '').split(
+            '; Path=/',
+        )[:2]
+    ))
+    s = requests.Session()
+
+    response = s.post(
+        f'{AUTH_URL}{LoginPage.path}',
+        data=dict(
+            _csrf=cookie.split('; ')[0].split('XSRF-TOKEN=')[1],
+            username=TEST_USER,
+            password=TEST_PASSWORD,
+        ),
+        headers={'Content-Type': 'application/x-www-form-urlencoded', 'Cookie': cookie}
+    )
+

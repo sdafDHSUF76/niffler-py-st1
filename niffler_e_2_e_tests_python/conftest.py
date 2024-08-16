@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 import pytest
 import requests
 from playwright.sync_api import Browser, Page, sync_playwright
-
 from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER, AUTH_URL
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_auth  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
@@ -42,27 +41,6 @@ def prepare_test_user(db_niffler_auth: 'DB'):
         assert response.history[0].text == ''
 
 
-@pytest.fixture
-def get_token():
-    # cookies: str = requests.get(AUTH_URL).history[0].headers['Set-Cookie'].replace(', ', '').split(
-    #         '; Path=/',
-    #     )[1]
-    cookie: str = '; '.join((
-        requests.get(f'{AUTH_URL}/oauth2/authorize?').history[0].headers['Set-Cookie'].replace(', ', '').split(
-            '; Path=/',
-        )[:2]
-    ))
-    response = requests.post(
-        f'{AUTH_URL}{LoginPage.path}',
-        data=dict(
-            _csrf=cookie.split('; ')[0].split('XSRF-TOKEN=')[1],
-            username=TEST_USER,
-            password=TEST_PASSWORD,
-        ),
-        headers={'Content-Type': 'application/x-www-form-urlencoded', 'Cookie': cookie}
-    )
-
-
 @pytest.fixture(scope='session')
 def driver() -> Page:
     """Получить WebDriver."""
@@ -72,3 +50,6 @@ def driver() -> Page:
         yield page
         page.close()
         browser.close()
+
+
+
