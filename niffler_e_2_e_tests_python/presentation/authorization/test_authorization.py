@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @pytest.mark.usefixtures('prepare_test_user')
 class TestAuthorization:
 
-    @pytest.mark.usefixtures('go_login_page', 'logout', 'clear_storage')
+    @pytest.mark.usefixtures('go_login_page', 'logout', 'clear_storage', 'get_token')
     def test_authorization(self, login_page: 'LoginPage', main_page: 'MainPage'):
         login_page.authorization(TEST_USER, TEST_PASSWORD)
         expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
