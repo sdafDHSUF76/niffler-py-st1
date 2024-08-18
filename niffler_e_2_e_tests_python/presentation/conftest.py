@@ -24,7 +24,7 @@ def presentation_page(driver: 'Page') -> PresentationPage:
 
 
 @pytest.fixture
-def go_login_page(presentation_page: PresentationPage):
+def go_login_page(presentation_page: PresentationPage) -> None:
     """Это костыль, благодаря которому приложение дает авторизоваться.
 
     проблема не в автотесте, а в самом приложении, не дает авторизоваться если напрямую перети по
@@ -74,8 +74,9 @@ def clear_storage(driver: 'Page'):
     driver.evaluate("() => localStorage.clear()")
 
 
+# @pytest.mark.usefixtures('go_login_page')
 @pytest.fixture
-def get_token(login_page: 'LoginPage', main_page: 'MainPage') -> Callable[[str, str], str]:
+def get_token(login_page: 'LoginPage', main_page: 'MainPage', presentation_page: PresentationPage) -> Callable[[str, str], str]:
     """Получаем Bearer токен, для api запросов.
 
     Пришлось делать через браузер, так как через api требуется работа bundle.js, который проставляет
@@ -90,6 +91,10 @@ def get_token(login_page: 'LoginPage', main_page: 'MainPage') -> Callable[[str, 
           sessionStorage.setItem('id_token', data.id_token);
     """
     def _method(user: str, password: str) -> str:
+        if main_page.driver.locator(main_page.profile).is_visible():
+            main_page.click_logout()
+        presentation_page.goto_url(FRONT_URL1)
+        presentation_page.click(presentation_page.button_login)
         login_page.authorization(user, password)
         expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
         token: str = login_page.driver.evaluate("() => sessionStorage.getItem('id_token')")

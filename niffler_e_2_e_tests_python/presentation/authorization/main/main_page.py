@@ -6,6 +6,7 @@ class MainPage(BaseLogic):
 
     header = '//h1'
     logout = "//button[contains(@class,'button-icon_type_logout')]"
+    profile = "//a[@href='/profile']"
 
     text_header = 'Niffler. The coin keeper.'
 

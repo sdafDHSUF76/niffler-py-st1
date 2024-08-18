@@ -8,6 +8,7 @@ dotenv.load_dotenv(''.join((
 )))
 
 FRONT_URL1 = os.getenv('FRONT_URL1')
+GATEWAY_URL = os.getenv('GATEWAY_URL')
 AUTH_URL = os.getenv('AUTH_URL')
 TEST_USER = os.getenv('TEST_USER')
 TEST_PASSWORD = os.getenv('TEST_PASSWORD')
