@@ -58,6 +58,13 @@ def clear_spend_and_category_before(db_niffler_spend: 'DB') -> None:
     db_niffler_spend.execute('delete from spend')
     db_niffler_spend.execute('delete from category')
 
+@pytest.fixture
+def clear_spend_and_category_after(db_niffler_spend: 'DB') -> None:
+    """Чистим таблицу category и spend."""
+    yield
+    db_niffler_spend.execute('delete from spend')
+    db_niffler_spend.execute('delete from category')
+
 
 @pytest.fixture
 def goto_profile(login_page: 'LoginPage', main_page: 'MainPage', presentation_page: 'PresentationPage'):

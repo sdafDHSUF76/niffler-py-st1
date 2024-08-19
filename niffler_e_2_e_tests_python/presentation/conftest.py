@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Callable
 import pytest
 from playwright.sync_api import expect
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL1
+from niffler_e_2_e_tests_python.configs import FRONT_URL1, AUTH_URL
 from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 if TYPE_CHECKING:
@@ -24,7 +24,7 @@ def presentation_page(driver: 'Page') -> PresentationPage:
 
 
 @pytest.fixture
-def go_login_page(presentation_page: PresentationPage) -> None:
+def go_login_page(presentation_page: PresentationPage, main_page: 'MainPage') -> None:
     """Это костыль, благодаря которому приложение дает авторизоваться.
 
     проблема не в автотесте, а в самом приложении, не дает авторизоваться если напрямую перети по
@@ -35,6 +35,13 @@ def go_login_page(presentation_page: PresentationPage) -> None:
     второй раз приложение не даст войти и придется 4 раза на login нажимать, чтобы на login страницу
     перешли...
     """
+
+    if (
+        main_page.driver.locator(main_page.profile).is_visible()
+        and main_page.driver.url != f'{AUTH_URL}/login'
+    ):
+        main_page.click_logout()
+        presentation_page.click(presentation_page.button_login)
     if not re.match('http:\/\/auth\.niffler\.dc:9000\/login', presentation_page.driver.url):  # noqa W605
         """
         Выглядит странным, но у приложения, когда возникает ошибка авторизации в параметре

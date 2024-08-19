@@ -60,7 +60,7 @@ class TestProfile:
         {'user':TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category8'}},
     )
     @pytest.mark.usefixtures('create_categories', 'goto_profile', 'clear_category')
-    def test_do_not_create_more_than_7_categories(self, profile_page: 'ProfilePage'):
+    def test_do_not_create_more_than_8_categories(self, profile_page: 'ProfilePage'):
         expect(profile_page.driver.locator(profile_page.categories_list)).to_have_count(8)
         profile_page.add_category('yuio')
         categories: list[str] = profile_page.driver.locator(profile_page.categories_list).all_inner_texts()[0].split('\n')
