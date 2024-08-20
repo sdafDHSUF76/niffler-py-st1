@@ -38,7 +38,7 @@ class TestProfile:
     @pytest.mark.parameter_data(
         {'user':TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'yuio'}},
     )
-    @pytest.mark.usefixtures('create_categories', 'goto_profile', 'clear_category')
+    @pytest.mark.usefixtures('create_categories', 'goto_profile', 'clear_category', 'reload_profile_page')
     def test_do_not_create_non_unique_category(self, profile_page: 'ProfilePage'):
         expect(profile_page.driver.locator(profile_page.categories_list)).to_have_count(1)
         categories: list[str] = profile_page.driver.locator(profile_page.categories_list).all_inner_texts()[0].split('\n')
@@ -59,7 +59,7 @@ class TestProfile:
         {'user':TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category7'}},
         {'user':TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category8'}},
     )
-    @pytest.mark.usefixtures('create_categories', 'goto_profile', 'clear_category')
+    @pytest.mark.usefixtures('create_categories', 'goto_profile', 'clear_category', 'reload_profile_page')
     def test_do_not_create_more_than_8_categories(self, profile_page: 'ProfilePage'):
         expect(profile_page.driver.locator(profile_page.categories_list)).to_have_count(8)
         profile_page.add_category('yuio')

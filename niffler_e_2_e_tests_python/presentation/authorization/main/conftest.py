@@ -25,6 +25,30 @@ def main_page(driver: 'Page') -> MainPage:
     return MainPage(driver)
 
 @pytest.fixture
+def reload_main_page1(db_niffler_spend: 'DB', main_page: MainPage):
+    def _method():
+        category_in_db = db_niffler_spend.get_value('select count(*) from spend where username = \'qwe\'')[0][0]
+        category_in_front = main_page.driver.locator(main_page.spends).count()
+        if main_page.driver.url == f'{FRONT_URL1}/main' and category_in_db != category_in_front:
+            main_page.driver.reload()
+    return _method
+@pytest.fixture
+def reload_main_page(db_niffler_spend: 'DB', main_page: MainPage):
+
+    category_in_db = db_niffler_spend.get_value('select count(*) from spend where username = \'qwe\'')[0][0]
+    category_in_front = main_page.driver.locator(main_page.spends).count()
+    if main_page.driver.url == f'{FRONT_URL1}/main' and category_in_db != category_in_front:
+        main_page.driver.reload()
+@pytest.fixture
+def reload_main_page_after(db_niffler_spend: 'DB', main_page: MainPage):
+    yield
+    category_in_db = db_niffler_spend.get_value('select count(*) from spend where username = \'qwe\'')[0][0]
+    category_in_front = main_page.driver.locator(main_page.spends).count()
+    if main_page.driver.url == f'{FRONT_URL1}/main' and category_in_db != category_in_front:
+        main_page.driver.reload()
+
+
+@pytest.fixture
 def create_spends(get_token: Callable[[str, str], str], request: 'SubRequest'):
     """Создаем категории через API.
 

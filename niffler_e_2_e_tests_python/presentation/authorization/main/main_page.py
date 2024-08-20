@@ -26,3 +26,4 @@ class MainPage(BaseLogic):
 
     # def choose_spending_category(self, category: str) -> None:
     #     self.driver.locator(self.choose_category).select_option(category)
+

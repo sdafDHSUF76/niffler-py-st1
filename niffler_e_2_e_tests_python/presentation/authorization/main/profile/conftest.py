@@ -78,6 +78,14 @@ def goto_profile(login_page: 'LoginPage', main_page: 'MainPage', presentation_pa
         presentation_page.click(presentation_page.button_login)
         login_page.authorization(TEST_USER, TEST_PASSWORD)
         main_page.click(main_page.profile)
+
+@pytest.fixture
+def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
+
+    category_in_db = db_niffler_spend.get_value('select count(*) from category where username = \'qwe\'')[0][0]
+    category_in_front = profile_page.driver.locator(profile_page.categories_list).count()
+    if profile_page.driver.url == f'{FRONT_URL1}/profile' and category_in_db != category_in_front:
+        profile_page.driver.reload()
         # main_page.goto_url(f'{FRONT_URL1}/profile')
     # expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
 

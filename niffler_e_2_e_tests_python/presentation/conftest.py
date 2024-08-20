@@ -86,132 +86,52 @@ def clear_storage(driver: 'Page'):
 # @pytest.mark.usefixtures('go_login_page')
 @pytest.fixture
 def get_token(login_page: 'LoginPage', main_page: 'MainPage', presentation_page: PresentationPage) -> Callable[[str, str], str]:
-    """Получаем Bearer токен, для api запросов.
-
-    Пришлось делать через браузер, так как через api требуется работа bundle.js, который проставляет
-    id_token, codeVerifier, codeChallenge. Api требует в response Это указывая этот bundle.js
-    const verifier = (0,_api_utils__WEBPACK_IMPORTED_MODULE_1__.generateCodeVerifier)();
-    sessionStorage.setItem('codeVerifier', verifier);
-    const codeChallenge = (0,_api_utils__WEBPACK_IMPORTED_MODULE_1__.generateCodeChallenge)();
-    sessionStorage.setItem('codeChallenge', codeChallenge);
-
-    ...
-    if (data?.id_token) {
-          sessionStorage.setItem('id_token', data.id_token);
-    """
-    code_verifier: str = pkce.generate_code_verifier(length=43)
-    code_challenge: str = pkce.get_code_challenge(code_verifier)
-    result: 'Response' = requests.get(
-        f'{AUTH_URL}/oauth2/authorize?',
-        params={
-            'response_type': 'code',
-            'client_id': 'client',
-            'scope': 'openid',
-            'redirect_uri': 'http://frontend.niffler.dc/authorized',
-            'code_challenge': code_challenge,
-            'code_challenge_method': 'S256',
-            'continue': '',
-        }
-    )
+    """Получаем Bearer токен, для api запросов."""
     def _method(user: str, password: str) -> str:
-        if main_page.driver.locator(main_page.profile).is_visible():
-            main_page.click_logout()
-        presentation_page.goto_url(FRONT_URL1)
-        presentation_page.click(presentation_page.button_login)
-        login_page.authorization(user, password)
-        expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
-        token: str = login_page.driver.evaluate("() => sessionStorage.getItem('id_token')")
-        main_page.click_logout()
-        return f'Bearer {token}'
+        code_verifier: str = pkce.generate_code_verifier(length=43)
+        code_challenge: str = pkce.get_code_challenge(code_verifier)
+        response1: 'Response' = requests.get(
+            f'{AUTH_URL}/oauth2/authorize?',
+            params={
+                'response_type': 'code',
+                'client_id': 'client',
+                'scope': 'openid',
+                'redirect_uri': 'http://frontend.niffler.dc/authorized',
+                'code_challenge': code_challenge,
+                'code_challenge_method': 'S256',
+            },
+        )
+        xsrf = response1.headers.get('X-XSRF-TOKEN')
+        jsessionid1 = response1.history[0].headers.get('Set-Cookie').split('; Path=/')[0]
+        response: 'Response' = requests.post(
+            f'{AUTH_URL}{LoginPage.path}',
+            data={
+                '_csrf': xsrf,
+                'username': user,
+                'password': password,
+            },
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cookie': '; XSRF-TOKEN='.join((jsessionid1, xsrf)),
+            },
+        )
+        url_token: str = response.history[1].headers.get('Location').split(
+            'http://frontend.niffler.dc/authorized?code=')[1]
+        jsessionid2 = response.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
+        response2: 'Response' = requests.post(
+            f'{AUTH_URL}/oauth2/token',
+            data={
+                'code': url_token,
+                'redirect_uri': 'http://frontend.niffler.dc/authorized',
+                'code_verifier': code_verifier,
+                'grant_type': "authorization_code",
+                'client_id': 'client'
+            },
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Cookie': jsessionid2,
+                'Authorization': 'Basic Y2xpZW50OnNlY3JldA==',
+            },
+        )
+        return ' '.join((response2.json().get('token_type'), response2.json().get('access_token')))
     return _method
-
-
-if __name__ == '__main__':
-
-    code_verifier: str = pkce.generate_code_verifier(length=43)
-    code_challenge: str = pkce.get_code_challenge(code_verifier)
-    response1: 'Response' = requests.get(
-        f'{AUTH_URL}/oauth2/authorize?',
-        params={
-            'response_type': 'code',
-            'client_id': 'client',
-            'scope': 'openid',
-            'redirect_uri': 'http://frontend.niffler.dc/authorized',
-            'code_challenge': code_challenge,
-            'code_challenge_method': 'S256',
-        },
-    )
-    xsrf = response1.headers.get('X-XSRF-TOKEN')
-    jsessionid1 = response1.history[0].headers.get('Set-Cookie').split('; Path=/')[0]
-    # xsrf: str = requests.get(
-    #     f'{AUTH_URL}{LoginPage.path}',
-    #     headers={'Cookie': jsessionid1},
-    # ).headers.get('X-XSRF-TOKEN')
-    response: 'Response' = requests.post(
-        f'{AUTH_URL}{LoginPage.path}',
-        data={
-            '_csrf': xsrf,
-            'username': 'qwe',
-            'password': '123'
-        },
-        headers={
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Cookie': '; XSRF-TOKEN='.join((jsessionid1, xsrf)),
-            'Referer': 'http://auth.niffler.dc:9000/login',
-            'Origin': 'http://auth.niffler.dc:9000',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8',
-            'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-           'Accept-Encoding': 'gzip, deflate',
-          'Upgrade-Insecure-Requests': '1',
-           'Priority': 'u=0, i',
-                                                                                                                                   'Connection': 'keep-alive'
-        },
-    )
-    url_token: str = response.history[1].headers.get('Location').split('http://frontend.niffler.dc/authorized?code=')[1]
-    jsessionid2 = response.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
-
-
-    # responsewer: 'Response' = requests.options(
-    #     f'{AUTH_URL}/oauth2/token',
-    # )
-    # responsewer2: 'Response' = requests.options(
-    #     f'{AUTH_URL}/oauth2/token',
-    # )
-    response2: 'Response' = requests.post(
-        f'{AUTH_URL}/oauth2/token',
-        data={
-            'code': url_token,
-            'redirect_uri': 'http://frontend.niffler.dc/authorized',
-            'code_verifier': code_verifier,
-            'grant_type': "authorization_code",
-            'client_id': 'client'
-        },
-        headers={
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Cookie': jsessionid2,
-            'Authorization': 'Basic Y2xpZW50OnNlY3JldA==',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.0) Gecko/20100101 Firefox/128.0',
-            'Referer': 'http://frontend.niffler.dc/',
-            'Origin': 'http://frontend.niffler.dc',
-            'Accept': '*/*',
-                                                                                                                                   'Connection': 'keep-alive'
-        },
-    )
-
-    # result: 'Response' = requests.get(
-    #     f'{AUTH_URL}/oauth2/authorize?',
-    #     params={
-    #         'response_type': 'code',
-    #         'client_id': 'client',
-    #         'scope': 'openid',
-    #         'redirect_uri': 'http://frontend.niffler.dc/authorized',
-    #         'code_challenge': code_challenge,
-    #         'code_challenge_method': 'S256',
-    #         'continue': '',
-    #     },
-    #     headers={'Cookie': jsessionid}
-    #     #'JSESSIONID=B82D6573EB1A1786531D92A0EA739694'
-    # # 'JSESSIONID=6E2183CD2B00471606AB83D0850AD5E2'
-    # )
-    pass
