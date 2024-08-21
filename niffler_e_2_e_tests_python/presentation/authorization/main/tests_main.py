@@ -47,8 +47,8 @@ class TestsMain:
             "currency": "RUB"
         }},
     )
-    @pytest.mark.usefixtures('reload_main_page','create_categories', 'create_spends', 'goto_main',  'clear_spend_and_category_after')
-    def test_spend_delete(self, main_page: 'MainPage', reload_main_page1):
+    @pytest.mark.usefixtures('create_categories', 'create_spends', 'goto_main', 'reload_main_page', 'clear_spend_and_category_after')
+    def test_spend_delete(self, main_page: 'MainPage'):
         # main_page.fill(main_page.choose_category, 'category1')
         # main_page.driver.locator(main_page.category_one).press('Enter')
         # expect(main_page.driver.locator(main_page.category_one)).to_be_visible()
@@ -59,18 +59,18 @@ class TestsMain:
         # main_page.fill(main_page.input_description, 'asdf')
         # main_page.click(main_page.button)
         # expect(main_page.driver.locator(main_page.spends)).to_have_count(1)
-        reload_main_page1()
+        # reload_main_page1()
         expect(main_page.driver.locator(main_page.spends)).to_have_count(1)
         main_page.click(main_page.checkbocs_choose_spend)
         main_page.click(main_page.button_delete)
         expect(main_page.driver.locator(main_page.spends)).to_have_count(0)
 
 
-    @pytest.mark.usefixtures('goto_main', 'reload_main_page')
+    @pytest.mark.usefixtures('goto_main', 'reload_main_page1')
     def test_spends_emtpy(self, main_page: 'MainPage'):
         expect(main_page.driver.locator(main_page.spends)).to_have_count(0)
 
-    @pytest.mark.usefixtures('goto_main', 'reload_main')
+    @pytest.mark.usefixtures('goto_main', 'reload_main_page2')
     def test_categories_emtpy(self, main_page: 'MainPage'):
         main_page.click(main_page.choose_category)
         expect(main_page.driver.locator(main_page.category_one)).to_be_hidden()

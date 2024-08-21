@@ -27,16 +27,31 @@ def main_page(driver: 'Page') -> MainPage:
 @pytest.fixture
 def reload_main_page1(db_niffler_spend: 'DB', main_page: MainPage):
     def _method():
-        category_in_db = db_niffler_spend.get_value('select count(*) from spend where username = \'qwe\'')[0][0]
+        category_in_db = db_niffler_spend.get_value('select count(*) from spend where username = \'qwe\' and description = \'sdff\'')[0][0]
         category_in_front = main_page.driver.locator(main_page.spends).count()
         if main_page.driver.url == f'{FRONT_URL1}/main' and category_in_db != category_in_front:
             main_page.driver.reload()
     return _method
 @pytest.fixture
 def reload_main_page(db_niffler_spend: 'DB', main_page: MainPage):
-
-    category_in_db = db_niffler_spend.get_value('select count(*) from spend where username = \'qwe\'')[0][0]
-    category_in_front = main_page.driver.locator(main_page.spends).count()
+    category_in_db = db_niffler_spend.get_value(
+        'select count(*) from spend where username = \'qwe\' and description = \'sdff\' and amount  = 123')[0][0]
+    category_in_front = main_page.driver.locator('//tbody/tr/td[3]//span').count()
+    category_text = main_page.driver.locator('//tbody/tr/td[3]//span').inner_text() == '123'
+    if main_page.driver.url == f'{FRONT_URL1}/main' and (category_in_db != category_in_front or not category_text):
+        main_page.driver.reload()
+@pytest.fixture
+def reload_main_page1(db_niffler_spend: 'DB', main_page: MainPage):
+    category_in_db = db_niffler_spend.get_value(
+        'select count(*) from spend where username = \'qwe\'')[0][0]
+    category_in_front = main_page.driver.locator('//tbody/tr/td[3]//span').count()
+    if main_page.driver.url == f'{FRONT_URL1}/main' and category_in_db != category_in_front:
+        main_page.driver.reload()
+@pytest.fixture
+def reload_main_page2(db_niffler_spend: 'DB', main_page: MainPage):
+    category_in_db = db_niffler_spend.get_value('select count(*) from category where username = \'qwe\'')[0][0]
+    main_page.click(main_page.choose_category)
+    category_in_front = main_page.driver.locator(main_page.category_one).count()
     if main_page.driver.url == f'{FRONT_URL1}/main' and category_in_db != category_in_front:
         main_page.driver.reload()
 @pytest.fixture
