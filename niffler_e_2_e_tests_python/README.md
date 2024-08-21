@@ -2,16 +2,17 @@
 
 
 
-# ДЗ #4
-1) Запустить локально niffler и убедиться, что регистрация / логин работают. Без локально работающего niffler дальнейшее обучение будет невозможно, по всем проблемам пишите в чат 1-го потока. В случае вечного loader на логине - пробуем incognito window или почистить руками cookies, session storage, local storage.
+# ДЗ #5
+1. Провести рефакторинг готовых тестов из предыдущего задания - выделить подготовительные шаги, данные и шаги после теста в фикстуры, можно  реализовать через хелперы фикстур
+2. Расширить тестовое покрытие добавив еще 10 тестов с учетом полученных знаний о фикстурах
 
-2) Написать 10 UI тестов. Использовать можно selenium, selene, playwright
+# ДЗ #6
+1. Добавить тесты с бд:
 
-Рекомендуется шаги, такие как логин (если это не тест логина), добавление сущностей которые необходимы в тесте, возможно удаление сущностей после теста, реализовать через АПИ с помощью библиотеки requests
+- через UI или API добавляем, изменяем, удаляем сущность
+- проверяем в БД корректность данных
 
-
-
-Формат сдачи ДЗ: домашнее задание должно включать в себя PR в ВАШ ФОРК репозитория https://github.com/qa-guru/niffler-st5
+2. Добавить/доработать сценарии, где без запроса в БД невозможно реализовать (по примеру с удалением категории)
 
 
 **Установка**
@@ -54,11 +55,9 @@ cd .\niffler_e_2_e_tests_python\
 ```
 Так мы попадем в папку, где тесты лежат
 ```bash
-pytest .\ -v
+pytest niffler_e_2_e_tests_python/presentation/authorization/main/profile/test_profile.py niffler_e_2_e_tests_python/presentation/authorization/main/tests_main.py niffler_e_2_e_tests_python/presentation/authorization/test_authorization.py niffler_e_2_e_tests_python/presentation/registration/test_registration.py niffler_e_2_e_tests_python/presentation/test_presentation.py -v
 ```
 и сама команда для тестов
 
 
-pytest niffler_e_2_e_tests_python/presentation/authorization/main/profile/test_profile.py niffler_e_2_e_tests_python/presentation/authorization/mai
-n/tests_main.py niffler_e_2_e_tests_python/presentation/authorization/test_authorization.py niffler_e_2_e_tests_python/presentation/registration/test_registration.py niffler_e_2_e_test
-s_python/presentation/test_presentation.py -v
+

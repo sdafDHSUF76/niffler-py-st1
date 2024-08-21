@@ -4,15 +4,15 @@ from typing import TYPE_CHECKING, Callable
 import pkce
 import pytest
 import requests
-from playwright.sync_api import expect
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL1, AUTH_URL
-from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
+from niffler_e_2_e_tests_python.configs import AUTH_URL, FRONT_URL1
 from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
+from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
     from requests import Response
+
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
 
 
@@ -83,9 +83,10 @@ def clear_storage(driver: 'Page'):
     driver.evaluate("() => localStorage.clear()")
 
 
-# @pytest.mark.usefixtures('go_login_page')
 @pytest.fixture
-def get_token(login_page: 'LoginPage', main_page: 'MainPage', presentation_page: PresentationPage) -> Callable[[str, str], str]:
+def get_token(
+    login_page: 'LoginPage', main_page: 'MainPage', presentation_page: PresentationPage
+) -> Callable[[str, str], str]:
     """Получаем Bearer токен, для api запросов."""
     def _method(user: str, password: str) -> str:
         code_verifier: str = pkce.generate_code_verifier(length=43)

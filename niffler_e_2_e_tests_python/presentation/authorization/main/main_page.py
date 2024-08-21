@@ -15,6 +15,7 @@ class MainPage(BaseLogic):
     input_description = "//input[@class='form__input ' and @type='text']"
     button = "//button[@type='submit']"
     spends = "//tbody/tr"
+    spends_amount = '//tbody/tr/td[3]//span'
     checkbocs_choose_spend = "//td/input[@type='checkbox']"
     button_delete = "//section[@class='spendings__bulk-actions']/button"
 
@@ -23,7 +24,3 @@ class MainPage(BaseLogic):
     def click_logout(self):
         """Выход из аккаунта через UI."""
         self.click(self.logout)
-
-    # def choose_spending_category(self, category: str) -> None:
-    #     self.driver.locator(self.choose_category).select_option(category)
-

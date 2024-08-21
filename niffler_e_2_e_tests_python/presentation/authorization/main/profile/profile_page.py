@@ -1,5 +1,3 @@
-from playwright.sync_api import expect
-
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
 
 
@@ -25,10 +23,3 @@ class ProfilePage(BaseLogic):
     def refresh_page_to_update_categories(self, count: int):
         if self.driver.locator(self.categories_list).count() != count:
             self.driver.reload()
-
-    # def get_categories_on_page(self, count: int) -> list:
-    #     try:
-    #         categories: list[str] = self.driver.locator(self.categories_list).all_inner_texts()[0].split('\n')
-    #         return categories
-    #     except IndexError:
-    #         return []
