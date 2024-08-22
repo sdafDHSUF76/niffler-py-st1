@@ -8,6 +8,7 @@ import requests
 from niffler_e_2_e_tests_python.configs import AUTH_URL, FRONT_URL1
 from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
 from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
+from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
@@ -26,10 +27,15 @@ def presentation_page(driver: 'Page') -> PresentationPage:
 
 
 @pytest.fixture
-def go_login_page(presentation_page: PresentationPage, main_page: 'MainPage') -> None:
-    """Это костыль, благодаря которому приложение дает авторизоваться.
+def go_login_page(
+    presentation_page: PresentationPage,
+    main_page: 'MainPage',
+    go_login_page_function: Callable[[], None],
+) -> None:
+    """Перейти на страницу авторизации.
 
-    проблема не в автотесте, а в самом приложении, не дает авторизоваться если напрямую перети по
+    Это костыль, благодаря которому приложение дает авторизоваться.
+    Проблема не в автотесте, а в самом приложении, не дает авторизоваться если напрямую перети по
     /login. Выдает ошибку.
     И таких мест, где странное поведение происходит еще нашел 2. При регистрации нового пользователя
     в username если вводить неправильные данные, то текст ошибки разный каждый раз...
@@ -37,10 +43,9 @@ def go_login_page(presentation_page: PresentationPage, main_page: 'MainPage') ->
     второй раз приложение не даст войти и придется 4 раза на login нажимать, чтобы на login страницу
     перешли...
     """
-
     if (
         main_page.driver.locator(main_page.profile).is_visible()
-        and main_page.driver.url != f'{AUTH_URL}/login'
+        and main_page.driver.url != get_join_url(AUTH_URL, LoginPage.path)
     ):
         main_page.click_logout()
         presentation_page.click(presentation_page.button_login)
@@ -52,8 +57,7 @@ def go_login_page(presentation_page: PresentationPage, main_page: 'MainPage') ->
         вот такая реализация сделана была, где если часть url совпадает , с этим, то переходить на
         url авторизации не нужно, это и быстрее для теста и параметризацию не ломает
         """
-        presentation_page.goto_url(FRONT_URL1)
-        presentation_page.click(presentation_page.button_login)
+        go_login_page_function()
 
 
 @pytest.fixture
@@ -69,42 +73,25 @@ def go_login_page_function(presentation_page: PresentationPage) -> Callable[[], 
 
 
 @pytest.fixture
-def logout(main_page: 'MainPage'):
-    """Выходим из под учетки юзера."""
-    yield
-    main_page.click_logout()
-
-
-@pytest.fixture
-def clear_storage(driver: 'Page'):
-    """Чистим Storage."""
-    yield
-    driver.evaluate("() => sessionStorage.clear()")
-    driver.evaluate("() => localStorage.clear()")
-
-
-@pytest.fixture
-def get_token(
-    login_page: 'LoginPage', main_page: 'MainPage', presentation_page: PresentationPage
-) -> Callable[[str, str], str]:
+def get_token() -> Callable[[str, str], str]:
     """Получаем Bearer токен, для api запросов."""
     def _method(user: str, password: str) -> str:
         code_verifier: str = pkce.generate_code_verifier(length=43)
         code_challenge: str = pkce.get_code_challenge(code_verifier)
-        response1: 'Response' = requests.get(
+        response0: 'Response' = requests.get(
             f'{AUTH_URL}/oauth2/authorize?',
             params={
                 'response_type': 'code',
                 'client_id': 'client',
                 'scope': 'openid',
-                'redirect_uri': 'http://frontend.niffler.dc/authorized',
+                'redirect_uri': f'{FRONT_URL1}/authorized',
                 'code_challenge': code_challenge,
                 'code_challenge_method': 'S256',
             },
         )
-        xsrf = response1.headers.get('X-XSRF-TOKEN')
-        jsessionid1 = response1.history[0].headers.get('Set-Cookie').split('; Path=/')[0]
-        response: 'Response' = requests.post(
+        xsrf: str = response0.headers.get('X-XSRF-TOKEN')
+        jsessionid1: str = response0.history[0].headers.get('Set-Cookie').split('; Path=/')[0]
+        response1: 'Response' = requests.post(
             f'{AUTH_URL}{LoginPage.path}',
             data={
                 '_csrf': xsrf,
@@ -116,14 +103,15 @@ def get_token(
                 'Cookie': '; XSRF-TOKEN='.join((jsessionid1, xsrf)),
             },
         )
-        url_token: str = response.history[1].headers.get('Location').split(
-            'http://frontend.niffler.dc/authorized?code=')[1]
-        jsessionid2 = response.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
+        url_token: str = response1.history[1].headers.get('Location').split(
+            f'{FRONT_URL1}/authorized?code=',
+        )[1]
+        jsessionid2: str = response1.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
         response2: 'Response' = requests.post(
             f'{AUTH_URL}/oauth2/token',
             data={
                 'code': url_token,
-                'redirect_uri': 'http://frontend.niffler.dc/authorized',
+                'redirect_uri': f'{FRONT_URL1}/authorized',
                 'code_verifier': code_verifier,
                 'grant_type': "authorization_code",
                 'client_id': 'client'

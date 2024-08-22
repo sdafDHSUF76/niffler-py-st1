@@ -8,6 +8,7 @@ from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noq
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
     ProfilePage,
 )
+from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
@@ -65,12 +66,13 @@ def clear_spend_and_category_after(db_niffler_spend: 'DB') -> None:
 def goto_profile(
     login_page: 'LoginPage', main_page: 'MainPage', presentation_page: 'PresentationPage',
 ):
+    """Перейти на страницу profile из разных мест сайта."""
     if (
         main_page.driver.locator(main_page.profile).is_visible()
-        and main_page.driver.url != f'{FRONT_URL1}{ProfilePage.path}'
+        and main_page.driver.url != get_join_url(FRONT_URL1, ProfilePage.path)
     ):
         main_page.click(main_page.profile)
-    if presentation_page.driver.url != f'{FRONT_URL1}{ProfilePage.path}':
+    if presentation_page.driver.url != get_join_url(FRONT_URL1, ProfilePage.path):
         presentation_page.goto_url(FRONT_URL1)
         presentation_page.click(presentation_page.button_login)
         login_page.authorization(TEST_USER, TEST_PASSWORD)
@@ -79,13 +81,14 @@ def goto_profile(
 
 @pytest.fixture
 def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
-    category_in_db = db_niffler_spend.get_value(
+    """Обновить страницу, если данные на фронте не совпадают с базой данных."""
+    categories_in_db: int = db_niffler_spend.get_value(
         'select count(*) from category where username = \'%s\'' % TEST_USER
     )[0][0]
-    category_in_front = profile_page.driver.locator(profile_page.categories_list).count()
+    categories_in_front: int = profile_page.driver.locator(profile_page.categories_list).count()
     if (
-        profile_page.driver.url == f'{FRONT_URL1}{ProfilePage.path}'
-        and category_in_db != category_in_front
+        profile_page.driver.url == get_join_url(FRONT_URL1, ProfilePage.path)
+        and categories_in_db != categories_in_front
     ):
         profile_page.driver.reload()
 

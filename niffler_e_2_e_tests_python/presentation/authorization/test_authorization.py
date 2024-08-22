@@ -7,6 +7,8 @@ from playwright.sync_api import expect
 from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.presentation.authorization.enums import ErrorAuthorization
 from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
+    logout_after,
+    logout_before,
     main_page,
 )
 
@@ -15,15 +17,14 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
 
 
-@pytest.mark.usefixtures('prepare_test_user')
 class TestAuthorization:
 
-    @pytest.mark.usefixtures('go_login_page', 'logout', 'clear_storage')
+    @pytest.mark.usefixtures('go_login_page', 'logout_before', 'logout_after')
     def test_authorization(self, login_page: 'LoginPage', main_page: 'MainPage'):
         login_page.authorization(TEST_USER, TEST_PASSWORD)
         expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
 
-    @pytest.mark.usefixtures('go_login_page')
+    @pytest.mark.usefixtures('go_login_page', 'logout_before')
     @pytest.mark.parametrize(
         'login, password',
         [

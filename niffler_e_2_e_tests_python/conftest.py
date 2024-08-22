@@ -11,24 +11,25 @@ from niffler_e_2_e_tests_python.presentation.registration.register_page import R
 
 if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.fixtures.database import DB
+    from requests import Response
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session', autouse=True)
 def prepare_test_user(db_niffler_auth: 'DB'):
     """Создаем тестового юзера.
 
     Создаем через базу, если юзер есть, то не создаем.
     """
-    number_of_users: str = db_niffler_auth.get_value(
+    number_of_users: int = db_niffler_auth.get_value(
         'select count(*) from "user" where username = \'%s\'' % TEST_USER,
     )[0][0]
-    if not bool(number_of_users):
+    if not number_of_users:
         cookie: str = '; '.join((
             requests.get(AUTH_URL).history[0].headers['Set-Cookie'].replace(', ', '').split(
                 '; Path=/',
             )[:2]
         ))
-        response = requests.post(
+        response: 'Response' = requests.post(
             f'{AUTH_URL}{RegisterPage.path}',
             data=dict(
                 _csrf=cookie.split('; ')[0].split('XSRF-TOKEN=')[1],
@@ -38,7 +39,6 @@ def prepare_test_user(db_niffler_auth: 'DB'):
             ),
             headers={'Content-Type': 'application/x-www-form-urlencoded', 'Cookie': cookie}
         )
-        # тут, как я понял на запросе происходит редирект, который делает запросом GET
         assert len(response.history) == 0
         assert response.history[0].status_code == HTTPStatus.FOUND
         assert response.history[0].text == ''

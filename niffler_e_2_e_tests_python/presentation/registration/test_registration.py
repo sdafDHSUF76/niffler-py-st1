@@ -6,6 +6,7 @@ from playwright.sync_api import expect
 
 from niffler_e_2_e_tests_python.presentation.authorization.conftest import login_page  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
+    logout_before,
     main_page,
 )
 
@@ -17,7 +18,7 @@ if TYPE_CHECKING:
 
 class TestRegistration:
 
-    @pytest.mark.usefixtures('clear_extra_users', 'logout')
+    @pytest.mark.usefixtures('clear_extra_users', 'logout_before')
     def test_authorization_with_create_user_random(
         self,
         registration_page: 'RegisterPage',

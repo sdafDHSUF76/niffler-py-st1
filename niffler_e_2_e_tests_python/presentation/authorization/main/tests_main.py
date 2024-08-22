@@ -10,6 +10,7 @@ from niffler_e_2_e_tests_python.presentation.authorization.main.profile.conftest
     clear_spend_and_category_before,
     create_categories,
 )
+from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.fixtures.database import DB
@@ -21,14 +22,14 @@ class TestsMain:
 
     @pytest.fixture
     def refresh_page_when_front_and_spend(self, db_niffler_spend: 'DB', main_page: 'MainPage'):
-        category_in_db = db_niffler_spend.get_value(
+        categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from spend where username = \'%s\' and amount  = 123' % TEST_USER
         )[0][0]
-        category_in_front = main_page.driver.locator(main_page.spends_amount).count()
+        categories_in_front: int = main_page.driver.locator(main_page.spends_amount).count()
         category_text = main_page.driver.locator(main_page.spends_amount).inner_text() == '123'
         if (
-            main_page.driver.url == f'{FRONT_URL1}/main'
-            and (category_in_db != category_in_front or not category_text)
+            main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
+            and (categories_in_db != categories_in_front or not category_text)
         ):
             main_page.driver.reload()
 
@@ -36,23 +37,29 @@ class TestsMain:
     def refresh_page_when_front_and_db_spend_are_different(
         self, db_niffler_spend: 'DB', main_page: 'MainPage',
     ):
-        category_in_db = db_niffler_spend.get_value(
+        categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from spend where username = \'%s\'' % TEST_USER
         )[0][0]
-        category_in_front = main_page.driver.locator(main_page.spends).count()
-        if main_page.driver.url == f'{FRONT_URL1}/main' and category_in_db != category_in_front:
+        categories_in_front: int = main_page.driver.locator(main_page.spends).count()
+        if (
+            main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
+            and categories_in_db != categories_in_front
+        ):
             main_page.driver.reload()
 
     @pytest.fixture
     def refresh_page_when_front_and_db_category_are_different(
         self, db_niffler_spend: 'DB', main_page: 'MainPage',
     ):
-        category_in_db = db_niffler_spend.get_value(
+        categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from category where username = \'%s\'' % TEST_USER
         )[0][0]
         main_page.click(main_page.choose_category)
-        category_in_front = main_page.driver.locator(main_page.category_one).count()
-        if main_page.driver.url == f'{FRONT_URL1}/main' and category_in_db != category_in_front:
+        categories_in_front: int = main_page.driver.locator(main_page.category_one).count()
+        if (
+            main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
+            and categories_in_db != categories_in_front
+        ):
             main_page.driver.reload()
 
     @pytest.mark.parameter_data(
