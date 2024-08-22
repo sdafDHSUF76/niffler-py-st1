@@ -72,12 +72,12 @@ def goto_main(
 def logout_after(main_page: MainPage) -> None:
     """Выходим из под учетки юзера."""
     yield
-    if main_page.driver.locator(main_page.profile).is_visible():
+    if main_page.driver.locator(main_page.profile_button).is_visible():
         main_page.click_logout()
 
 
 @pytest.fixture
 def logout_before(main_page: MainPage) -> None:
     """Выходим из под учетки юзера."""
-    if main_page.driver.locator(main_page.profile).is_visible():
+    if main_page.driver.locator(main_page.profile_button).is_visible():
         main_page.click_logout()

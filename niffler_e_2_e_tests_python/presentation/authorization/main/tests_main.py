@@ -25,8 +25,8 @@ class TestsMain:
         categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from spend where username = \'%s\' and amount  = 123' % TEST_USER
         )[0][0]
-        categories_in_front: int = main_page.driver.locator(main_page.spends_amount).count()
-        category_text = main_page.driver.locator(main_page.spends_amount).inner_text() == '123'
+        categories_in_front: int = main_page.driver.locator(main_page.spend_amount).count()
+        category_text = main_page.driver.locator(main_page.spend_amount).inner_text() == '123'
         if (
             main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
             and (categories_in_db != categories_in_front or not category_text)
@@ -54,8 +54,10 @@ class TestsMain:
         categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from category where username = \'%s\'' % TEST_USER
         )[0][0]
-        main_page.click(main_page.choose_category)
-        categories_in_front: int = main_page.driver.locator(main_page.category_one).count()
+        main_page.click(main_page.category_input)
+        categories_in_front: int = main_page.driver.locator(
+            main_page.category_drop_down_list,
+        ).count()
         if (
             main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
             and categories_in_db != categories_in_front
@@ -67,13 +69,13 @@ class TestsMain:
     )
     @pytest.mark.usefixtures('create_categories', 'goto_main', 'clear_spend_and_category_after')
     def test_create_spend(self, main_page: 'MainPage'):
-        main_page.fill(main_page.choose_category, 'category1')
-        main_page.click(main_page.category_one)
+        main_page.fill(main_page.category_input, 'category1')
+        main_page.click(main_page.category_drop_down_list)
         main_page.fill(main_page.input_number, '1')
         main_page.fill(main_page.spend_date, '19/08/2024')
         main_page.driver.locator(main_page.spend_date).press('Enter')
-        main_page.fill(main_page.input_description, 'asdf')
-        main_page.click(main_page.button)
+        main_page.fill(main_page.description_input, 'asdf')
+        main_page.click(main_page.create_spend_button)
         expect(main_page.driver.locator(main_page.spends)).to_have_count(1)
 
     @pytest.mark.parameter_data(
@@ -101,7 +103,7 @@ class TestsMain:
     )
     def test_spend_delete(self, main_page: 'MainPage'):
         expect(main_page.driver.locator(main_page.spends)).to_have_count(1)
-        main_page.click(main_page.checkbocs_choose_spend)
+        main_page.click(main_page.checkbox_choose_spend)
         main_page.click(main_page.button_delete)
         expect(main_page.driver.locator(main_page.spends)).to_have_count(0)
 
@@ -111,5 +113,5 @@ class TestsMain:
 
     @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_category_are_different')
     def test_categories_emtpy(self, main_page: 'MainPage'):
-        main_page.click(main_page.choose_category)
-        expect(main_page.driver.locator(main_page.category_one)).to_be_hidden()
+        main_page.click(main_page.category_input)
+        expect(main_page.driver.locator(main_page.category_drop_down_list)).to_be_hidden()

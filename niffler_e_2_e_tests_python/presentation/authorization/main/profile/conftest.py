@@ -68,15 +68,15 @@ def goto_profile(
 ):
     """Перейти на страницу profile из разных мест сайта."""
     if (
-        main_page.driver.locator(main_page.profile).is_visible()
+        main_page.driver.locator(main_page.profile_button).is_visible()
         and main_page.driver.url != get_join_url(FRONT_URL1, ProfilePage.path)
     ):
-        main_page.click(main_page.profile)
+        main_page.click(main_page.profile_button)
     if presentation_page.driver.url != get_join_url(FRONT_URL1, ProfilePage.path):
         presentation_page.goto_url(FRONT_URL1)
         presentation_page.click(presentation_page.button_login)
         login_page.authorization(TEST_USER, TEST_PASSWORD)
-        main_page.click(main_page.profile)
+        main_page.click(main_page.profile_button)
 
 
 @pytest.fixture

@@ -54,7 +54,7 @@ class TestProfile:
         expect(profile_page.driver.locator(profile_page.alert_add_category)).to_be_visible()
         assert profile_page.driver.locator(
             profile_page.alert_add_category_text,
-        ).inner_text() == profile_page.text1
+        ).inner_text() == profile_page.alert_unsuccessful_text
 
     @pytest.mark.parameter_data(
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category1'}},
@@ -80,7 +80,7 @@ class TestProfile:
         expect(profile_page.driver.locator(profile_page.alert_add_category)).to_be_visible()
         assert profile_page.driver.locator(
             profile_page.alert_add_category_text,
-        ).inner_text() == profile_page.text1
+        ).inner_text() == profile_page.alert_unsuccessful_text
 
     @pytest.mark.usefixtures('goto_profile', 'clear_category_before')
     def test_empty_categories(self, profile_page: 'ProfilePage'):

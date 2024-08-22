@@ -44,7 +44,7 @@ def go_login_page(
     перешли...
     """
     if (
-        main_page.driver.locator(main_page.profile).is_visible()
+        main_page.driver.locator(main_page.profile_button).is_visible()
         and main_page.driver.url != get_join_url(AUTH_URL, LoginPage.path)
     ):
         main_page.click_logout()

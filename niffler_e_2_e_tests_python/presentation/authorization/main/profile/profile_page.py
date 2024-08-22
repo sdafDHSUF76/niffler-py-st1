@@ -11,9 +11,9 @@ class ProfilePage(BaseLogic):
     categories_input = "//input[@name='category']"
     categories_button = "//button[@class='button  ' and text()='Create']"
     main_button = "//a[@href='/main']"
-    text = 'New category added'
-    text1 = 'Can not add new category'
-    header = '//h2'
+    alert_successful_text = 'New category added'
+    alert_unsuccessful_text = 'Can not add new category'
+    subtitle = '//h2'
 
     def add_category(self, name_category: str) -> None:
         """Добавляем категорию трат."""
