@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from faker import Faker
-from playwright.sync_api import expect
 
 from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.presentation.authorization.enums import ErrorAuthorization
@@ -22,7 +21,7 @@ class TestAuthorization:
     @pytest.mark.usefixtures('go_login_page', 'logout_before', 'logout_after')
     def test_authorization(self, login_page: 'LoginPage', main_page: 'MainPage'):
         login_page.authorization(TEST_USER, TEST_PASSWORD)
-        expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
+        main_page.check_text_in_element(main_page.header, main_page.text_header)
 
     @pytest.mark.usefixtures('go_login_page', 'logout_before')
     @pytest.mark.parametrize(
@@ -41,6 +40,6 @@ class TestAuthorization:
         self, login: str, password: str, login_page: 'LoginPage'
     ):
         login_page.authorization(login, TEST_PASSWORD)
-        expect(login_page.driver.locator(login_page.text_error)).to_have_text(
-            ErrorAuthorization.INVALID_USER_CREDENTIALS,
+        login_page.check_text_in_element(
+            login_page.text_error, ErrorAuthorization.INVALID_USER_CREDENTIALS,
         )

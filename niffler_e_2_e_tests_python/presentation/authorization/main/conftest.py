@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
 def main_page(driver: 'Page') -> MainPage:
     """Получаем страницу Main со всей логикой ее."""
     return MainPage(driver)

@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
 def profile_page(driver: 'Page') -> ProfilePage:
     """Получаем страницу Profile со всей логикой ее."""
     return ProfilePage(driver)

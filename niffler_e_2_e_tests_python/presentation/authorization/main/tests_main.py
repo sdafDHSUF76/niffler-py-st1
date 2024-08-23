@@ -76,7 +76,7 @@ class TestsMain:
         main_page.driver.locator(main_page.spend_date).press('Enter')
         main_page.fill(main_page.description_input, 'asdf')
         main_page.click(main_page.create_spend_button)
-        expect(main_page.driver.locator(main_page.spends)).to_have_count(1)
+        main_page.expected_number_of_items(main_page.spends, 1)
 
     @pytest.mark.parameter_data(
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category1'}},
@@ -102,14 +102,14 @@ class TestsMain:
         'clear_spend_and_category_after',
     )
     def test_spend_delete(self, main_page: 'MainPage'):
-        expect(main_page.driver.locator(main_page.spends)).to_have_count(1)
+        main_page.expected_number_of_items(main_page.spends, 1)
         main_page.click(main_page.checkbox_choose_spend)
         main_page.click(main_page.button_delete)
-        expect(main_page.driver.locator(main_page.spends)).to_have_count(0)
+        main_page.expected_number_of_items(main_page.spends, 0)
 
     @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_spend_are_different')
     def test_spends_emtpy(self, main_page: 'MainPage'):
-        expect(main_page.driver.locator(main_page.spends)).to_have_count(0)
+        main_page.expected_number_of_items(main_page.spends, 0)
 
     @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_category_are_different')
     def test_categories_emtpy(self, main_page: 'MainPage'):

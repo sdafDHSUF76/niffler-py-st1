@@ -10,8 +10,9 @@ from niffler_e_2_e_tests_python.fixtures.database import db_niffler_auth  # noqa
 from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
 
 if TYPE_CHECKING:
-    from niffler_e_2_e_tests_python.fixtures.database import DB
     from requests import Response
+
+    from niffler_e_2_e_tests_python.fixtures.database import DB
 
 
 @pytest.fixture(scope='session', autouse=True)

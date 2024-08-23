@@ -2,9 +2,11 @@ from typing import TYPE_CHECKING, Callable
 
 import pytest
 from faker import Faker
-from playwright.sync_api import expect
 
-from niffler_e_2_e_tests_python.presentation.authorization.conftest import login_page  # noqa F401
+from niffler_e_2_e_tests_python.presentation.authorization.conftest import (  # noqa F401
+    go_login_page_function,
+    login_page,
+)
 from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
     logout_before,
     main_page,
@@ -31,4 +33,4 @@ class TestRegistration:
         registration_page.register_new_user(username, password)
         go_login_page_function()
         login_page.authorization(username, password)
-        expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
+        main_page.check_text_in_element(main_page.header, main_page.text_header)

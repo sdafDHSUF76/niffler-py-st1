@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.fixtures.database import DB
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
 def registration_page(driver: 'Page') -> RegisterPage:
     """Получаем страницу Register со всей логикой ее."""
     return RegisterPage(driver)

@@ -17,15 +17,13 @@ class TestProfile:
     @pytest.mark.usefixtures('goto_profile', 'clear_category', 'close_alert')
     def test_crete_category(self, profile_page: 'ProfilePage'):
         categories_before: int = len(
-            profile_page.driver.locator(profile_page.categories_list).all_inner_texts(),
+            profile_page.get_text_in_elements(profile_page.categories_list),
         )
         profile_page.add_category('yio2')
-        expect(profile_page.driver.locator(
-            profile_page.categories_list),
-        ).to_have_count(categories_before + 1)
-        categories: list[str] = profile_page.driver.locator(
-            profile_page.categories_list,
-        ).all_inner_texts()[0].split('\n')
+        profile_page.expected_number_of_items(profile_page.categories_list, categories_before + 1)
+        categories: list[str] = profile_page.get_text_in_elements(
+            profile_page.categories_list, '\n',
+        )
         assert 'yio2' in categories
 
     @pytest.mark.usefixtures('goto_profile', 'clear_category')
@@ -45,16 +43,16 @@ class TestProfile:
     )
     def test_do_not_create_non_unique_category(self, profile_page: 'ProfilePage'):
         expect(profile_page.driver.locator(profile_page.categories_list)).to_have_count(1)
-        categories: list[str] = profile_page.driver.locator(
-            profile_page.categories_list,
-        ).all_inner_texts()[0].split('\n')
+        categories: list[str] = profile_page.get_text_in_elements(
+            profile_page.categories_list, '\n',
+        )
         assert 'yuio' in categories
         profile_page.add_category('yuio')
-        expect(profile_page.driver.locator(profile_page.categories_list)).to_have_count(1)
+        profile_page.expected_number_of_items(profile_page.categories_list, 1)
         expect(profile_page.driver.locator(profile_page.alert_add_category)).to_be_visible()
-        assert profile_page.driver.locator(
-            profile_page.alert_add_category_text,
-        ).inner_text() == profile_page.alert_unsuccessful_text
+        profile_page.check_text_in_element(
+            profile_page.alert_add_category_text, profile_page.alert_unsuccessful_text,
+        )
 
     @pytest.mark.parameter_data(
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category1'}},
@@ -70,19 +68,18 @@ class TestProfile:
         'create_categories', 'goto_profile', 'clear_category', 'reload_profile_page',
     )
     def test_do_not_create_more_than_8_categories(self, profile_page: 'ProfilePage'):
-        expect(profile_page.driver.locator(profile_page.categories_list)).to_have_count(8)
+        profile_page.expected_number_of_items(profile_page.categories_list, 8)
         profile_page.add_category('yuio')
-        categories: list[str] = profile_page.driver.locator(
-            profile_page.categories_list,
-        ).all_inner_texts()[0].split('\n')
+        categories: list[str] = profile_page.get_text_in_elements(
+            profile_page.categories_list, '\n',
+        )
         assert 'yuio' not in categories
-        expect(profile_page.driver.locator(profile_page.categories_list)).to_have_count(8)
+        profile_page.expected_number_of_items(profile_page.categories_list, 8)
         expect(profile_page.driver.locator(profile_page.alert_add_category)).to_be_visible()
-        assert profile_page.driver.locator(
-            profile_page.alert_add_category_text,
-        ).inner_text() == profile_page.alert_unsuccessful_text
+        profile_page.check_text_in_element(
+            profile_page.alert_add_category_text, profile_page.alert_unsuccessful_text,
+        )
 
-    @pytest.mark.usefixtures('goto_profile', 'clear_category_before')
+    @pytest.mark.usefixtures('goto_profile', 'clear_category_before', 'reload_profile_page')
     def test_empty_categories(self, profile_page: 'ProfilePage'):
-        profile_page.refresh_page_to_update_categories(0)
-        expect(profile_page.driver.locator(profile_page.categories_list)).to_have_count(0)
+        profile_page.expected_number_of_items(profile_page.categories_list, 0)
