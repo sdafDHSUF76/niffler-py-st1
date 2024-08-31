@@ -1,9 +1,9 @@
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Optional
 
 import pytest
-import requests
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL1, GATEWAY_URL, TEST_PASSWORD, TEST_USER
+from niffler_e_2_e_tests_python.client_api import ClientApi
+from niffler_e_2_e_tests_python.configs import FRONT_URL1, TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
 from niffler_e_2_e_tests_python.utils import get_join_url
 
@@ -24,7 +24,7 @@ def main_page(driver: 'Page') -> MainPage:
 
 
 @pytest.fixture
-def create_spends(get_token: Callable[[str, str], str], request: 'SubRequest'):
+def create_spends(request: 'SubRequest'):
     """Создаем категории через API.
 
     На самом деле тут только через API категория создается, а вот токен берется из UI.
@@ -34,15 +34,8 @@ def create_spends(get_token: Callable[[str, str], str], request: 'SubRequest'):
     for unit in marker.args:
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
-            token: str = get_token(unit['user'], unit['password'])
-        requests.post(
-            f'{GATEWAY_URL}/api/spends/add',
-            json=unit['spend'],
-            headers={
-                'Authorization': token,
-                'Content-Type': 'application/json',
-            }
-        )
+            token: str = ClientApi.get_token(unit['user'], unit['password'])
+        ClientApi.add_spend(unit['spend'], token)
         user_old, password_old = user, password
 
 

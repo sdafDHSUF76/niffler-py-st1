@@ -1,9 +1,11 @@
 import re
 from typing import Iterable
 
+import allure
 import pytest
 import structlog as structlog
-from sqlalchemy import Connection, Row, create_engine, text
+from allure_commons.types import AttachmentType
+from sqlalchemy import Connection, Row, create_engine, text, event
 from sqlalchemy.orm import Session
 
 from niffler_e_2_e_tests_python.configs import (
@@ -37,6 +39,13 @@ class DB:
     """Содержит методы, для обращения в базу данных."""
     def __init__(self, connect: Connection):
         self.conn = connect
+        event.listen(self.conn, "do_execute", fn=self.attach_sql)
+
+    @staticmethod
+    def attach_sql(cursor, statement, parameters, context):
+        statement_with_params = statement % parameters
+        name = statement.split(" ")[0] + " " + context.engine.url.database
+        allure.attach(statement_with_params, name=name, attachment_type=AttachmentType.TEXT)
 
     def get_db_name(self) -> str:
         """Get database name."""

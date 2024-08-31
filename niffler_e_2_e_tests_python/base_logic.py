@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
+from faker import Faker
 from playwright.sync_api import expect
 
 if TYPE_CHECKING:

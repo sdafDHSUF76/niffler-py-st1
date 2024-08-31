@@ -43,7 +43,7 @@ def go_login_page(
     ):
         main_page.click_logout()
         presentation_page.click(presentation_page.button_login)
-    if not re.match('http://auth.niffler.dc:9000/login', presentation_page.driver.url):  # noqa W605
+    if not re.match(f'{AUTH_URL}/login', presentation_page.driver.url):  # noqa W605
         """
         Выглядит странным, но у приложения, когда возникает ошибка авторизации в параметре
         url появляется ?error , вроде такой был, и чтобы у меня автотест лишний раз по url не

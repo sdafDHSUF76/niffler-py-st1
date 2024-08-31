@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Callable, Optional
 import pytest
 import requests
 
+from niffler_e_2_e_tests_python.client_api import ClientApi
 from niffler_e_2_e_tests_python.configs import FRONT_URL1, GATEWAY_URL, TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
@@ -100,7 +101,7 @@ def close_alert(profile_page: 'ProfilePage'):
 
 
 @pytest.fixture
-def create_categories(get_token: Callable[[str, str], str], request: 'SubRequest'):
+def create_categories(request: 'SubRequest'):
     """Создаем категории через API.
 
     На самом деле тут только через API категория создается, а вот токен берется из UI.
@@ -110,7 +111,7 @@ def create_categories(get_token: Callable[[str, str], str], request: 'SubRequest
     for unit in marker.args:
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
-            token: str = get_token(unit['user'], unit['password'])
+            token: str = ClientApi.get_token(unit['user'], unit['password'])
         requests.post(
             f'{GATEWAY_URL}/api/categories/add',
             json=unit['category'],
