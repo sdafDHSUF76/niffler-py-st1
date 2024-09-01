@@ -1,6 +1,6 @@
 import allure
 
-from niffler_e_2_e_tests_python.base_logic import BaseSimplifyingLogic
+from niffler_e_2_e_tests_python.base_logic import BaseLogic
 from niffler_e_2_e_tests_python.configs import AUTH_URL
 
 
@@ -9,7 +9,7 @@ from niffler_e_2_e_tests_python.configs import AUTH_URL
     'features (what the user can do) for an unauthorized\\authorized user',
 )
 @allure.epic('features (what the user can do) for an unauthorized user')
-class RegisterPage(BaseSimplifyingLogic):
+class RegisterPage(BaseLogic):
     path = '/register'
 
     input_username = "//input[@name='username']"

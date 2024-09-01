@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from playwright.sync_api import Page
 
 
-class BaseSimplifyingLogic(MixinSimplifyingLogic):
+class BaseLogic(MixinSimplifyingLogic):
     """Содержит в себе методы, для работы с UI."""
 
     def __init__(self, driver: 'Page'):

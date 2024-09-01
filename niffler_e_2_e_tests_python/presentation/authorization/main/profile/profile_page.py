@@ -1,7 +1,7 @@
-from niffler_e_2_e_tests_python.base_logic import BaseSimplifyingLogic
+from niffler_e_2_e_tests_python.base_logic import BaseLogic
 
 
-class ProfilePage(BaseSimplifyingLogic):
+class ProfilePage(BaseLogic):
     path = '/profile'
 
     alert_add_category = "//div[@role='alert']"

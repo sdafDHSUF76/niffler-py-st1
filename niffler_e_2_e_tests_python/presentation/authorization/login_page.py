@@ -1,7 +1,7 @@
-from niffler_e_2_e_tests_python.base_logic import BaseSimplifyingLogic
+from niffler_e_2_e_tests_python.base_logic import BaseLogic
 
 
-class LoginPage(BaseSimplifyingLogic):
+class LoginPage(BaseLogic):
     path = '/login'
 
     input_username = "//input[@name='username']"
