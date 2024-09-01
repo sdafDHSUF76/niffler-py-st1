@@ -34,8 +34,8 @@ def create_spends(request: 'SubRequest'):
     for unit in marker.args:
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
-            token: str = ClientApi.get_token(unit['user'], unit['password'])
-        ClientApi.add_spend(unit['spend'], token)
+            token: str = ClientApi().get_token(unit['user'], unit['password'])
+        ClientApi().add_spend(unit['spend'], token)
         user_old, password_old = user, password
 
 

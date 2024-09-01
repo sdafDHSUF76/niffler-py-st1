@@ -1,7 +1,8 @@
 from typing import TYPE_CHECKING
 
+import allure
 import pytest
-from playwright.sync_api import expect
+from playwright.sync_api import Locator
 
 from niffler_e_2_e_tests_python.configs import FRONT_URL1, TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noqa F401
@@ -17,9 +18,23 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
 
 
+@allure.epic(
+    'Main page',
+    'features (what the user can do) for an unauthorized\\authorized user',
+)
+@allure.feature(
+    'features (what the user can do) for an authorized user',
+    'Create a UI to create expenses',
+)
 @pytest.mark.usefixtures('clear_spend_and_category_before')
-class TestsMain:
+class TestsCreatingExpenses:
 
+    @allure.story(
+        'display the created expenses in the spending history',
+        'create a form for selecting and creating expenses',
+        'create a database table to store spending categories',
+        'create a database table to store your spending history',
+    )
     @pytest.mark.parameter_data(
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category1'}},
     )
@@ -29,10 +44,46 @@ class TestsMain:
         main_page.click(main_page.category_drop_down_list)
         main_page.fill(main_page.input_number, '1')
         main_page.fill(main_page.spend_date, '19/08/2024')
-        main_page.driver.locator(main_page.spend_date).press('Enter')
+        main_page.press_keyboard(main_page.spend_date, 'Enter')
         main_page.fill(main_page.description_input, 'asdf')
         main_page.click(main_page.create_spend_button)
         main_page.expected_number_of_items(main_page.spends, 1)
+
+    @pytest.fixture
+    def refresh_page_when_front_and_db_category_are_different(
+        self, db_niffler_spend: 'DB', main_page: 'MainPage',
+    ):
+        categories_in_db: int = db_niffler_spend.get_value(
+            'select count(*) from category where username = \'%s\'' % TEST_USER
+        )[0][0]
+        main_page.click(main_page.category_input)
+        categories_in_front: int = main_page.get_element(main_page.category_drop_down_list).count()
+        if (
+            main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
+            and categories_in_db != categories_in_front
+        ):
+            main_page.refresh_page()
+
+    @allure.story(
+        'create a form for selecting and creating expenses',
+        'create a database table to store spending categories',
+    )
+    @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_category_are_different')
+    def test_categories_empty(self, main_page: 'MainPage'):
+        main_page.click(main_page.category_input)
+        main_page.check_element_is_hidden(main_page.category_drop_down_list)
+
+
+@allure.epic(
+    'Main page',
+    'features (what the user can do) for an unauthorized\\authorized user',
+)
+@allure.feature(
+    'features (what the user can do) for an authorized user',
+    'create a spending history display',
+)
+@pytest.mark.usefixtures('clear_spend_and_category_before')
+class TestHistoryOfSpending:
 
     @pytest.fixture
     def refresh_page_when_front_and_spend(self, db_niffler_spend: 'DB', main_page: 'MainPage'):
@@ -40,13 +91,20 @@ class TestsMain:
             'select count(*) from spend where username = \'%s\' and amount  = 123' % TEST_USER
         )[0][0]
         categories_in_front: int = main_page.driver.locator(main_page.spends).count()
-        category_text: bool = main_page.driver.locator(main_page.spend_amount).inner_text() == '123'
+        spending_column: Locator = main_page.get_element(main_page.spend_amount)
+        is_amount_spend: bool = False
+        if spending_column.is_visible():
+            is_amount_spend = spending_column.inner_text() == '123'
         if (
             main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
-            and (categories_in_db != categories_in_front or not category_text)
+            and (categories_in_db != categories_in_front or not is_amount_spend)
         ):
-            main_page.driver.reload()
+            main_page.refresh_page()
 
+    @allure.story(
+        'allow you to delete expenses from your spending history',
+        'create a database table to store your spending history',
+    )
     @pytest.mark.parameter_data(
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category1'}},
     )
@@ -83,35 +141,17 @@ class TestsMain:
         categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from spend where username = \'%s\'' % TEST_USER
         )[0][0]
-        categories_in_front: int = main_page.driver.locator(main_page.spends).count()
+        categories_in_front: int = main_page.get_element(main_page.spends).count()
         if (
             main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
             and categories_in_db != categories_in_front
         ):
-            main_page.driver.reload()
+            main_page.refresh_page()
 
+    @allure.story(
+        'create a form for selecting and creating expenses',
+        'create a database table to store your spending history',
+    )
     @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_spend_are_different')
     def test_spends_emtpy(self, main_page: 'MainPage'):
         main_page.expected_number_of_items(main_page.spends, 0)
-
-    @pytest.fixture
-    def refresh_page_when_front_and_db_category_are_different(
-        self, db_niffler_spend: 'DB', main_page: 'MainPage',
-    ):
-        categories_in_db: int = db_niffler_spend.get_value(
-            'select count(*) from category where username = \'%s\'' % TEST_USER
-        )[0][0]
-        main_page.click(main_page.category_input)
-        categories_in_front: int = main_page.driver.locator(
-            main_page.category_drop_down_list,
-        ).count()
-        if (
-            main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
-            and categories_in_db != categories_in_front
-        ):
-            main_page.driver.reload()
-
-    @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_category_are_different')
-    def test_categories_emtpy(self, main_page: 'MainPage'):
-        main_page.click(main_page.category_input)
-        expect(main_page.driver.locator(main_page.category_drop_down_list)).to_be_hidden()

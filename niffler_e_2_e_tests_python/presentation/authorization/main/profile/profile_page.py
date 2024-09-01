@@ -1,7 +1,7 @@
-from niffler_e_2_e_tests_python.base_logic import BaseLogic
+from niffler_e_2_e_tests_python.base_logic import BaseSimplifyingLogic
 
 
-class ProfilePage(BaseLogic):
+class ProfilePage(BaseSimplifyingLogic):
     path = '/profile'
 
     alert_add_category = "//div[@role='alert']"
@@ -21,5 +21,5 @@ class ProfilePage(BaseLogic):
         self.click(self.categories_button)
 
     def refresh_page_to_update_categories(self, count: int):
-        if self.driver.locator(self.categories_list).count() != count:
-            self.driver.reload()
+        if self.get_element(self.categories_list).count() != count:
+            self.refresh_page()

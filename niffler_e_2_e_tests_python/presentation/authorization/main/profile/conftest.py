@@ -1,10 +1,9 @@
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Optional
 
 import pytest
-import requests
 
 from niffler_e_2_e_tests_python.client_api import ClientApi
-from niffler_e_2_e_tests_python.configs import FRONT_URL1, GATEWAY_URL, TEST_PASSWORD, TEST_USER
+from niffler_e_2_e_tests_python.configs import FRONT_URL1, TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
     ProfilePage,
@@ -91,7 +90,7 @@ def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
         profile_page.driver.url == get_join_url(FRONT_URL1, ProfilePage.path)
         and categories_in_db != categories_in_front
     ):
-        profile_page.driver.reload()
+        profile_page.refresh_page()
 
 
 @pytest.fixture
@@ -111,13 +110,6 @@ def create_categories(request: 'SubRequest'):
     for unit in marker.args:
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
-            token: str = ClientApi.get_token(unit['user'], unit['password'])
-        requests.post(
-            f'{GATEWAY_URL}/api/categories/add',
-            json=unit['category'],
-            headers={
-                'Authorization': token,
-                'Content-Type': 'application/json',
-            }
-        )
+            token: str = ClientApi().get_token(unit['user'], unit['password'])
+        ClientApi().add_category(unit['category'], token)
         user_old, password_old = user, password

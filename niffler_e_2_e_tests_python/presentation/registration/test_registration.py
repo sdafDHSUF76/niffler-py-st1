@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Callable
 
+import allure
 import pytest
 from faker import Faker
 
@@ -18,8 +19,15 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
 
 
+@allure.story('User registration via the UI')
 class TestRegistration:
 
+    @allure.feature(
+        'Create a user through the ui',
+        'create a database to store registered users',
+        'Upon successful authorization, show the main page',
+        'user authentication',
+    )
     @pytest.mark.usefixtures('clear_extra_users', 'logout_before')
     def test_authorization_with_create_user_random(
         self,

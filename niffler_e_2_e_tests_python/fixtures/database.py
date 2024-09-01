@@ -1,11 +1,11 @@
 import re
-from typing import Iterable
+from typing import TYPE_CHECKING, Iterable
 
 import allure
 import pytest
 import structlog as structlog
 from allure_commons.types import AttachmentType
-from sqlalchemy import Connection, Row, create_engine, text, event
+from sqlalchemy import Connection, Engine, Row, create_engine, event, text
 from sqlalchemy.orm import Session
 
 from niffler_e_2_e_tests_python.configs import (
@@ -18,6 +18,10 @@ from niffler_e_2_e_tests_python.configs import (
     DB_PORT,
     DB_USER,
 )
+
+if TYPE_CHECKING:
+    import cursor as cursor_
+    from sqlalchemy.dialects.postgresql.psycopg2 import PGExecutionContext_psycopg2
 
 logger = structlog.get_logger('sql')
 
@@ -37,13 +41,22 @@ DATABASE_NIFFLER_AUTH_URL = (
 
 class DB:
     """Содержит методы, для обращения в базу данных."""
-    def __init__(self, connect: Connection):
-        self.conn = connect
-        event.listen(self.conn, "do_execute", fn=self.attach_sql)
+    def __init__(self, connect: Engine):
+        self.engine = connect
+        self.conn: Connection = self.engine.connect()
+        event.listen(self.engine, "do_execute", fn=self.attach_sql)
 
     @staticmethod
-    def attach_sql(cursor, statement, parameters, context):
-        statement_with_params = statement % parameters
+    def attach_sql(
+        cursor: 'cursor_', statement: str, parameters: dict, context: 'PGExecutionContext_psycopg2',
+    ):
+        """Приаттачить sql query к шагу, где происходит запрос.
+
+        *cursor обязателен, как и другие параметры,
+        так как в этот метод hook передает свои параметры, и если их не
+        указать, то метод будет падать, от избытка полученных параметров.
+        """
+        statement_with_params: str = statement % parameters
         name = statement.split(" ")[0] + " " + context.engine.url.database
         allure.attach(statement_with_params, name=name, attachment_type=AttachmentType.TEXT)
 
@@ -106,7 +119,7 @@ def db_niffler_auth() -> DB:
         create_engine(
             DATABASE_NIFFLER_AUTH_URL,
             # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
-        ).connect(),
+        ),
     )
     yield mydb
     mydb.close()
@@ -119,7 +132,7 @@ def db_niffler_currency() -> DB:
         create_engine(
             DATABASE_NIFFLER_CURRENCY_URL,
             # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
-        ).connect(),
+        ),
     )
     yield mydb
     mydb.close()
@@ -132,7 +145,7 @@ def db_niffler_spend() -> DB:
         create_engine(
             DATABASE_NIFFLER_SPEND_URL,
             # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
-        ).connect(),
+        ),
     )
     yield mydb
     mydb.close()
@@ -145,7 +158,7 @@ def db_niffler_userdata() -> DB:
         create_engine(
             DATABASE_NIFFLER_USERDATA_URL,
             # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
-        ).connect(),
+        ),
     )
     yield mydb
     mydb.close()
