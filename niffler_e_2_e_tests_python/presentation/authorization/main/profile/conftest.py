@@ -28,7 +28,7 @@ def profile_page(driver: 'Page') -> ProfilePage:
 
 
 @pytest.fixture
-def clear_category(db_niffler_spend: 'DB') -> None:
+def clear_category_after(db_niffler_spend: 'DB') -> None:
     """Чистим таблицу category."""
     yield
     db_niffler_spend.execute('delete from category')
@@ -38,13 +38,6 @@ def clear_category(db_niffler_spend: 'DB') -> None:
 def clear_category_before(db_niffler_spend: 'DB') -> None:
     """Чистим таблицу category."""
     db_niffler_spend.execute('delete from category')
-
-
-@pytest.fixture
-def clear_spend(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу spend."""
-    yield
-    db_niffler_spend.execute('delete from spend')
 
 
 @pytest.fixture(scope='class')

@@ -26,7 +26,7 @@ class TestProfile:
         'the form of category creations',
         'create a database table to store spending categories',
     )
-    @pytest.mark.usefixtures('goto_profile', 'clear_category', 'close_alert')
+    @pytest.mark.usefixtures('goto_profile', 'clear_category_after', 'close_alert')
     def test_crete_category(self, profile_page: 'ProfilePage'):
         categories_before: int = len(
             profile_page.get_text_in_elements(profile_page.categories_list),
@@ -39,7 +39,7 @@ class TestProfile:
         assert 'yio2' in categories
 
     @allure.story('an alert is displayed about the success of creating a category')
-    @pytest.mark.usefixtures('goto_profile', 'clear_category')
+    @pytest.mark.usefixtures('goto_profile', 'clear_category_after')
     @pytest.mark.parametrize(
         'category', ['yiosdf', '1'], ids=['successful alert', 'unsuccessful alert'],
     )
@@ -56,7 +56,7 @@ class TestProfile:
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'yuio'}},
     )
     @pytest.mark.usefixtures(
-        'create_categories', 'goto_profile', 'clear_category', 'reload_profile_page',
+        'create_categories', 'goto_profile', 'clear_category_after', 'reload_profile_page',
     )
     def test_do_not_create_non_unique_category(self, profile_page: 'ProfilePage'):
         profile_page.expected_number_of_items(profile_page.categories_list, 1)
@@ -86,7 +86,7 @@ class TestProfile:
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category8'}},
     )
     @pytest.mark.usefixtures(
-        'create_categories', 'goto_profile', 'clear_category', 'reload_profile_page',
+        'create_categories', 'goto_profile', 'clear_category_after', 'reload_profile_page',
     )
     def test_do_not_create_more_than_8_categories(self, profile_page: 'ProfilePage'):
         profile_page.expected_number_of_items(profile_page.categories_list, 8)

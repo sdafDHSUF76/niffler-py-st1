@@ -1,3 +1,5 @@
+import allure
+
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
 
 
@@ -15,11 +17,16 @@ class ProfilePage(BaseLogic):
     alert_unsuccessful_text = 'Can not add new category'
     subtitle = '//h2'
 
+    @allure.step('add a category: \'{name_category}\'')
     def add_category(self, name_category: str) -> None:
         """Добавляем категорию трат."""
         self.fill(self.categories_input, name_category)
         self.click(self.categories_button)
 
+    @allure.step(
+        'refresh the page if the number of categories does not match the expected one: '
+        '\'{count}\''
+    )
     def refresh_page_to_update_categories(self, count: int):
         if self.get_element(self.categories_list).count() != count:
             self.refresh_page()

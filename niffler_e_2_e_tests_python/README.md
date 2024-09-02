@@ -55,3 +55,10 @@ allure serve .\allure-result\
 ```
 Так запускаем allure отчет, чтобы на него посмотреть
 
+
+----
+```bash
+pytest niffler_e_2_e_tests_python/presentation/authorization/main/profile/test_profile.py niffler_e_2_e_tests_python/presentation/authorization/main/tests_main.py niffler_e_2_e_tests_python/presentation/authorization/test_authorization.py niffler_e_2_e_tests_python/presentation/registration/test_registration.py niffler_e_2_e_tests_python/presentation/test_presentation.py -v
+```
+
+команда, для обычного запуска автотестов(без allure)

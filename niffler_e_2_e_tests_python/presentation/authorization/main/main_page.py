@@ -1,3 +1,5 @@
+import allure
+
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
 
 
@@ -21,6 +23,7 @@ class MainPage(BaseLogic):
 
     text_header = 'Niffler. The coin keeper.'
 
+    @allure.step('log out of your account')
     def click_logout(self):
         """Выход из аккаунта через UI."""
         self.click(self.logout_button)
