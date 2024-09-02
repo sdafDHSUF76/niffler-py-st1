@@ -55,11 +55,11 @@ class TestProfile:
         'create_categories', 'goto_profile', 'clear_category_after', 'reload_profile_page',
     )
     def test_do_not_create_non_unique_category(self, profile_page: 'ProfilePage'):
-        profile_page.expected_number_of_items(profile_page.categories_list, 1)
+        profile_page.check_number_of_existing_categories(1)
         categories: list[str] = profile_page.get_values_from_category_sheet('\n')
         assert 'yuio' in categories
         profile_page.add_category('yuio')
-        profile_page.expected_number_of_items(profile_page.categories_list, 1)
+        profile_page.check_number_of_existing_categories(1)
         profile_page.check_for_popup_appearance()
         profile_page.check_popup_text(profile_page.alert_unsuccessful_text)
 
