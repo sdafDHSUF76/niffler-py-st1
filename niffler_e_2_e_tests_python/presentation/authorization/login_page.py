@@ -54,5 +54,6 @@ class LoginPage(BaseLogic):
             PresentationPage(self.driver).click(PresentationPage.button_login)
 
     def check_hint_text(self, text: str):
+        """Проверить текст подсказки."""
         with allure.step('Checking the hint message'):
             self.check_text_in_element(self.text_error, text)

@@ -16,4 +16,5 @@ def login_page(driver: 'Page') -> LoginPage:
 
 @pytest.fixture
 def go_login_page(login_page: LoginPage):
+    """Перейти на страницу авторизации."""
     login_page.goto_login_page()

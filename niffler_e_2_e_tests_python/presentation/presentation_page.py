@@ -9,8 +9,10 @@ class PresentationPage(BaseLogic):
 
     @allure.step('Check the visibility of the Login button')
     def check_visibility_of_login_button(self):
+        """Проверить видимо кнопки логина."""
         self.check_element_is_visible(self.button_login)
 
     @allure.step('Check the visibility of the Register button')
     def check_visibility_of_register_button(self):
+        """Проверить видимо кнопки регистрации."""
         self.check_element_is_visible(self.button_register)

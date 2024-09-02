@@ -42,7 +42,7 @@ class TestsCreatingExpenses:
     def test_create_spend(self, main_page: 'MainPage'):
         main_page.fill_input_category('category1')
         main_page.choose_on_drop_down_list_of_spending_categories()
-        main_page.fill_input_number('1')
+        main_page.fill_input_amount_of_spending('1')
         main_page.fill_input_spend_date('19/08/2024')
         main_page.press_enter_on_keyboard()
         main_page.fill_input_description('asdf')

@@ -87,7 +87,7 @@ def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
 
 
 @pytest.fixture
-def close_alert(profile_page: 'ProfilePage'):
+def close_alert_after(profile_page: 'ProfilePage'):
     yield
     profile_page.click(profile_page.alert_button_close)
 

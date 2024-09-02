@@ -19,6 +19,7 @@ class RegisterPage(BaseLogic):
     text_successful_registered = '//p[text()="Congratulations! You\'ve registered!"]'
 
     def register_new_user(self, username: str, password: str) -> None:
+        """Регистрация пользователя."""
         with allure.step('registering a new user'):
             self.goto_url(f'{AUTH_URL}{self.path}')
             self.fill(self.input_username, username)

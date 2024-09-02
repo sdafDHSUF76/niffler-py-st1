@@ -30,24 +30,33 @@ class ProfilePage(BaseLogic):
         '\'{count}\''
     )
     def refresh_page_to_update_categories(self, count: int):
+        """Обновить страницу, если количество категорий трат не совпало с ожидаемым.
+
+        Нужно, чтобы бэк новые данные на фронт выдал.
+        """
         if self.get_element(self.categories_list).count() != count:
             self.refresh_page()
 
     def check_number_of_existing_categories(self, expected_quantity: int) -> None:
+        """Проверить количество существующих категорий трат."""
         with allure.step('check the number of existing categories with the expected'):
             self.expected_number_of_items(self.categories_list, expected_quantity)
 
     @allure.step('check the appearance of a pop-up window about the result of creating a category')
     def check_for_popup_appearance(self) -> None:
+        """Проверить, что всплывающее окно появилось."""
         self.check_element_is_visible(self.alert_add_category)
 
     @allure.step('check the hiding of a pop-up window about the result of creating a category')
     def check_popup_hiding(self) -> None:
+        """Проверить, что всплывающее окно исчезло."""
         self.check_element_is_hidden(self.alert_add_category)
 
     @allure.step('check the text of the pop-up window about the result of creating a category')
     def check_popup_text(self, text: str) -> None:
+        """Проверить текст всплывающего окна, после создания категории трат оно появляется."""
         self.check_text_in_element(self.alert_add_category_text, text)
 
     def get_values_from_category_sheet(self, text_separator: Optional[str] = None) -> list[str]:
+        """Получить значения из листа категорий трат."""
         return self.get_text_in_elements(self.categories_list, text_separator)

@@ -26,7 +26,7 @@ class TestProfile:
         'the form of category creations',
         'create a database table to store spending categories',
     )
-    @pytest.mark.usefixtures('goto_profile', 'clear_category_after', 'close_alert')
+    @pytest.mark.usefixtures('goto_profile', 'clear_category_after', 'close_alert_after')
     def test_crete_category(self, profile_page: 'ProfilePage'):
         categories_before: int = len(profile_page.get_values_from_category_sheet())
         profile_page.add_category('yio2')
