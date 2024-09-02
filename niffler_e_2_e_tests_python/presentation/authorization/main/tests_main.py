@@ -40,14 +40,14 @@ class TestsCreatingExpenses:
     )
     @pytest.mark.usefixtures('create_categories', 'goto_main', 'clear_spend_and_category_after')
     def test_create_spend(self, main_page: 'MainPage'):
-        main_page.fill(main_page.category_input, 'category1')
-        main_page.click(main_page.category_drop_down_list)
-        main_page.fill(main_page.input_number, '1')
-        main_page.fill(main_page.spend_date, '19/08/2024')
-        main_page.press_keyboard(main_page.spend_date, 'Enter')
-        main_page.fill(main_page.description_input, 'asdf')
-        main_page.click(main_page.create_spend_button)
-        main_page.expected_number_of_items(main_page.spends, 1)
+        main_page.fill_input_category('category1')
+        main_page.choose_on_drop_down_list_of_spending_categories()
+        main_page.fill_input_number('1')
+        main_page.fill_input_spend_date('19/08/2024')
+        main_page.press_enter_on_keyboard()
+        main_page.fill_input_description('asdf')
+        main_page.click_on_spending_creation_button()
+        main_page.check_number_of_expenses_in_spending_history(1)
 
     @pytest.fixture
     def refresh_page_when_front_and_db_category_are_different(
@@ -70,8 +70,8 @@ class TestsCreatingExpenses:
     )
     @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_category_are_different')
     def test_categories_empty(self, main_page: 'MainPage'):
-        main_page.click(main_page.category_input)
-        main_page.check_element_is_hidden(main_page.category_drop_down_list)
+        main_page.click_on_input_category()
+        main_page.check_that_dropdown_is_empty()
 
 
 @allure.epic(
@@ -129,10 +129,10 @@ class TestHistoryOfSpending:
         'clear_spend_and_category_after',
     )
     def test_spend_delete(self, main_page: 'MainPage'):
-        main_page.expected_number_of_items(main_page.spends, 1)
-        main_page.click(main_page.checkbox_choose_spend)
-        main_page.click(main_page.button_delete)
-        main_page.expected_number_of_items(main_page.spends, 0)
+        main_page.check_number_of_expenses_in_spending_history(1)
+        main_page.click_on_checkbox_at_selected_expense()
+        main_page.click_on_delete_spending_button()
+        main_page.check_number_of_expenses_in_spending_history(0)
 
     @pytest.fixture
     def refresh_page_when_front_and_db_spend_are_different(
@@ -154,4 +154,4 @@ class TestHistoryOfSpending:
     )
     @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_spend_are_different')
     def test_spends_emtpy(self, main_page: 'MainPage'):
-        main_page.expected_number_of_items(main_page.spends, 0)
+        main_page.check_number_of_expenses_in_spending_history(0)

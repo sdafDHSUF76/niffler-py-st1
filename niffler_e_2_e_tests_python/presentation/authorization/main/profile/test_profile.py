@@ -28,14 +28,10 @@ class TestProfile:
     )
     @pytest.mark.usefixtures('goto_profile', 'clear_category_after', 'close_alert')
     def test_crete_category(self, profile_page: 'ProfilePage'):
-        categories_before: int = len(
-            profile_page.get_text_in_elements(profile_page.categories_list),
-        )
+        categories_before: int = len(profile_page.get_values_from_category_sheet())
         profile_page.add_category('yio2')
-        profile_page.expected_number_of_items(profile_page.categories_list, categories_before + 1)
-        categories: list[str] = profile_page.get_text_in_elements(
-            profile_page.categories_list, '\n',
-        )
+        profile_page.check_number_of_existing_categories(categories_before + 1)
+        categories: list[str] = profile_page.get_values_from_category_sheet('\n')
         assert 'yio2' in categories
 
     @allure.story('an alert is displayed about the success of creating a category')
@@ -45,8 +41,8 @@ class TestProfile:
     )
     def test_alert_disappears_after_it_appears(self, profile_page: 'ProfilePage', category: str):
         profile_page.add_category(category)
-        profile_page.check_element_is_visible(profile_page.alert_add_category)
-        profile_page.check_element_is_hidden(profile_page.alert_add_category)
+        profile_page.check_for_popup_appearance()
+        profile_page.check_popup_hiding()
 
     @allure.story(
         'check the uniqueness of categories',
@@ -60,16 +56,12 @@ class TestProfile:
     )
     def test_do_not_create_non_unique_category(self, profile_page: 'ProfilePage'):
         profile_page.expected_number_of_items(profile_page.categories_list, 1)
-        categories: list[str] = profile_page.get_text_in_elements(
-            profile_page.categories_list, '\n',
-        )
+        categories: list[str] = profile_page.get_values_from_category_sheet('\n')
         assert 'yuio' in categories
         profile_page.add_category('yuio')
         profile_page.expected_number_of_items(profile_page.categories_list, 1)
-        profile_page.check_element_is_visible(profile_page.alert_add_category)
-        profile_page.check_text_in_element(
-            profile_page.alert_add_category_text, profile_page.alert_unsuccessful_text,
-        )
+        profile_page.check_for_popup_appearance()
+        profile_page.check_popup_text(profile_page.alert_unsuccessful_text)
 
     @allure.story(
         'the limit in the number of created categories is no more than 8',
@@ -89,19 +81,15 @@ class TestProfile:
         'create_categories', 'goto_profile', 'clear_category_after', 'reload_profile_page',
     )
     def test_do_not_create_more_than_8_categories(self, profile_page: 'ProfilePage'):
-        profile_page.expected_number_of_items(profile_page.categories_list, 8)
+        profile_page.check_number_of_existing_categories(8)
         profile_page.add_category('yuio')
-        categories: list[str] = profile_page.get_text_in_elements(
-            profile_page.categories_list, '\n',
-        )
+        categories: list[str] = profile_page.get_values_from_category_sheet('\n')
         assert 'yuio' not in categories
-        profile_page.expected_number_of_items(profile_page.categories_list, 8)
-        profile_page.check_element_is_visible(profile_page.alert_add_category)
-        profile_page.check_text_in_element(
-            profile_page.alert_add_category_text, profile_page.alert_unsuccessful_text,
-        )
+        profile_page.check_number_of_existing_categories(8)
+        profile_page.check_for_popup_appearance()
+        profile_page.check_popup_text(profile_page.alert_unsuccessful_text)
 
     @allure.story('create a database table to store spending categories')
     @pytest.mark.usefixtures('goto_profile', 'clear_category_before', 'reload_profile_page')
     def test_empty_categories(self, profile_page: 'ProfilePage'):
-        profile_page.expected_number_of_items(profile_page.categories_list, 0)
+        profile_page.check_number_of_existing_categories(0)

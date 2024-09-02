@@ -57,10 +57,8 @@ class TestAuthorization:
         'create a database to store registered users',
         'create hints on the form, if the data sent is invalid',
     )
-    def test_error_text_for_non_existent_creds(
+    def test_error_hint_for_non_existent_creds(
         self, login: str, password: str, login_page: 'LoginPage'
     ):
         login_page.authorization(login, TEST_PASSWORD)
-        login_page.check_text_in_element(
-            login_page.text_error, ErrorAuthorization.INVALID_USER_CREDENTIALS,
-        )
+        login_page.check_hint_text(ErrorAuthorization.INVALID_USER_CREDENTIALS)

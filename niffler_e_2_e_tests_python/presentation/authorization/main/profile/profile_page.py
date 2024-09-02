@@ -1,3 +1,5 @@
+from typing import Optional
+
 import allure
 
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
@@ -30,3 +32,22 @@ class ProfilePage(BaseLogic):
     def refresh_page_to_update_categories(self, count: int):
         if self.get_element(self.categories_list).count() != count:
             self.refresh_page()
+
+    def check_number_of_existing_categories(self, expected_quantity: int) -> None:
+        with allure.step('check the number of existing categories with the expected'):
+            self.expected_number_of_items(self.categories_list, expected_quantity)
+
+    @allure.step('check the appearance of a pop-up window about the result of creating a category')
+    def check_for_popup_appearance(self) -> None:
+        self.check_element_is_visible(self.alert_add_category)
+
+    @allure.step('check the hiding of a pop-up window about the result of creating a category')
+    def check_popup_hiding(self) -> None:
+        self.check_element_is_hidden(self.alert_add_category)
+
+    @allure.step('check the text of the pop-up window about the result of creating a category')
+    def check_popup_text(self, text: str) -> None:
+        self.check_text_in_element(self.alert_add_category_text, text)
+
+    def get_values_from_category_sheet(self, text_separator: Optional[str] = None) -> list[str]:
+        return self.get_text_in_elements(self.categories_list, text_separator)

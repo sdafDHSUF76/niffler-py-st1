@@ -1,9 +1,7 @@
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
-import allure
 import pytest
-from _pytest.main import Session
 from allure_commons.reporter import AllureReporter
 from playwright.sync_api import Browser, Page, sync_playwright
 
@@ -16,41 +14,19 @@ if TYPE_CHECKING:
     from _pytest.config import PytestPluginManager
     from pytest import FixtureDef
     from requests import Response
-    from _pytest.python import Function
 
     from niffler_e_2_e_tests_python.fixtures.database import DB
-
-
-@pytest.hookimpl(hookwrapper=True, trylast=True)
-def pytest_runtest_call(item: 'Function'):
-    yield
-    # Очищаем из тега allure упоминание о usefixtures
-    if len(item.own_markers):
-        if item.own_markers[0].name == 'usefixtures':
-            item.own_markers.pop(0)
-    # убираем из слов '_', заменяя его пробелом
-    allure.dynamic.title(" ".join(item.name.split("_")[1:]).title())
-
-
-@pytest.hookimpl(hookwrapper=True, trylast=True)
-def pytest_runtest_teardown(item: 'Function', nextitem: 'Function'):
-    yield
-    # Очищаем из тега allure упоминание о usefixtures
-    if nextitem is not None and nextitem.own_markers[0].name == 'usefixtures':
-        nextitem.own_markers.pop(0)
 
 
 @pytest.hookimpl(hookwrapper=True, trylast=True)
 def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
     yield
     # Очищаем из тега allure упоминание о usefixtures
-    if isinstance(request.node, Session):
-        for unit in request.node.items:
-            if len(unit.own_markers) and unit.own_markers[0].name == 'usefixtures':
-                unit.own_markers.pop(0)
-    else:
-        if len(request.node.own_markers) and request.node.own_markers[0].name == 'usefixtures':
-            request.node.own_markers.pop(0)
+    if len(request.node.own_markers):
+        [
+            request.node.own_markers.pop(i) for i, value in enumerate(request.node.own_markers)
+            if value.name == 'usefixtures'
+        ]
     # добавляем в к тексту allure обозначения scope у фикстур setup, teardown
     plugins: 'PytestPluginManager' = request.config.pluginmanager
     if plugins.has_plugin('allure_listener'):
