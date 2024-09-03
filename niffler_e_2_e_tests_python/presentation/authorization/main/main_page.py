@@ -28,6 +28,16 @@ class MainPage(BaseLogic):
         """Выход из аккаунта через UI."""
         self.click(self.logout_button)
 
+    @allure.step('click on the profile button')
+    def click_profile_button(self):
+        """Нажать на кнопку Профиля."""
+        self.click(self.profile_button)
+
+    @allure.step('click on the main button')
+    def click_main_button(self):
+        """Нажать на кнопку Профиля."""
+        self.click(self.main)
+
     def check_number_of_expenses_in_spending_history(self, expected_quantity: int) -> None:
         """Проверить количество трат в истории трат."""
         with allure.step('check the number of entries in your spending history'):

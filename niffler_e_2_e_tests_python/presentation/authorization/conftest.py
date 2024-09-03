@@ -1,11 +1,16 @@
+import re
 from typing import TYPE_CHECKING
 
 import pytest
 
+from niffler_e_2_e_tests_python.configs import AUTH_URL, FRONT_URL
 from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
+from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
+    from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
+    from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 
 @pytest.fixture(scope='session')
@@ -13,8 +18,28 @@ def login_page(driver: 'Page') -> LoginPage:
     """Получаем страницу Login со всей логикой ее."""
     return LoginPage(driver)
 
+@pytest.fixture
+def goto_login_page_if_you_logged_in(main_page: 'MainPage', presentation_page: 'PresentationPage'):
+    if (
+        main_page.driver.locator(main_page.profile_button).is_visible()
+        and main_page.driver.url != get_join_url(AUTH_URL, main_page.path)
+    ):
+        main_page.click_logout()
+        presentation_page.click_on_login_button()
 
 @pytest.fixture
-def go_login_page(login_page: LoginPage):
+def goto_login_page_if_you_not_logged_in(login_page: 'LoginPage', presentation_page: 'PresentationPage'):
+    if not re.match(f'{AUTH_URL}{login_page.path}', presentation_page.driver.url):
+        """
+        Выглядит странным, но у приложения, когда возникает ошибка авторизации в параметре
+        url появляется ?error , вроде такой был, и чтобы у меня автотест лишний раз по url не
+        переходил у параметризованного теста, то
+        вот такая реализация сделана была, где если часть url совпадает , с этим, то переходить
+        на url авторизации не нужно, это и быстрее для теста и параметризацию не ломает
+        """
+        presentation_page.goto_url(FRONT_URL)
+        presentation_page.click_on_login_button()
+@pytest.fixture
+def go_login_page(goto_login_page_if_you_logged_in: None, goto_login_page_if_you_not_logged_in: None):
     """Перейти на страницу авторизации."""
-    login_page.goto_login_page()
+    pass

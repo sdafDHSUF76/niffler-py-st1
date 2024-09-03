@@ -58,7 +58,7 @@ class TestAuthorization:
         'create hints on the form, if the data sent is invalid',
     )
     def test_error_hint_for_non_existent_creds(
-        self, login: str, password: str, login_page: 'LoginPage'
+        self, login: str, password: str, login_page: 'LoginPage',
     ):
         login_page.authorization(login, TEST_PASSWORD)
         login_page.check_hint_text(ErrorAuthorization.INVALID_USER_CREDENTIALS)

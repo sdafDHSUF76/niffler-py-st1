@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 import pytest
 
 from niffler_e_2_e_tests_python.client_api import ClientApi
-from niffler_e_2_e_tests_python.configs import FRONT_URL1, TEST_PASSWORD, TEST_USER
+from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
     ProfilePage,
@@ -55,21 +55,41 @@ def clear_spend_and_category_after(db_niffler_spend: 'DB') -> None:
     db_niffler_spend.execute('delete from category')
 
 
+
 @pytest.fixture
-def goto_profile(
-    login_page: 'LoginPage', main_page: 'MainPage', presentation_page: 'PresentationPage',
-):
-    """Перейти на страницу profile из разных мест сайта."""
+def goto_profile_if_you_logged_in(main_page: 'MainPage') -> None:
+    """Перейти на страницу main если авторизован, но находишься на другой странице."""
     if (
         main_page.driver.locator(main_page.profile_button).is_visible()
-        and main_page.driver.url != get_join_url(FRONT_URL1, ProfilePage.path)
+        and main_page.driver.url != get_join_url(FRONT_URL, ProfilePage.path)
     ):
-        main_page.click(main_page.profile_button)
-    if presentation_page.driver.url != get_join_url(FRONT_URL1, ProfilePage.path):
-        presentation_page.goto_url(FRONT_URL1)
-        presentation_page.click(presentation_page.button_login)
-        login_page.authorization(TEST_USER, TEST_PASSWORD)
-        main_page.click(main_page.profile_button)
+        main_page.click_profile_button()
+        # TODO заменить на переход по url и убрать этот метод
+
+
+@pytest.fixture
+def goto_profile_if_you_not_logged_in(
+    login_page: 'LoginPage', presentation_page: 'PresentationPage', main_page: 'MainPage'
+) -> None:
+    """Перейти на страницу main если не авторизован и находишься на разных местах сайта."""
+    if presentation_page.driver.url != get_join_url(FRONT_URL, ProfilePage.path):
+        login_page.goto_login_page_and_log_in(TEST_USER, TEST_PASSWORD)
+        main_page.click_profile_button()
+
+
+@pytest.fixture
+def goto_profile(
+    goto_profile_if_you_logged_in: None, goto_profile_if_you_not_logged_in: None,
+):
+    """Перейти на страницу profile из разных мест сайта.
+
+    Так как автотест можно запустить один , или запустить целый модуль, то нельзя знать в какой
+    момент пользователь будет еще авторизован во время прохождения предыдущих тестов. Чтобы тест
+    что будет иметь в себе эту фикстуру не падал из-за разных тестов до него, что были, то решил
+    сделать сборную фикстуру, в которой разделил логику перехода на main страницу, когда
+    пользователь авторизован и не авторизован.
+    """
+    pass
 
 
 @pytest.fixture
@@ -80,7 +100,7 @@ def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
     )[0][0]
     categories_in_front: int = profile_page.driver.locator(profile_page.categories_list).count()
     if (
-        profile_page.driver.url == get_join_url(FRONT_URL1, ProfilePage.path)
+        profile_page.driver.url == get_join_url(FRONT_URL, ProfilePage.path)
         and categories_in_db != categories_in_front
     ):
         profile_page.refresh_page()

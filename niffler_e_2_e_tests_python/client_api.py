@@ -6,7 +6,7 @@ import requests
 from allure_commons.types import AttachmentType
 from requests_toolbelt.utils.dump import dump_response
 
-from niffler_e_2_e_tests_python.configs import AUTH_URL, FRONT_URL1, GATEWAY_URL
+from niffler_e_2_e_tests_python.configs import AUTH_URL, FRONT_URL, GATEWAY_URL
 from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
 from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
 
@@ -81,7 +81,7 @@ class ClientApi:
                 'response_type': 'code',
                 'client_id': 'client',
                 'scope': 'openid',
-                'redirect_uri': f'{FRONT_URL1}/authorized',
+                'redirect_uri': f'{FRONT_URL}/authorized',
                 'code_challenge': code_challenge,
                 'code_challenge_method': 'S256',
             },
@@ -101,14 +101,14 @@ class ClientApi:
             },
         )
         url_token: str = response1.history[1].headers.get('Location').split(
-            f'{FRONT_URL1}/authorized?code=',
+            f'{FRONT_URL}/authorized?code=',
         )[1]
         jsessionid2: str = response1.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
         response2: 'Response' = self.request.post(
             f'{AUTH_URL}/oauth2/token',
             data={
                 'code': url_token,
-                'redirect_uri': f'{FRONT_URL1}/authorized',
+                'redirect_uri': f'{FRONT_URL}/authorized',
                 'code_verifier': code_verifier,
                 'grant_type': "authorization_code",
                 'client_id': 'client'

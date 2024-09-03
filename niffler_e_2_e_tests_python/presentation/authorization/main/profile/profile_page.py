@@ -3,6 +3,10 @@ from typing import Optional
 import allure
 
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
+from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_USER, TEST_PASSWORD
+from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
+from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
+from niffler_e_2_e_tests_python.utils import get_join_url
 
 
 class ProfilePage(BaseLogic):

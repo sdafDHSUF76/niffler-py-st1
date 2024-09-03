@@ -1,10 +1,11 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import allure
 import pytest
 from playwright.sync_api import Locator
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL1, TEST_PASSWORD, TEST_USER
+from niffler_e_2_e_tests_python.client_api import ClientApi
+from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.conftest import (  # noqa F401
     clear_spend_and_category_after,
@@ -16,7 +17,45 @@ from niffler_e_2_e_tests_python.utils import get_join_url
 if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.fixtures.database import DB
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
+    from _pytest.fixtures import SubRequest
+    from _pytest.mark import Mark
+    from playwright.sync_api import Page
 
+    from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
+    from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
+
+
+@pytest.fixture
+def create_spends(request: 'SubRequest'):
+    """Создаем категории через API.
+
+    На самом деле тут только через API категория создается, а вот токен берется из UI.
+    """
+    marker: Optional['Mark'] = request.node.get_closest_marker('spend_data')
+    user_old, password_old = None, None
+    for unit in marker.args:
+        user, password = unit['user'], unit['password']
+        if user_old != user and password_old != password:
+            token: str = ClientApi().get_token(unit['user'], unit['password'])
+        ClientApi().add_spend(unit['spend'], token)
+        user_old, password_old = user, password
+
+
+
+
+# @pytest.fixture
+# def goto_main(main_page: MainPage) -> None:
+#     """Перейти на страницу main.
+#
+#     Так как автотест можно запустить один , или запустить целый модуль, то нельзя знать в какой
+#     момент пользователь будет еще авторизован во время прохождения предыдущих тестов. Чтобы тест
+#     что будет иметь в себе эту фикстуру не падал из-за разных тестов до него, что были, то решил
+#     сделать сборную фикстуру, в которой разделил логику перехода на main страницу, когда
+#     пользователь авторизован и не авторизован.
+#     """
+#     main_page.goto_main_if_you_not_logged_in()
+#     main_page.goto_main_if_you_logged_in()
+#     pass
 
 @allure.epic(
     'Main page',
@@ -59,7 +98,7 @@ class TestsCreatingExpenses:
         main_page.click(main_page.category_input)
         categories_in_front: int = main_page.get_element(main_page.category_drop_down_list).count()
         if (
-            main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
+            main_page.driver.url == get_join_url(FRONT_URL, main_page.path)
             and categories_in_db != categories_in_front
         ):
             main_page.refresh_page()
@@ -96,7 +135,7 @@ class TestHistoryOfSpending:
         if spending_column.is_visible():
             is_amount_spend = spending_column.inner_text() == '123'
         if (
-            main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
+            main_page.driver.url == get_join_url(FRONT_URL, main_page.path)
             and (categories_in_db != categories_in_front or not is_amount_spend)
         ):
             main_page.refresh_page()
@@ -143,7 +182,7 @@ class TestHistoryOfSpending:
         )[0][0]
         categories_in_front: int = main_page.get_element(main_page.spends).count()
         if (
-            main_page.driver.url == get_join_url(FRONT_URL1, main_page.path)
+            main_page.driver.url == get_join_url(FRONT_URL, main_page.path)
             and categories_in_db != categories_in_front
         ):
             main_page.refresh_page()
@@ -155,3 +194,6 @@ class TestHistoryOfSpending:
     @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_spend_are_different')
     def test_spends_emtpy(self, main_page: 'MainPage'):
         main_page.check_number_of_expenses_in_spending_history(0)
+        # TODO нужно сделать фикстуру тут, что перед тестом очищает базу данных, в том случае, если
+        #  предыдущий тест упадет и не успеет очистить данные
+        # Нужно проверить кейс, когда тест упал а teardown Не сработал

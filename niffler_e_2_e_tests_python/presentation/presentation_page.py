@@ -16,3 +16,8 @@ class PresentationPage(BaseLogic):
     def check_visibility_of_register_button(self):
         """Проверить видимо кнопки регистрации."""
         self.check_element_is_visible(self.button_register)
+
+    @allure.step('click on the Login button')
+    def click_on_login_button(self):
+        """Нажать на Login кнопку."""
+        self.click(self.button_login)
