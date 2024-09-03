@@ -22,20 +22,6 @@ def main_page(driver: 'Page') -> MainPage:
     return MainPage(driver)
 
 
-@pytest.fixture
-def create_spends(request: 'SubRequest'):
-    """Создаем категории через API.
-
-    На самом деле тут только через API категория создается, а вот токен берется из UI.
-    """
-    marker: Optional['Mark'] = request.node.get_closest_marker('spend_data')
-    user_old, password_old = None, None
-    for unit in marker.args:
-        user, password = unit['user'], unit['password']
-        if user_old != user and password_old != password:
-            token: str = ClientApi().get_token(unit['user'], unit['password'])
-        ClientApi().add_spend(unit['spend'], token)
-        user_old, password_old = user, password
 
 
 @pytest.fixture

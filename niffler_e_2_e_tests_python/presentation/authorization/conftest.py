@@ -27,6 +27,7 @@ def goto_login_page_if_you_logged_in(main_page: 'MainPage', presentation_page: '
         main_page.click_logout()
         presentation_page.click_on_login_button()
 
+
 @pytest.fixture
 def goto_login_page_if_you_not_logged_in(login_page: 'LoginPage', presentation_page: 'PresentationPage'):
     if not re.match(f'{AUTH_URL}{login_page.path}', presentation_page.driver.url):
@@ -39,6 +40,8 @@ def goto_login_page_if_you_not_logged_in(login_page: 'LoginPage', presentation_p
         """
         presentation_page.goto_url(FRONT_URL)
         presentation_page.click_on_login_button()
+
+
 @pytest.fixture
 def go_login_page(goto_login_page_if_you_logged_in: None, goto_login_page_if_you_not_logged_in: None):
     """Перейти на страницу авторизации."""

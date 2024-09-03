@@ -28,9 +28,10 @@ def profile_page(driver: 'Page') -> ProfilePage:
 
 
 @pytest.fixture
-def clear_category_after(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category."""
+def clear_spend_and_category_after(db_niffler_spend: 'DB') -> None:
+    """Чистим таблицу category и spend."""
     yield
+    db_niffler_spend.execute('delete from spend')
     db_niffler_spend.execute('delete from category')
 
 
@@ -47,12 +48,7 @@ def clear_spend_and_category_before(db_niffler_spend: 'DB') -> None:
     db_niffler_spend.execute('delete from category')
 
 
-@pytest.fixture
-def clear_spend_and_category_after(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category и spend."""
-    yield
-    db_niffler_spend.execute('delete from spend')
-    db_niffler_spend.execute('delete from category')
+
 
 
 
@@ -92,24 +88,8 @@ def goto_profile(
     pass
 
 
-@pytest.fixture
-def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
-    """Обновить страницу, если данные на фронте не совпадают с базой данных."""
-    categories_in_db: int = db_niffler_spend.get_value(
-        'select count(*) from category where username = \'%s\'' % TEST_USER
-    )[0][0]
-    categories_in_front: int = profile_page.driver.locator(profile_page.categories_list).count()
-    if (
-        profile_page.driver.url == get_join_url(FRONT_URL, ProfilePage.path)
-        and categories_in_db != categories_in_front
-    ):
-        profile_page.refresh_page()
 
 
-@pytest.fixture
-def close_alert_after(profile_page: 'ProfilePage'):
-    yield
-    profile_page.click(profile_page.alert_button_close)
 
 
 @pytest.fixture

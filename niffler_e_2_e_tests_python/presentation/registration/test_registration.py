@@ -4,6 +4,7 @@ import allure
 import pytest
 from faker import Faker
 
+from niffler_e_2_e_tests_python.configs import TEST_USER
 from niffler_e_2_e_tests_python.presentation.authorization.conftest import (  # noqa F401
     login_page,
 )
@@ -16,6 +17,21 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
     from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
+
+    from niffler_e_2_e_tests_python.fixtures.database import DB
+
+
+
+@pytest.fixture
+def clear_extra_users(db_niffler_auth: 'DB'):
+    """Чистим созданных юзеров, кроме тестового."""
+    yield
+    db_niffler_auth.execute(
+        'delete from authority'
+        ' where user_id in (select id from "user" where username != \'%s\')'
+        % TEST_USER,
+    )
+    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % TEST_USER)
 
 
 @allure.story('User registration via the UI')

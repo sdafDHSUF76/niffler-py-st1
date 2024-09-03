@@ -25,21 +25,29 @@ def clear_category_before(db_niffler_spend: 'DB') -> None:
     """Чистим таблицу category."""
     db_niffler_spend.execute('delete from category')
 
+@pytest.fixture
+def clear_category_after(db_niffler_spend: 'DB') -> None:
+    """Чистим таблицу category."""
+    yield
+    db_niffler_spend.execute('delete from category')
 
+@pytest.fixture
+def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
+    """Обновить страницу, если данные на фронте не совпадают с базой данных."""
+    categories_in_db: int = db_niffler_spend.get_value(
+        'select count(*) from category where username = \'%s\'' % TEST_USER
+    )[0][0]
+    categories_in_front: int = profile_page.driver.locator(profile_page.categories_list).count()
+    if (
+        profile_page.driver.url == get_join_url(FRONT_URL, ProfilePage.path)
+        and categories_in_db != categories_in_front
+    ):
+        profile_page.refresh_page()
 
-
-# @pytest.fixture
-# def goto_profile(profile_page: ProfilePage):
-#     """Перейти на страницу profile из разных мест сайта.
-#
-#     Так как автотест можно запустить один , или запустить целый модуль, то нельзя знать в какой
-#     момент пользователь будет еще авторизован во время прохождения предыдущих тестов. Чтобы тест
-#     что будет иметь в себе эту фикстуру не падал из-за разных тестов до него, что были, то решил
-#     сделать сборную фикстуру, в которой разделил логику перехода на main страницу, когда
-#     пользователь авторизован и не авторизован.
-#     """
-#     profile_page.goto_profile_if_you_logged_in()
-#     profile_page.goto_profile_if_you_not_logged_in()
+@pytest.fixture
+def close_alert_after(profile_page: 'ProfilePage'):
+    yield
+    profile_page.click(profile_page.alert_button_close)
 
 
 @pytest.fixture

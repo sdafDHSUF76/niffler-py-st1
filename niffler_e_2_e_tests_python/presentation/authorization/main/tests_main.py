@@ -25,6 +25,9 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 
+
+
+
 @pytest.fixture
 def create_spends(request: 'SubRequest'):
     """Создаем категории через API.
@@ -39,23 +42,6 @@ def create_spends(request: 'SubRequest'):
             token: str = ClientApi().get_token(unit['user'], unit['password'])
         ClientApi().add_spend(unit['spend'], token)
         user_old, password_old = user, password
-
-
-
-
-# @pytest.fixture
-# def goto_main(main_page: MainPage) -> None:
-#     """Перейти на страницу main.
-#
-#     Так как автотест можно запустить один , или запустить целый модуль, то нельзя знать в какой
-#     момент пользователь будет еще авторизован во время прохождения предыдущих тестов. Чтобы тест
-#     что будет иметь в себе эту фикстуру не падал из-за разных тестов до него, что были, то решил
-#     сделать сборную фикстуру, в которой разделил логику перехода на main страницу, когда
-#     пользователь авторизован и не авторизован.
-#     """
-#     main_page.goto_main_if_you_not_logged_in()
-#     main_page.goto_main_if_you_logged_in()
-#     pass
 
 @allure.epic(
     'Main page',
