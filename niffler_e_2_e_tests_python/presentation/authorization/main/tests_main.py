@@ -78,16 +78,14 @@ class TestsCreatingExpenses:
     def refresh_page_when_front_and_db_category_are_different(
         self, db_niffler_spend: 'DB', main_page: 'MainPage',
     ):
-        categories_in_db: int = db_niffler_spend.get_value(
-            'select count(*) from category where username = \'%s\'' % TEST_USER
-        )[0][0]
-        main_page.click(main_page.category_input)
-        categories_in_front: int = main_page.get_element(main_page.category_drop_down_list).count()
-        if (
-            main_page.driver.url == get_join_url(FRONT_URL, main_page.path)
-            and categories_in_db != categories_in_front
-        ):
-            main_page.refresh_page()
+        if main_page.driver.url == get_join_url(FRONT_URL, main_page.path):
+            categories_in_db: int = db_niffler_spend.get_value(
+                'select count(*) from category where username = \'%s\'' % TEST_USER
+            )[0][0]
+            main_page.click_on_input_category()
+            categories_in_front: int = main_page.get_element(main_page.category_drop_down_list).count()
+            if categories_in_db != categories_in_front:
+                main_page.refresh_page()
 
     @allure.story(
         'create a form for selecting and creating expenses',
@@ -112,19 +110,18 @@ class TestHistoryOfSpending:
 
     @pytest.fixture
     def refresh_page_when_front_and_spend(self, db_niffler_spend: 'DB', main_page: 'MainPage'):
-        categories_in_db: int = db_niffler_spend.get_value(
-            'select count(*) from spend where username = \'%s\' and amount  = 123' % TEST_USER
-        )[0][0]
-        categories_in_front: int = main_page.driver.locator(main_page.spends).count()
-        spending_column: Locator = main_page.get_element(main_page.spend_amount)
-        is_amount_spend: bool = False
-        if spending_column.is_visible():
-            is_amount_spend = spending_column.inner_text() == '123'
-        if (
-            main_page.driver.url == get_join_url(FRONT_URL, main_page.path)
-            and (categories_in_db != categories_in_front or not is_amount_spend)
-        ):
-            main_page.refresh_page()
+        if main_page.driver.url == get_join_url(FRONT_URL, main_page.path):
+            categories_in_db: int = db_niffler_spend.get_value(
+                'select count(*) from spend where username = \'%s\' and amount  = 123' % TEST_USER
+            )[0][0]
+            categories_in_front: int = main_page.driver.locator(main_page.spends).count()
+            spending_column: Locator = main_page.get_element(main_page.spend_amount)
+            is_amount_spend: bool = False
+            if spending_column.is_visible():
+                is_amount_spend = spending_column.inner_text() == '123'
+            if categories_in_db != categories_in_front or not is_amount_spend:
+                main_page.refresh_page()
+
 
     @allure.story(
         'allow you to delete expenses from your spending history',
@@ -163,15 +160,13 @@ class TestHistoryOfSpending:
     def refresh_page_when_front_and_db_spend_are_different(
         self, db_niffler_spend: 'DB', main_page: 'MainPage',
     ):
-        categories_in_db: int = db_niffler_spend.get_value(
-            'select count(*) from spend where username = \'%s\'' % TEST_USER
-        )[0][0]
-        categories_in_front: int = main_page.get_element(main_page.spends).count()
-        if (
-            main_page.driver.url == get_join_url(FRONT_URL, main_page.path)
-            and categories_in_db != categories_in_front
-        ):
-            main_page.refresh_page()
+        if main_page.driver.url == get_join_url(FRONT_URL, main_page.path):
+            categories_in_db: int = db_niffler_spend.get_value(
+                'select count(*) from spend where username = \'%s\'' % TEST_USER
+            )[0][0]
+            categories_in_front: int = main_page.get_element(main_page.spends).count()
+            if categories_in_db != categories_in_front:
+                main_page.refresh_page()
 
     @allure.story(
         'create a form for selecting and creating expenses',
