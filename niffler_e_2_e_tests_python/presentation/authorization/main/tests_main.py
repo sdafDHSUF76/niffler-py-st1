@@ -79,7 +79,7 @@ class TestsCreatingExpenses:
                 'select count(*) from category where username = \'%s\'' % TEST_USER
             )[0][0]
             main_page.click_on_input_category()
-            categories_in_front: int = main_page.get_element(main_page.category_drop_down_list).count()
+            categories_in_front: int = main_page.category_drop_down_list.count()
             if categories_in_db != categories_in_front:
                 main_page.refresh_page()
 
@@ -110,8 +110,8 @@ class TestHistoryOfSpending:
             categories_in_db: int = db_niffler_spend.get_value(
                 'select count(*) from spend where username = \'%s\' and amount  = 123' % TEST_USER
             )[0][0]
-            categories_in_front: int = main_page.driver.locator(main_page.spends).count()
-            spending_column: Locator = main_page.get_element(main_page.spend_amount)
+            categories_in_front: int = main_page.spends.count()
+            spending_column: Locator = main_page.spend_amount
             is_amount_spend: bool = False
             if spending_column.is_visible():
                 is_amount_spend = spending_column.inner_text() == '123'
@@ -160,7 +160,7 @@ class TestHistoryOfSpending:
             categories_in_db: int = db_niffler_spend.get_value(
                 'select count(*) from spend where username = \'%s\'' % TEST_USER
             )[0][0]
-            categories_in_front: int = main_page.get_element(main_page.spends).count()
+            categories_in_front: int = main_page.spends.count()
             if categories_in_db != categories_in_front:
                 main_page.refresh_page()
 

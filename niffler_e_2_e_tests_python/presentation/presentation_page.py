@@ -1,11 +1,17 @@
+from typing import TYPE_CHECKING
+
 import allure
 
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
 
+if TYPE_CHECKING:
+    from playwright.sync_api import Page
 
 class PresentationPage(BaseLogic):
-    button_login = "//a[text()='Login']"
-    button_register = "//a[text()='Register']"
+    def __init__(self, driver: 'Page'):
+        super().__init__(driver)
+        self.button_login = self.driver.locator("//a[text()='Login']")
+        self.button_register = self.driver.locator("//a[text()='Register']")
 
     @allure.step('Check the visibility of the Login button')
     def check_visibility_of_login_button(self):

@@ -1,25 +1,41 @@
+from typing import TYPE_CHECKING
+
 import allure
 
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
 
+if TYPE_CHECKING:
+    from playwright.sync_api import Page
 
 class MainPage(BaseLogic):
     path = '/main'
 
-    header = '//h1'
-    logout_button = "//button[contains(@class,'button-icon_type_logout')]"
-    profile_button = "//a[@href='/profile']"
-    main = "//a[@href='/main']"
-    category_input = "//form[@class='add-spending__form']//div[@class=' css-1dx5uak']"
-    category_drop_down_list = "//div[@role='option']"
-    input_number = "//input[@type='number']"
-    spend_date = "//div[contains(@class,'datepicker')]/input[@type='text']"
-    description_input = "//input[@class='form__input ' and @type='text']"
-    create_spend_button = "//button[@type='submit']"
-    spends = "//tbody/tr"
-    spend_amount = '//tbody/tr/td[3]//span'
-    checkbox_choose_spend = "//td/input[@type='checkbox']"
-    button_delete = "//section[@class='spendings__bulk-actions']/button"
+    def __init__(self, driver: 'Page'):
+        super().__init__(driver)
+        self.header = self.driver.locator('//h1')
+        self.logout_button = self.driver.locator(
+            "//button[contains(@class,'button-icon_type_logout')]"
+        )
+        self.profile_button = self.driver.locator("//a[@href='/profile']")
+        self.main = self.driver.locator("//a[@href='/main']")
+        self.category_input = self.driver.locator(
+            "//form[@class='add-spending__form']//div[@class=' css-1dx5uak']"
+        )
+        self.category_drop_down_list = self.driver.locator("//div[@role='option']")
+        self.input_number = self.driver.locator("//input[@type='number']")
+        self.spend_date = self.driver.locator(
+            "//div[contains(@class,'datepicker')]/input[@type='text']"
+        )
+        self.description_input = self.driver.locator(
+            "//input[@class='form__input ' and @type='text']"
+        )
+        self.create_spend_button = self.driver.locator("//button[@type='submit']")
+        self.spends = self.driver.locator("//tbody/tr")
+        self.spend_amount = self.driver.locator('//tbody/tr/td[3]//span')
+        self.checkbox_choose_spend = self.driver.locator("//td/input[@type='checkbox']")
+        self.button_delete = self.driver.locator(
+            "//section[@class='spendings__bulk-actions']/button"
+        )
 
     text_header = 'Niffler. The coin keeper.'
 

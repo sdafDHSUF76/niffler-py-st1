@@ -34,7 +34,7 @@ def clear_category_after(db_niffler_spend: 'DB') -> None:
 @pytest.fixture
 def close_alert_after(profile_page: 'ProfilePage'):
     yield
-    profile_page.click(profile_page.alert_button_close)
+    profile_page.close_popup()
 
 
 @pytest.fixture
@@ -44,9 +44,7 @@ def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
         categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from category where username = \'%s\'' % TEST_USER
         )[0][0]
-        categories_in_front: int = profile_page.get_element(
-            profile_page.categories_list,
-        ).count()
+        categories_in_front: int = profile_page.categories_list.count()
         if categories_in_db != categories_in_front:
             profile_page.refresh_page()
 
@@ -54,7 +52,7 @@ def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
 @pytest.fixture
 def close_alert_after(profile_page: ProfilePage):
     yield
-    profile_page.click(profile_page.alert_button_close)
+    profile_page.close_popup()
     # TODO Добавить assert в фикстуры, что делают перемещения и этого достаточно будет, чтобы teardown не убирать
 
 

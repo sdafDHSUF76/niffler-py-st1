@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 import allure
 
@@ -8,21 +8,26 @@ from niffler_e_2_e_tests_python.presentation.authorization.login_page import Log
 from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
 from niffler_e_2_e_tests_python.utils import get_join_url
 
+if TYPE_CHECKING:
+    from playwright.sync_api import Page
 
 class ProfilePage(BaseLogic):
     path = '/profile'
 
-    alert_add_category = "//div[@role='alert']"
-    profile_button = "//a[@href='/profile']"
-    alert_add_category_text = f"{alert_add_category}/div[2]"
-    alert_button_close = "//button[@aria-label='close']"
-    categories_list = "//ul[@class='categories__list']/li"
-    categories_input = "//input[@name='category']"
-    categories_button = "//button[@class='button  ' and text()='Create']"
-    main_button = "//a[@href='/main']"
+    def __init__(self, driver: 'Page'):
+        super().__init__(driver)
+        self.alert_add_category = "//div[@role='alert']"
+        self.profile_button = self.driver.locator("//a[@href='/profile']")
+        self.alert_add_category_text = self.driver.locator(f"{self.alert_add_category}/div[2]")
+        self.alert_button_close = self.driver.locator("//button[@aria-label='close']")
+        self.categories_list = self.driver.locator("//ul[@class='categories__list']/li")
+        self.categories_input = self.driver.locator("//input[@name='category']")
+        self.categories_button = self.driver.locator("//button[@class='button  ' and text()='Create']")
+        self.main_button = self.driver.locator("//a[@href='/main']")
+        self.subtitle = self.driver.locator('//h2')
+
     alert_successful_text = 'New category added'
     alert_unsuccessful_text = 'Can not add new category'
-    subtitle = '//h2'
 
     @allure.step('add a category: \'{name_category}\'')
     def add_category(self, name_category: str) -> None:
@@ -39,7 +44,7 @@ class ProfilePage(BaseLogic):
 
         Нужно, чтобы бэк новые данные на фронт выдал.
         """
-        if self.get_element(self.categories_list).count() != count:
+        if self.categories_list.count() != count:
             self.refresh_page()
 
     def check_number_of_existing_categories(self, expected_quantity: int) -> None:
@@ -65,3 +70,7 @@ class ProfilePage(BaseLogic):
     def get_values_from_category_sheet(self, text_separator: Optional[str] = None) -> list[str]:
         """Получить значения из листа категорий трат."""
         return self.get_text_in_elements(self.categories_list, text_separator)
+
+    def close_popup(self) -> None:
+        """Получить значения из листа категорий трат."""
+        return self.click(self.alert_button_close)

@@ -28,7 +28,7 @@ def main_page(driver: 'Page') -> MainPage:
 def goto_main_if_you_logged_in(main_page: MainPage) -> None:
     """Перейти на страницу main если авторизован, но находишься на другой странице."""
     if (
-        main_page.driver.locator(main_page.main).is_visible()
+        main_page.main.is_visible()
         and main_page.driver.url != get_join_url(FRONT_URL, MainPage.path)
     ):
         main_page.goto_url(get_join_url(FRONT_URL, MainPage.path))
@@ -63,7 +63,7 @@ def goto_main(goto_main_if_you_logged_in: None, goto_main_if_you_not_logged_in: 
 def logout_after(main_page: MainPage) -> None:
     """Выходим из под учетки юзера после теста."""
     yield
-    if main_page.driver.locator(main_page.profile_button).is_visible():
+    if main_page.profile_button.is_visible():
         main_page.click_logout()
         main_page.expect_element(main_page.profile_button).to_be_hidden()
 
@@ -71,6 +71,6 @@ def logout_after(main_page: MainPage) -> None:
 @pytest.fixture
 def logout_before(main_page: MainPage) -> None:
     """Выходим из под учетки юзера до теста."""
-    if main_page.driver.locator(main_page.profile_button).is_visible():
+    if main_page.profile_button.is_visible():
         main_page.click_logout()
         main_page.expect_element(main_page.profile_button).to_be_hidden()

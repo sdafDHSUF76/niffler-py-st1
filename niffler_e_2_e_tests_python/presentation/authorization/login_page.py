@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 import allure
 import re
 
@@ -7,14 +9,17 @@ from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import
 from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 from niffler_e_2_e_tests_python.utils import get_join_url
 
+if TYPE_CHECKING:
+    from playwright.sync_api import Page
 
 class LoginPage(BaseLogic):
     path = '/login'
-
-    input_username = "//input[@name='username']"
-    input_password = "//input[@name='password']"
-    button_sign_in = "//button[@type='submit']"
-    text_error = "//p[@class='form__error']"
+    def __init__(self, driver: 'Page'):
+        super().__init__(driver)
+        self.input_username = self.driver.locator("//input[@name='username']")
+        self.input_password = self.driver.locator("//input[@name='password']")
+        self.button_sign_in = self.driver.locator("//button[@type='submit']")
+        self.text_error = self.driver.locator("//p[@class='form__error']")
 
     @allure.step('authorization')
     def authorization(self, username: str, password: str):

@@ -21,7 +21,7 @@ def login_page(driver: 'Page') -> LoginPage:
 @pytest.fixture
 def goto_login_page_if_you_logged_in(main_page: 'MainPage', presentation_page: 'PresentationPage'):
     if (
-        main_page.driver.locator(main_page.profile_button).is_visible()
+        main_page.profile_button.is_visible()
         and main_page.driver.url != get_join_url(AUTH_URL, main_page.path)
     ):
         main_page.click_logout()

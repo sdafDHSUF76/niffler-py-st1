@@ -1,8 +1,12 @@
+from typing import TYPE_CHECKING
+
 import allure
 
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
 from niffler_e_2_e_tests_python.configs import AUTH_URL
 
+if TYPE_CHECKING:
+    from playwright.sync_api import Page
 
 @allure.epic(
     'Registration page',
@@ -12,11 +16,15 @@ from niffler_e_2_e_tests_python.configs import AUTH_URL
 class RegisterPage(BaseLogic):
     path = '/register'
 
-    input_username = "//input[@name='username']"
-    input_password = "//input[@name='password']"
-    input_password_submit = "//input[@name='passwordSubmit']"
-    button_sign_up = "//button[@type='submit']"
-    text_successful_registered = '//p[text()="Congratulations! You\'ve registered!"]'
+    def __init__(self, driver: 'Page'):
+        super().__init__(driver)
+        self.input_username = self.driver.locator("//input[@name='username']")
+        self.input_password = self.driver.locator("//input[@name='password']")
+        self.input_password_submit = self.driver.locator("//input[@name='passwordSubmit']")
+        self.button_sign_up = self.driver.locator("//button[@type='submit']")
+        self.text_successful_registered = self.driver.locator(
+            '//p[text()="Congratulations! You\'ve registered!"]'
+        )
 
     def register_new_user(self, username: str, password: str) -> None:
         """Регистрация пользователя."""
