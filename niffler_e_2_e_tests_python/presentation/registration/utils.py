@@ -21,5 +21,5 @@ def prepare_test_user(db_niffler_auth: 'DB') -> None:
     )[0][0]
     if not number_of_users:
         response: 'Response' = ClientApi().create_user(TEST_USER, TEST_PASSWORD)
-        assert len(response.history) == 0
         assert response.status_code == HTTPStatus.CREATED
+        assert len(response.history) == 0

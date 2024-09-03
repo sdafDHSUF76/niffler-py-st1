@@ -19,10 +19,6 @@ if TYPE_CHECKING:
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
     from _pytest.fixtures import SubRequest
     from _pytest.mark import Mark
-    from playwright.sync_api import Page
-
-    from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
-    from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
 
 
@@ -175,6 +171,3 @@ class TestHistoryOfSpending:
     @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_spend_are_different')
     def test_spends_emtpy(self, main_page: 'MainPage'):
         main_page.check_number_of_expenses_in_spending_history(0)
-        # TODO нужно сделать фикстуру тут, что перед тестом очищает базу данных, в том случае, если
-        #  предыдущий тест упадет и не успеет очистить данные
-        # Нужно проверить кейс, когда тест упал а teardown Не сработал

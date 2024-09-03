@@ -53,14 +53,13 @@ def clear_spend_and_category_before(db_niffler_spend: 'DB') -> None:
 
 
 @pytest.fixture
-def goto_profile_if_you_logged_in(main_page: 'MainPage') -> None:
+def goto_profile_if_you_logged_in(profile_page: ProfilePage) -> None:
     """Перейти на страницу main если авторизован, но находишься на другой странице."""
     if (
-        main_page.driver.locator(main_page.profile_button).is_visible()
-        and main_page.driver.url != get_join_url(FRONT_URL, ProfilePage.path)
+        profile_page.driver.locator(profile_page.profile_button).is_visible()
+        and profile_page.driver.url != get_join_url(FRONT_URL, ProfilePage.path)
     ):
-        main_page.click_profile_button()
-        # TODO заменить на переход по url и убрать этот метод
+        profile_page.goto_url(get_join_url(FRONT_URL, ProfilePage.path))
 
 
 @pytest.fixture

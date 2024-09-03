@@ -13,6 +13,7 @@ class ProfilePage(BaseLogic):
     path = '/profile'
 
     alert_add_category = "//div[@role='alert']"
+    profile_button = "//a[@href='/profile']"
     alert_add_category_text = f"{alert_add_category}/div[2]"
     alert_button_close = "//button[@aria-label='close']"
     categories_list = "//ul[@class='categories__list']/li"

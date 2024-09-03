@@ -25,6 +25,7 @@ def goto_login_page_if_you_logged_in(main_page: 'MainPage', presentation_page: '
         and main_page.driver.url != get_join_url(AUTH_URL, main_page.path)
     ):
         main_page.click_logout()
+        main_page.expect_element(main_page.profile_button).to_be_hidden()
         presentation_page.click_on_login_button()
 
 
