@@ -1,15 +1,12 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import pytest
 
-from niffler_e_2_e_tests_python.client_api import ClientApi
 from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
-from niffler_e_2_e_tests_python.utils import get_join_url
 from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
+from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
-    from _pytest.fixtures import SubRequest
-    from _pytest.mark import Mark
     from playwright.sync_api import Page
 
     from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
@@ -20,8 +17,6 @@ if TYPE_CHECKING:
 def main_page(driver: 'Page') -> MainPage:
     """Получаем страницу Main со всей логикой ее."""
     return MainPage(driver)
-
-
 
 
 @pytest.fixture
@@ -58,6 +53,7 @@ def goto_main(goto_main_if_you_logged_in: None, goto_main_if_you_not_logged_in: 
     пользователь авторизован и не авторизован.
     """
     pass
+
 
 @pytest.fixture
 def logout_after(main_page: MainPage) -> None:

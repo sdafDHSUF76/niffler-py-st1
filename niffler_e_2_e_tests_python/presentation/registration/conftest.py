@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from niffler_e_2_e_tests_python.configs import AUTH_URL, TEST_USER
+from niffler_e_2_e_tests_python.configs import AUTH_URL
 from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
 from niffler_e_2_e_tests_python.utils import get_join_url
 
@@ -22,4 +22,3 @@ def goto_registration_url(registration_page: RegisterPage) -> None:
 
     if f'{AUTH_URL}{registration_page.path}' != registration_page.driver.url:
         registration_page.goto_url(get_join_url(AUTH_URL, registration_page.path))
-

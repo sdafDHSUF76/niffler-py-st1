@@ -7,6 +7,7 @@ from niffler_e_2_e_tests_python.base_logic import BaseLogic
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
+
 class MainPage(BaseLogic):
     path = '/main'
 

@@ -5,21 +5,17 @@ import pytest
 from faker import Faker
 
 from niffler_e_2_e_tests_python.configs import TEST_USER
-from niffler_e_2_e_tests_python.presentation.authorization.conftest import (  # noqa F401
-    login_page,
-)
+from niffler_e_2_e_tests_python.presentation.authorization.conftest import login_page  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
     logout_before,
     main_page,
 )
 
 if TYPE_CHECKING:
+    from niffler_e_2_e_tests_python.fixtures.database import DB
     from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
     from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
-
-    from niffler_e_2_e_tests_python.fixtures.database import DB
-
 
 
 @pytest.fixture

@@ -5,7 +5,7 @@ import allure
 from niffler_e_2_e_tests_python.helper_logic import MixinSimplifyingLogic
 
 if TYPE_CHECKING:
-    from playwright.sync_api import Page, Locator
+    from playwright.sync_api import Locator, Page
 
 
 class BaseLogic(MixinSimplifyingLogic):
@@ -49,7 +49,9 @@ class BaseLogic(MixinSimplifyingLogic):
         'Получить у элемента по этому локатору: \'{locator}\' текст и вернуть текст разделив его'
         'по split: {split}',
     )
-    def get_text_in_elements(self, locator: Union['Locator', str], split: Optional[str] = None) -> list[str] | list:
+    def get_text_in_elements(
+        self, locator: Union['Locator', str], split: Optional[str] = None
+    ) -> list[str] | list:
         """Получить текст из элементов.
 
         Если разделять "split" нечего, то отдаем все элементы как они есть.

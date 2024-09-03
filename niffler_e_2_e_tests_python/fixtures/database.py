@@ -14,9 +14,9 @@ from niffler_e_2_e_tests_python.configs import (
     DB_NAME_NIFFLER_CURRENCY,
     DB_NAME_NIFFLER_SPEND,
     DB_NAME_NIFFLER_USERDATA,
-    PASSWORD_FOR_DB,
     DB_PORT,
     DB_USER_NAME,
+    PASSWORD_FOR_DB,
 )
 
 if TYPE_CHECKING:
@@ -26,16 +26,20 @@ if TYPE_CHECKING:
 logger = structlog.get_logger('sql')
 
 DATABASE_NIFFLER_USERDATA_URL = (
-    f'postgresql+psycopg2://{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_USERDATA}'
+    f'postgresql+psycopg2://'
+    f'{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_USERDATA}'
 )
 DATABASE_NIFFLER_SPEND_URL = (
-    f'postgresql+psycopg2://{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_SPEND}'
+    f'postgresql+psycopg2://'
+    f'{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_SPEND}'
 )
 DATABASE_NIFFLER_CURRENCY_URL = (
-    f'postgresql+psycopg2://{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_CURRENCY}'
+    f'postgresql+psycopg2://'
+    f'{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_CURRENCY}'
 )
 DATABASE_NIFFLER_AUTH_URL = (
-    f'postgresql+psycopg2://{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_AUTH}'
+    f'postgresql+psycopg2://'
+    f'{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_AUTH}'
 )
 
 

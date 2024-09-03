@@ -10,6 +10,7 @@ from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
+
     from niffler_e_2_e_tests_python.fixtures.database import DB
 
 
@@ -39,4 +40,3 @@ def prepare_test_user_for_tests(db_niffler_auth: 'DB'):
     Создаем через базу, если юзер есть, то не создаем.
     """
     prepare_test_user(db_niffler_auth)
-    

@@ -2,7 +2,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from niffler_e_2_e_tests_python.client_api import ClientApi
-from niffler_e_2_e_tests_python.configs import TEST_USER, TEST_PASSWORD
+from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
 
 if TYPE_CHECKING:
 

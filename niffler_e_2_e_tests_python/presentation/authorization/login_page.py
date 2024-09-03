@@ -1,19 +1,18 @@
 from typing import TYPE_CHECKING
 
 import allure
-import re
 
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
-from niffler_e_2_e_tests_python.configs import AUTH_URL, FRONT_URL
-from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
+from niffler_e_2_e_tests_python.configs import AUTH_URL
 from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
-from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
+
 class LoginPage(BaseLogic):
     path = '/login'
+
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
         self.input_username = self.driver.locator("//input[@name='username']")
@@ -26,10 +25,6 @@ class LoginPage(BaseLogic):
         self.fill(self.input_username, username)
         self.fill(self.input_password, password)
         self.click(self.button_sign_in)
-
-
-
-
 
     def check_hint_text(self, text: str):
         """Проверить текст подсказки."""
@@ -44,5 +39,3 @@ class LoginPage(BaseLogic):
         self.goto_url(AUTH_URL)
         PresentationPage(self.driver).click_on_login_button()
         self.authorization(username, password)
-
-

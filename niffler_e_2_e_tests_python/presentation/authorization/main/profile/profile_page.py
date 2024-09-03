@@ -1,15 +1,12 @@
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import allure
 
 from niffler_e_2_e_tests_python.base_logic import BaseLogic
-from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_USER, TEST_PASSWORD
-from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
-from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
-from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
+
 
 class ProfilePage(BaseLogic):
     path = '/profile'
@@ -22,7 +19,9 @@ class ProfilePage(BaseLogic):
         self.alert_button_close = self.driver.locator("//button[@aria-label='close']")
         self.categories_list = self.driver.locator("//ul[@class='categories__list']/li")
         self.categories_input = self.driver.locator("//input[@name='category']")
-        self.categories_button = self.driver.locator("//button[@class='button  ' and text()='Create']")
+        self.categories_button = self.driver.locator(
+            "//button[@class='button  ' and text()='Create']"
+        )
         self.main_button = self.driver.locator("//a[@href='/main']")
         self.subtitle = self.driver.locator('//h2')
 
@@ -74,3 +73,7 @@ class ProfilePage(BaseLogic):
     def close_popup(self) -> None:
         """Получить значения из листа категорий трат."""
         return self.click(self.alert_button_close)
+
+    def check_popup_is_hidden(self) -> None:
+        """Получить значения из листа категорий трат."""
+        return self.check_element_is_hidden(self.alert_add_category)

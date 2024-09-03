@@ -3,15 +3,16 @@ from typing import TYPE_CHECKING
 import allure
 import pytest
 
-from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER, FRONT_URL
-from niffler_e_2_e_tests_python.utils import get_join_url
-
+from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
     ProfilePage,
 )
+from niffler_e_2_e_tests_python.utils import get_join_url
+
 if TYPE_CHECKING:
 
     from niffler_e_2_e_tests_python.fixtures.database import DB
+
 
 @pytest.fixture
 def clear_category_after(db_niffler_spend: 'DB') -> None:
@@ -25,11 +26,13 @@ def clear_category_before(db_niffler_spend: 'DB') -> None:
     """Чистим таблицу category."""
     db_niffler_spend.execute('delete from category')
 
+
 @pytest.fixture
 def clear_category_after(db_niffler_spend: 'DB') -> None:
     """Чистим таблицу category."""
     yield
     db_niffler_spend.execute('delete from category')
+
 
 @pytest.fixture
 def close_alert_after(profile_page: 'ProfilePage'):
@@ -53,8 +56,7 @@ def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
 def close_alert_after(profile_page: ProfilePage):
     yield
     profile_page.close_popup()
-    # TODO Добавить assert в фикстуры, что делают перемещения и этого достаточно будет, чтобы teardown не убирать
-
+    profile_page.check_popup_is_hidden()
 
 
 @allure.epic(

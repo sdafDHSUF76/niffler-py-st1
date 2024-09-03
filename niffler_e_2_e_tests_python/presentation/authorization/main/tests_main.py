@@ -15,13 +15,11 @@ from niffler_e_2_e_tests_python.presentation.authorization.main.profile.conftest
 from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
-    from niffler_e_2_e_tests_python.fixtures.database import DB
-    from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
     from _pytest.fixtures import SubRequest
     from _pytest.mark import Mark
 
-
-
+    from niffler_e_2_e_tests_python.fixtures.database import DB
+    from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
 
 
 @pytest.fixture
@@ -38,6 +36,7 @@ def create_spends(request: 'SubRequest'):
             token: str = ClientApi().get_token(unit['user'], unit['password'])
         ClientApi().add_spend(unit['spend'], token)
         user_old, password_old = user, password
+
 
 @allure.epic(
     'Main page',
@@ -117,7 +116,6 @@ class TestHistoryOfSpending:
                 is_amount_spend = spending_column.inner_text() == '123'
             if categories_in_db != categories_in_front or not is_amount_spend:
                 main_page.refresh_page()
-
 
     @allure.story(
         'allow you to delete expenses from your spending history',

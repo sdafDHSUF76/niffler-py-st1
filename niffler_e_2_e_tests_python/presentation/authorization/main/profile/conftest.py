@@ -48,10 +48,6 @@ def clear_spend_and_category_before(db_niffler_spend: 'DB') -> None:
     db_niffler_spend.execute('delete from category')
 
 
-
-
-
-
 @pytest.fixture
 def goto_profile_if_you_logged_in(profile_page: ProfilePage) -> None:
     """Перейти на страницу main если авторизован, но находишься на другой странице."""
@@ -85,10 +81,6 @@ def goto_profile(
     пользователь авторизован и не авторизован.
     """
     pass
-
-
-
-
 
 
 @pytest.fixture
