@@ -2,8 +2,9 @@ from typing import TYPE_CHECKING
 
 import allure
 
-from niffler_e_2_e_tests_python.base_logic import PlaywrightHelper
+from niffler_e_2_e_tests_python.playwright_helper import PlaywrightHelper
 from niffler_e_2_e_tests_python.configs import AUTH_URL
+from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
 @allure.epic('features (what the user can do) for an unauthorized user')
 class RegisterPage(PlaywrightHelper):
     path = '/register'
+    url = get_join_url(AUTH_URL, path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
@@ -30,7 +32,7 @@ class RegisterPage(PlaywrightHelper):
     def register_new_user(self, username: str, password: str) -> None:
         """Регистрация пользователя."""
         with allure.step('registering a new user'):
-            self.goto_url(f'{AUTH_URL}{self.path}')
+            self.goto_your_page()
             self.fill(self.input_username, username)
             self.fill(self.input_password, password)
             self.fill(self.input_password_submit, password)

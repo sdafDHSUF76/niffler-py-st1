@@ -43,7 +43,7 @@ def close_alert_after(profile_page: 'ProfilePage'):
 @pytest.fixture
 def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
     """Обновить страницу, если данные на фронте не совпадают с базой данных."""
-    if profile_page.driver.url == get_join_url(FRONT_URL, ProfilePage.path):
+    if profile_page.driver.url == profile_page.url:
         categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from category where username = \'%s\'' % TEST_USER
         )[0][0]

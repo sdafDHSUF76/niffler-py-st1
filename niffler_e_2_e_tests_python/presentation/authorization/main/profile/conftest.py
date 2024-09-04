@@ -53,9 +53,9 @@ def goto_profile_if_you_logged_in(profile_page: ProfilePage) -> None:
     """Перейти на страницу main если авторизован, но находишься на другой странице."""
     if (
         profile_page.profile_button.is_visible()
-        and profile_page.driver.url != get_join_url(FRONT_URL, ProfilePage.path)
+        and profile_page.driver.url != profile_page.url
     ):
-        profile_page.goto_url(get_join_url(FRONT_URL, ProfilePage.path))
+        profile_page.goto_your_page()
 
 
 @pytest.fixture
@@ -63,7 +63,7 @@ def goto_profile_if_you_not_logged_in(
     login_page: 'LoginPage', presentation_page: 'PresentationPage', main_page: 'MainPage'
 ) -> None:
     """Перейти на страницу main если не авторизован и находишься на разных местах сайта."""
-    if presentation_page.driver.url != get_join_url(FRONT_URL, ProfilePage.path):
+    if presentation_page.driver.url != ProfilePage.url:
         login_page.goto_login_page_and_log_in(TEST_USER, TEST_PASSWORD)
         main_page.click_profile_button()
 

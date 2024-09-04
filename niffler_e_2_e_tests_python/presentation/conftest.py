@@ -29,8 +29,8 @@ def goto_presentation_url(presentation_page: PresentationPage) -> None:
 
     Эта та страница, которая тут http://frontend.niffler.dc/
     """
-    if presentation_page.driver.url != get_join_url(FRONT_URL, '/'):
-        presentation_page.goto_url(FRONT_URL)
+    if presentation_page.driver.url != presentation_page.url:
+        presentation_page.goto_your_page()
 
 
 @pytest.fixture(scope='session', autouse=True)

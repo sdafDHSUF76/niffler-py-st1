@@ -24,9 +24,9 @@ def goto_main_if_you_logged_in(main_page: MainPage) -> None:
     """Перейти на страницу main если авторизован, но находишься на другой странице."""
     if (
         main_page.main.is_visible()
-        and main_page.driver.url != get_join_url(FRONT_URL, MainPage.path)
+        and main_page.driver.url != main_page.url
     ):
-        main_page.goto_url(get_join_url(FRONT_URL, MainPage.path))
+        main_page.goto_your_page()
 
 
 @pytest.fixture
@@ -34,12 +34,8 @@ def goto_main_if_you_not_logged_in(
     login_page: 'LoginPage', presentation_page: 'PresentationPage'
 ) -> None:
     """Перейти на страницу main если не авторизован и находишься на разных местах сайта."""
-    if presentation_page.driver.url != get_join_url(FRONT_URL, MainPage.path):
+    if presentation_page.driver.url != MainPage.url:
         login_page.goto_login_page_and_log_in(TEST_USER, TEST_PASSWORD)
-    # elif presentation_page.driver.url == get_join_url(FRONT_URL, MainPage.path):
-    #     # Такой кейс бывает, когда выходишь из учетки и путь в url как раз стоит /main
-    #     presentation_page.click_on_login_button()
-    #     login_page.authorization(TEST_USER, TEST_PASSWORD)
 
 
 @pytest.fixture

@@ -38,6 +38,11 @@ class PlaywrightHelper(MixinSimplifyingLogic):
         """Переходим по url."""
         self.driver.goto(url)
 
+    def goto_your_page(self) -> None:
+        """Переходим по url."""
+        with allure.step(f'Открыть страницу по этому Url: \'{self.url}\''):
+            self.driver.goto(self.url)
+
     @allure.step(
         'Проверить у элемента по этому локатору: \'{locator}\' наличие текста: \'{text}\'',
     )

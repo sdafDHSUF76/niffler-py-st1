@@ -26,7 +26,7 @@ def goto_login_page_if_you_logged_in(
 ) -> None:
     if (
         main_page.profile_button.is_visible()
-        and main_page.driver.url != get_join_url(AUTH_URL, main_page.path)
+        and main_page.driver.url != main_page.url
     ):
         main_page.click_logout()
         main_page.expect_element(main_page.profile_button).to_be_hidden()
@@ -37,7 +37,7 @@ def goto_login_page_if_you_logged_in(
 def goto_login_page_if_you_not_logged_in(
     login_page: 'LoginPage', presentation_page: 'PresentationPage',
 ) -> None:
-    if not re.match(f'{AUTH_URL}{login_page.path}', presentation_page.driver.url):
+    if not re.match(f'{login_page.url}', presentation_page.driver.url):
         """
         Выглядит странным, но у приложения, когда возникает ошибка авторизации в параметре
         url появляется ?error , вроде такой был, и чтобы у меня автотест лишний раз по url не

@@ -2,13 +2,17 @@ from typing import TYPE_CHECKING
 
 import allure
 
-from niffler_e_2_e_tests_python.base_logic import PlaywrightHelper
+from niffler_e_2_e_tests_python.playwright_helper import PlaywrightHelper
+
+from niffler_e_2_e_tests_python.configs import FRONT_URL
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
 
 class PresentationPage(PlaywrightHelper):
+    url = FRONT_URL
+
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
         self.button_login = self.driver.locator("//a[text()='Login']")

@@ -20,5 +20,5 @@ def registration_page(driver: 'Page') -> RegisterPage:
 def goto_registration_url(registration_page: RegisterPage) -> None:
     """Переходим на страницу Register."""
 
-    if f'{AUTH_URL}{registration_page.path}' != registration_page.driver.url:
-        registration_page.goto_url(get_join_url(AUTH_URL, registration_page.path))
+    if registration_page.driver.url != registration_page.url:
+        registration_page.goto_your_page()
