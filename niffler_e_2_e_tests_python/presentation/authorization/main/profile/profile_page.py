@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING, Optional
 
 import allure
 
-from niffler_e_2_e_tests_python.base_logic import BaseLogic
+from niffler_e_2_e_tests_python.base_logic import PlaywrightHelper
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
 
-class ProfilePage(BaseLogic):
+class ProfilePage(PlaywrightHelper):
     path = '/profile'
 
     def __init__(self, driver: 'Page'):

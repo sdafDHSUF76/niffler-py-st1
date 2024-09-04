@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import allure
 
-from niffler_e_2_e_tests_python.base_logic import BaseLogic
+from niffler_e_2_e_tests_python.base_logic import PlaywrightHelper
 from niffler_e_2_e_tests_python.configs import AUTH_URL
 from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from playwright.sync_api import Page
 
 
-class LoginPage(BaseLogic):
+class LoginPage(PlaywrightHelper):
     path = '/login'
 
     def __init__(self, driver: 'Page'):
