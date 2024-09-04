@@ -1,15 +1,42 @@
-from niffler_e_2_e_tests_python.base_logic import BaseLogic
+from typing import TYPE_CHECKING
+
+import allure
+
+from niffler_e_2_e_tests_python.configs import AUTH_URL
+from niffler_e_2_e_tests_python.playwright_helper import PlaywrightHelper
+from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
+from niffler_e_2_e_tests_python.utils import get_join_url
+
+if TYPE_CHECKING:
+    from playwright.sync_api import Page
 
 
-class LoginPage(BaseLogic):
+class LoginPage(PlaywrightHelper):
     path = '/login'
+    url = get_join_url(AUTH_URL, path)
 
-    input_username = "//input[@name='username']"
-    input_password = "//input[@name='password']"
-    button_sign_in = "//button[@type='submit']"
-    text_error = "//p[@class='form__error']"
+    def __init__(self, driver: 'Page'):
+        super().__init__(driver)
+        self.input_username = self.driver.locator("//input[@name='username']")
+        self.input_password = self.driver.locator("//input[@name='password']")
+        self.button_sign_in = self.driver.locator("//button[@type='submit']")
+        self.text_error = self.driver.locator("//p[@class='form__error']")
 
     def authorization(self, username: str, password: str):
         self.fill(self.input_username, username)
         self.fill(self.input_password, password)
         self.click(self.button_sign_in)
+
+    def check_hint_text(self, text: str):
+        """Проверить текст подсказки."""
+        with allure.step('Checking the hint message'):
+            self.check_text_in_element(self.text_error, text)
+
+    def goto_login_page_and_log_in(self, username: str, password: str) -> None:
+        """Перейти на страницу авторизации и авторизоваться.
+
+        Эти шаги повторяются, поэтому вынес в отдельный метод.
+        """
+        self.goto_url(AUTH_URL)
+        PresentationPage(self.driver).click_on_login_button()
+        self.authorization(username, password)

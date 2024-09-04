@@ -1,33 +1,45 @@
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 import pytest
 from faker import Faker
-from playwright.sync_api import expect
 
+from niffler_e_2_e_tests_python.configs import TEST_USER
 from niffler_e_2_e_tests_python.presentation.authorization.conftest import login_page  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
+    logout_before,
     main_page,
 )
 
 if TYPE_CHECKING:
+    from niffler_e_2_e_tests_python.fixtures.database import DB
     from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
     from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
     from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
 
 
+@pytest.fixture
+def clear_extra_users(db_niffler_auth: 'DB'):
+    """Чистим созданных юзеров, кроме тестового."""
+    yield
+    db_niffler_auth.execute(
+        'delete from authority'
+        ' where user_id in (select id from "user" where username != \'%s\')'
+        % TEST_USER,
+    )
+    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % TEST_USER)
+
+
 class TestRegistration:
 
-    @pytest.mark.usefixtures('clear_extra_users', 'logout')
+    @pytest.mark.usefixtures('clear_extra_users', 'logout_before')
     def test_authorization_with_create_user_random(
         self,
         registration_page: 'RegisterPage',
-        go_login_page_function: Callable[[], None],
         login_page: 'LoginPage',
         main_page: 'MainPage',
     ):
         username: str = Faker().user_name()
         password: str = Faker().password()
         registration_page.register_new_user(username, password)
-        go_login_page_function()
-        login_page.authorization(username, password)
-        expect(main_page.driver.locator(main_page.header)).to_have_text(main_page.text_header)
+        login_page.goto_login_page_and_log_in(username, password)
+        main_page.check_text_of_page_title()
