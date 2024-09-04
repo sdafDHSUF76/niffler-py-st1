@@ -50,5 +50,4 @@ class TestRegistration:
         password: str = Faker().password()
         registration_page.register_new_user(username, password)
         login_page.goto_login_page_and_log_in(username, password)
-        # login_page.authorization(username, password)
-        main_page.check_text_in_element(main_page.header, main_page.text_header)
+        main_page.check_text_of_page_title()

@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING, Optional
 
 import allure
 import pytest
-from playwright.sync_api import Locator
 
 from niffler_e_2_e_tests_python.client_api import ClientApi
 from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
@@ -104,16 +103,22 @@ class TestsCreatingExpenses:
 class TestHistoryOfSpending:
 
     @pytest.fixture
-    def refresh_page_when_front_and_spend(self, db_niffler_spend: 'DB', main_page: 'MainPage'):
+    def refresh_page_when_there_is_no_spending_on_front_with_required_amount(
+        self, db_niffler_spend: 'DB', main_page: 'MainPage',
+    ):
+        """Обновляем страницу, когда фронт не отображает трату по нужному amount в Истории трат.
+
+        Это нужно чтобы фикстуры setup делали через api запросы и подготавливали состояние, для
+        теста быстро, чтобы через UI не делать те же шаги, но медленнее.
+        """
         if main_page.driver.url == get_join_url(FRONT_URL, main_page.path):
             categories_in_db: int = db_niffler_spend.get_value(
                 'select count(*) from spend where username = \'%s\' and amount  = 123' % TEST_USER
             )[0][0]
             categories_in_front: int = main_page.spends.count()
-            spending_column: Locator = main_page.spend_amount
             is_amount_spend: bool = False
-            if spending_column.is_visible():
-                is_amount_spend = spending_column.inner_text() == '123'
+            if main_page.spend_amount.is_visible():
+                is_amount_spend = main_page.spend_amount.inner_text() == '123'
             if categories_in_db != categories_in_front or not is_amount_spend:
                 main_page.refresh_page()
 
@@ -141,7 +146,7 @@ class TestHistoryOfSpending:
         'create_categories',
         'create_spends',
         'goto_main',
-        'refresh_page_when_front_and_spend',
+        'refresh_page_when_there_is_no_spending_on_front_with_required_amount',
         'clear_spend_and_category_after',
     )
     def test_spend_delete(self, main_page: 'MainPage'):
@@ -151,9 +156,14 @@ class TestHistoryOfSpending:
         main_page.check_number_of_expenses_in_spending_history(0)
 
     @pytest.fixture
-    def refresh_page_when_front_and_db_spend_are_different(
+    def refresh_page_when_front_and_db_amount_of_expenses_are_different(
         self, db_niffler_spend: 'DB', main_page: 'MainPage',
     ):
+        """Обновляем страницу, когда фронт не отображает траты по нужному количеству в Истории трат.
+
+        Это нужно чтобы фикстуры setup делали через api запросы и подготавливали состояние, для
+        теста быстро, чтобы через UI не делать те же шаги, но медленнее.
+        """
         if main_page.driver.url == get_join_url(FRONT_URL, main_page.path):
             categories_in_db: int = db_niffler_spend.get_value(
                 'select count(*) from spend where username = \'%s\'' % TEST_USER
@@ -166,6 +176,8 @@ class TestHistoryOfSpending:
         'create a form for selecting and creating expenses',
         'create a database table to store your spending history',
     )
-    @pytest.mark.usefixtures('goto_main', 'refresh_page_when_front_and_db_spend_are_different')
+    @pytest.mark.usefixtures(
+        'goto_main', 'refresh_page_when_front_and_db_amount_of_expenses_are_different',
+    )
     def test_spends_emtpy(self, main_page: 'MainPage'):
         main_page.check_number_of_expenses_in_spending_history(0)

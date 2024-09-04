@@ -117,3 +117,13 @@ class MainPage(PlaywrightHelper):
     def check_that_dropdown_is_empty(self) -> None:
         """Проверить текст подсказки."""
         self.check_element_is_hidden(self.category_drop_down_list)
+
+    @allure.step('check that you are not logged in')
+    def check_that_you_not_logged_in(self) -> None:
+        """Проверить что вышел из учетки."""
+        self.check_element_is_hidden(self.profile_button)
+
+    @allure.step('check the text of the page title')
+    def check_text_of_page_title(self) -> None:
+        """Проверить заголовок страницы."""
+        self.check_text_in_element(self.header, self.text_header)

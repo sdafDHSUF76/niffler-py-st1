@@ -36,7 +36,7 @@ class TestAuthorization:
     @pytest.mark.usefixtures('go_login_page', 'logout_before', 'logout_after')
     def test_authorization(self, login_page: 'LoginPage', main_page: 'MainPage'):
         login_page.authorization(TEST_USER, TEST_PASSWORD)
-        main_page.check_text_in_element(main_page.header, main_page.text_header)
+        main_page.check_text_of_page_title()
 
     @pytest.mark.usefixtures('go_login_page', 'logout_before')
     @pytest.mark.parametrize(

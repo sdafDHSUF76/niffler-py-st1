@@ -49,6 +49,7 @@ class ProfilePage(PlaywrightHelper):
         if self.categories_list.count() != count:
             self.refresh_page()
 
+    @allure.step('check the number of spending categories, we expect: \'{expected_quantity}\'')
     def check_number_of_existing_categories(self, expected_quantity: int) -> None:
         """Проверить количество существующих категорий трат."""
         with allure.step('check the number of existing categories with the expected'):
@@ -69,14 +70,19 @@ class ProfilePage(PlaywrightHelper):
         """Проверить текст всплывающего окна, после создания категории трат оно появляется."""
         self.check_text_in_element(self.alert_add_category_text, text)
 
+    @allure.step(
+        'We get the text from the element and divide the text by such text: \'{text_separator}\''
+    )
     def get_values_from_category_sheet(self, text_separator: Optional[str] = None) -> list[str]:
         """Получить значения из листа категорий трат."""
         return self.get_text_in_elements(self.categories_list, text_separator)
 
+    @allure.step
     def close_popup(self) -> None:
-        """Получить значения из листа категорий трат."""
+        """Закрыть Popup."""
         return self.click(self.alert_button_close)
 
+    @allure.step('check if the pop-up window is hidden')
     def check_popup_is_hidden(self) -> None:
-        """Получить значения из листа категорий трат."""
+        """Проверить скрыт ли Popup создания категории трат."""
         return self.check_element_is_hidden(self.alert_add_category)

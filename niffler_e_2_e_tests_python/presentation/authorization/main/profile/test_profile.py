@@ -3,11 +3,10 @@ from typing import TYPE_CHECKING
 import allure
 import pytest
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
+from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
     ProfilePage,
 )
-from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
 
@@ -38,10 +37,13 @@ def clear_category_after(db_niffler_spend: 'DB') -> None:
 def close_alert_after(profile_page: 'ProfilePage'):
     yield
     profile_page.close_popup()
+    profile_page.check_popup_is_hidden()
 
 
 @pytest.fixture
-def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
+def refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db(
+    db_niffler_spend: 'DB', profile_page: ProfilePage,
+) -> None:
     """Обновить страницу, если данные на фронте не совпадают с базой данных."""
     if profile_page.driver.url == profile_page.url:
         categories_in_db: int = db_niffler_spend.get_value(
@@ -100,7 +102,10 @@ class TestProfile:
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'yuio'}},
     )
     @pytest.mark.usefixtures(
-        'create_categories', 'goto_profile', 'clear_category_after', 'reload_profile_page',
+        'create_categories',
+        'goto_profile',
+        'clear_category_after',
+        'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
     )
     def test_do_not_create_non_unique_category(self, profile_page: 'ProfilePage'):
         profile_page.check_number_of_existing_categories(1)
@@ -126,7 +131,10 @@ class TestProfile:
         {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category8'}},
     )
     @pytest.mark.usefixtures(
-        'create_categories', 'goto_profile', 'clear_category_after', 'reload_profile_page',
+        'create_categories',
+        'goto_profile',
+        'clear_category_after',
+        'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
     )
     def test_do_not_create_more_than_8_categories(self, profile_page: 'ProfilePage'):
         profile_page.check_number_of_existing_categories(8)
@@ -138,6 +146,10 @@ class TestProfile:
         profile_page.check_popup_text(profile_page.alert_unsuccessful_text)
 
     @allure.story('create a database table to store spending categories')
-    @pytest.mark.usefixtures('goto_profile', 'clear_category_before', 'reload_profile_page')
+    @pytest.mark.usefixtures(
+        'goto_profile',
+        'clear_category_before',
+        'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
+    )
     def test_empty_categories(self, profile_page: 'ProfilePage'):
         profile_page.check_number_of_existing_categories(0)

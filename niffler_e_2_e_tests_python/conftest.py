@@ -28,6 +28,7 @@ def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
         item = logger.get_last_item()
         scope_letter = fixturedef.scope[0].upper()
         item.name = f"[{scope_letter}] " + " ".join(fixturedef.argname.split("_")).title()
+    # TODO сделать так и для teardown, а то у них нету буквы
 
 
 @pytest.fixture(scope='session')

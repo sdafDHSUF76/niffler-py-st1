@@ -2,9 +2,8 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
+from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
-from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
@@ -57,7 +56,7 @@ def logout_after(main_page: MainPage) -> None:
     yield
     if main_page.profile_button.is_visible():
         main_page.click_logout()
-        main_page.expect_element(main_page.profile_button).to_be_hidden()
+        main_page.check_that_you_not_logged_in()
 
 
 @pytest.fixture
@@ -65,4 +64,4 @@ def logout_before(main_page: MainPage) -> None:
     """Выходим из под учетки юзера до теста."""
     if main_page.profile_button.is_visible():
         main_page.click_logout()
-        main_page.expect_element(main_page.profile_button).to_be_hidden()
+        main_page.check_that_you_not_logged_in()

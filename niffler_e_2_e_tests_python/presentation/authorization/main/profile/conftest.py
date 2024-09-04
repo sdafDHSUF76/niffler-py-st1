@@ -3,12 +3,11 @@ from typing import TYPE_CHECKING, Optional
 import pytest
 
 from niffler_e_2_e_tests_python.client_api import ClientApi
-from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
+from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
     ProfilePage,
 )
-from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest

@@ -2,9 +2,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from niffler_e_2_e_tests_python.configs import AUTH_URL
 from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
-from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
