@@ -4,6 +4,7 @@ import pytest
 
 from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
 from niffler_e_2_e_tests_python.presentation.registration.utils import prepare_test_user
+from niffler_e_2_e_tests_python.fixtures.database import db_niffler_auth  # noqa F401
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
