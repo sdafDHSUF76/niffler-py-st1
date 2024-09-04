@@ -1,14 +1,13 @@
-from typing import TYPE_CHECKING, Callable, Optional
+from typing import TYPE_CHECKING, Optional
 
 import pytest
-import requests
 
-from niffler_e_2_e_tests_python.configs import FRONT_URL1, GATEWAY_URL, TEST_PASSWORD, TEST_USER
+from niffler_e_2_e_tests_python.client_api import ClientApi
+from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
 from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noqa F401
 from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
     ProfilePage,
 )
-from niffler_e_2_e_tests_python.utils import get_join_url
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
@@ -28,9 +27,10 @@ def profile_page(driver: 'Page') -> ProfilePage:
 
 
 @pytest.fixture
-def clear_category(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category."""
+def clear_spend_and_category_after(db_niffler_spend: 'DB') -> None:
+    """Чистим таблицу category и spend."""
     yield
+    db_niffler_spend.execute('delete from spend')
     db_niffler_spend.execute('delete from category')
 
 
@@ -38,13 +38,6 @@ def clear_category(db_niffler_spend: 'DB') -> None:
 def clear_category_before(db_niffler_spend: 'DB') -> None:
     """Чистим таблицу category."""
     db_niffler_spend.execute('delete from category')
-
-
-@pytest.fixture
-def clear_spend(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу spend."""
-    yield
-    db_niffler_spend.execute('delete from spend')
 
 
 @pytest.fixture(scope='class')
@@ -55,52 +48,42 @@ def clear_spend_and_category_before(db_niffler_spend: 'DB') -> None:
 
 
 @pytest.fixture
-def clear_spend_and_category_after(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category и spend."""
-    yield
-    db_niffler_spend.execute('delete from spend')
-    db_niffler_spend.execute('delete from category')
+def goto_profile_if_you_logged_in(profile_page: ProfilePage) -> None:
+    """Перейти на страницу main если авторизован, но находишься на другой странице."""
+    if (
+        profile_page.profile_button.is_visible()
+        and profile_page.driver.url != profile_page.url
+    ):
+        profile_page.goto_your_page()
+
+
+@pytest.fixture
+def goto_profile_if_you_not_logged_in(
+    login_page: 'LoginPage', presentation_page: 'PresentationPage', main_page: 'MainPage'
+) -> None:
+    """Перейти на страницу main если не авторизован и находишься на разных местах сайта."""
+    if presentation_page.driver.url != ProfilePage.url:
+        login_page.goto_login_page_and_log_in(TEST_USER, TEST_PASSWORD)
+        main_page.click_profile_button()
 
 
 @pytest.fixture
 def goto_profile(
-    login_page: 'LoginPage', main_page: 'MainPage', presentation_page: 'PresentationPage',
+    goto_profile_if_you_logged_in: None, goto_profile_if_you_not_logged_in: None,
 ):
-    """Перейти на страницу profile из разных мест сайта."""
-    if (
-        main_page.driver.locator(main_page.profile_button).is_visible()
-        and main_page.driver.url != get_join_url(FRONT_URL1, ProfilePage.path)
-    ):
-        main_page.click(main_page.profile_button)
-    if presentation_page.driver.url != get_join_url(FRONT_URL1, ProfilePage.path):
-        presentation_page.goto_url(FRONT_URL1)
-        presentation_page.click(presentation_page.button_login)
-        login_page.authorization(TEST_USER, TEST_PASSWORD)
-        main_page.click(main_page.profile_button)
+    """Перейти на страницу profile из разных мест сайта.
+
+    Так как автотест можно запустить один , или запустить целый модуль, то нельзя знать в какой
+    момент пользователь будет еще авторизован во время прохождения предыдущих тестов. Чтобы тест
+    что будет иметь в себе эту фикстуру не падал из-за разных тестов до него, что были, то решил
+    сделать сборную фикстуру, в которой разделил логику перехода на main страницу, когда
+    пользователь авторизован и не авторизован.
+    """
+    pass
 
 
 @pytest.fixture
-def reload_profile_page(db_niffler_spend: 'DB', profile_page: ProfilePage):
-    """Обновить страницу, если данные на фронте не совпадают с базой данных."""
-    categories_in_db: int = db_niffler_spend.get_value(
-        'select count(*) from category where username = \'%s\'' % TEST_USER
-    )[0][0]
-    categories_in_front: int = profile_page.driver.locator(profile_page.categories_list).count()
-    if (
-        profile_page.driver.url == get_join_url(FRONT_URL1, ProfilePage.path)
-        and categories_in_db != categories_in_front
-    ):
-        profile_page.driver.reload()
-
-
-@pytest.fixture
-def close_alert(profile_page: 'ProfilePage'):
-    yield
-    profile_page.click(profile_page.alert_button_close)
-
-
-@pytest.fixture
-def create_categories(get_token: Callable[[str, str], str], request: 'SubRequest'):
+def create_categories(request: 'SubRequest'):
     """Создаем категории через API.
 
     На самом деле тут только через API категория создается, а вот токен берется из UI.
@@ -110,13 +93,6 @@ def create_categories(get_token: Callable[[str, str], str], request: 'SubRequest
     for unit in marker.args:
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
-            token: str = get_token(unit['user'], unit['password'])
-        requests.post(
-            f'{GATEWAY_URL}/api/categories/add',
-            json=unit['category'],
-            headers={
-                'Authorization': token,
-                'Content-Type': 'application/json',
-            }
-        )
+            token: str = ClientApi().get_token(unit['user'], unit['password'])
+        ClientApi().add_category(unit['category'], token)
         user_old, password_old = user, password

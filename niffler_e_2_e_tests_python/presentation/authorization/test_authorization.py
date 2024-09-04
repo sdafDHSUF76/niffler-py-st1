@@ -21,7 +21,7 @@ class TestAuthorization:
     @pytest.mark.usefixtures('go_login_page', 'logout_before', 'logout_after')
     def test_authorization(self, login_page: 'LoginPage', main_page: 'MainPage'):
         login_page.authorization(TEST_USER, TEST_PASSWORD)
-        main_page.check_text_in_element(main_page.header, main_page.text_header)
+        main_page.check_text_of_page_title()
 
     @pytest.mark.usefixtures('go_login_page', 'logout_before')
     @pytest.mark.parametrize(
@@ -36,10 +36,8 @@ class TestAuthorization:
             (Faker().user_name(), Faker().password()),
         ]
     )
-    def test_error_text_for_non_existent_creds(
-        self, login: str, password: str, login_page: 'LoginPage'
+    def test_error_hint_for_non_existent_creds(
+        self, login: str, password: str, login_page: 'LoginPage',
     ):
         login_page.authorization(login, TEST_PASSWORD)
-        login_page.check_text_in_element(
-            login_page.text_error, ErrorAuthorization.INVALID_USER_CREDENTIALS,
-        )
+        login_page.check_hint_text(ErrorAuthorization.INVALID_USER_CREDENTIALS)

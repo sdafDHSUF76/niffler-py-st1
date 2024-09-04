@@ -1,19 +1,11 @@
+# ДЗ #7
+1. Добавить allure steps в существующие библиотеки (page object, клиенты) и тесты;
 
+2. Добавить attachments для http и sql запросов;
 
+3. Уберите теги usefixtures из отчета с помощью pytest hooks;
 
-
-# ДЗ #5
-1. Провести рефакторинг готовых тестов из предыдущего задания - выделить подготовительные шаги, данные и шаги после теста в фикстуры, можно  реализовать через хелперы фикстур
-2. Расширить тестовое покрытие добавив еще 10 тестов с учетом полученных знаний о фикстурах
-
-# ДЗ #6
-1. Добавить тесты с бд:
-
-- через UI или API добавляем, изменяем, удаляем сущность
-- проверяем в БД корректность данных
-
-2. Добавить/доработать сценарии, где без запроса в БД невозможно реализовать (по примеру с удалением категории)
-
+4. Разметить тесты с помощью epic и/или story и/или feature для организации древовидной структуры отчета во вкладке Behaviors.
 
 **Установка**
 
@@ -55,9 +47,18 @@ cd ..
 ```
 Так мы попадем в корень проекта, где тесты лежат
 ```bash
+pytest niffler_e_2_e_tests_python/presentation/authorization/main/profile/test_profile.py niffler_e_2_e_tests_python/presentation/authorization/main/tests_main.py niffler_e_2_e_tests_python/presentation/authorization/test_authorization.py niffler_e_2_e_tests_python/presentation/registration/test_registration.py niffler_e_2_e_tests_python/presentation/test_presentation.py -v --alluredir=allure-result --clean-alluredir --allure-no-capture
+```
+и сама команда для тестов(тут у нас также сгенерируется allure отчет)
+```bash
+allure serve .\allure-result\
+```
+Так запускаем allure отчет, чтобы на него посмотреть
+
+
+----
+```bash
 pytest niffler_e_2_e_tests_python/presentation/authorization/main/profile/test_profile.py niffler_e_2_e_tests_python/presentation/authorization/main/tests_main.py niffler_e_2_e_tests_python/presentation/authorization/test_authorization.py niffler_e_2_e_tests_python/presentation/registration/test_registration.py niffler_e_2_e_tests_python/presentation/test_presentation.py -v
 ```
-и сама команда для тестов
 
-
-
+команда, для обычного запуска автотестов(без allure)
