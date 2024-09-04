@@ -29,6 +29,7 @@ class RegisterPage(PlaywrightHelper):
             '//p[text()="Congratulations! You\'ve registered!"]'
         )
 
+    @allure.step
     def register_new_user(self, username: str, password: str) -> None:
         """Регистрация пользователя."""
         with allure.step('registering a new user'):

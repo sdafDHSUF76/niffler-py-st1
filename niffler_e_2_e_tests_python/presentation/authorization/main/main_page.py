@@ -58,6 +58,7 @@ class MainPage(PlaywrightHelper):
         """Нажать на кнопку Профиля."""
         self.click(self.main)
 
+    @allure.step('check the number of expenses in the spending history')
     def check_number_of_expenses_in_spending_history(self, expected_quantity: int) -> None:
         """Проверить количество трат в истории трат."""
         with allure.step('check the number of entries in your spending history'):
@@ -73,21 +74,25 @@ class MainPage(PlaywrightHelper):
         """Нажать на кнопку удаления выбранных трат."""
         self.click(self.button_delete)
 
+    @allure.step
     def fill_input_category(self, text: str) -> None:
         """Вводим данные в input категории трат."""
         with allure.step('fill in the input text of the category'):
             self.fill(self.category_input, text)
 
+    @allure.step
     def fill_input_amount_of_spending(self, text: str) -> None:
         """Вводим данные в input количество трат."""
         with allure.step('fill in the input text of the amount of spending'):
             self.fill(self.input_number, text)
 
+    @allure.step
     def fill_input_spend_date(self, text: str) -> None:
         """Вводим данные в input дату трат."""
         with allure.step('fill in the input text of the spend date'):
             self.fill(self.spend_date, text)
 
+    @allure.step
     def fill_input_description(self, text: str) -> None:
         """Вводим данные в input description."""
         with allure.step('fill in the input text of the description'):

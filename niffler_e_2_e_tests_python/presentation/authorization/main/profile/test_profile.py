@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def clear_category_after(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category."""
+    """Чистим таблицу category после теста."""
     yield
     db_niffler_spend.execute('delete from category')
 
@@ -28,13 +28,14 @@ def clear_category_before(db_niffler_spend: 'DB') -> None:
 
 @pytest.fixture
 def clear_category_after(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category."""
+    """Чистим таблицу category после теста."""
     yield
     db_niffler_spend.execute('delete from category')
 
 
 @pytest.fixture
 def close_alert_after(profile_page: 'ProfilePage'):
+    """Закрыть popup уведомления после теста."""
     yield
     profile_page.close_popup()
     profile_page.check_popup_is_hidden()
@@ -44,7 +45,11 @@ def close_alert_after(profile_page: 'ProfilePage'):
 def refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db(
     db_niffler_spend: 'DB', profile_page: ProfilePage,
 ) -> None:
-    """Обновить страницу, если данные на фронте не совпадают с базой данных."""
+    """Обновить страницу, если количество на фронте категории трат не совпадают с базой данных.
+
+    Это нужно чтобы фикстуры setup делали через api запросы и подготавливали состояние, для
+    теста быстро, чтобы через UI не делать те же шаги, но медленнее.
+    """
     if profile_page.driver.url == profile_page.url:
         categories_in_db: int = db_niffler_spend.get_value(
             'select count(*) from category where username = \'%s\'' % TEST_USER
