@@ -24,10 +24,7 @@ def login_page(driver: 'Page') -> LoginPage:
 def goto_login_page_if_you_logged_in(
     main_page: 'MainPage', presentation_page: 'PresentationPage',
 ) -> None:
-    if (
-        main_page.profile_button.is_visible()
-        and main_page.driver.url != main_page.url
-    ):
+    if main_page.profile_button.is_visible():
         main_page.click_logout()
         main_page.expect_element(main_page.profile_button).to_be_hidden()
         presentation_page.click_on_login_button()
@@ -45,7 +42,7 @@ def goto_login_page_if_you_not_logged_in(
         вот такая реализация сделана была, где если часть url совпадает , с этим, то переходить
         на url авторизации не нужно, это и быстрее для теста и параметризацию не ломает
         """
-        presentation_page.goto_url(FRONT_URL)
+        presentation_page.goto_your_page()
         presentation_page.click_on_login_button()
 
 
