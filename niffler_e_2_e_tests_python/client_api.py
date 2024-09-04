@@ -1,10 +1,7 @@
 from typing import TYPE_CHECKING
 
-import allure
 import pkce
 import requests
-from allure_commons.types import AttachmentType
-from requests_toolbelt.utils.dump import dump_response
 
 from niffler_e_2_e_tests_python.configs import AUTH_URL, FRONT_URL, GATEWAY_URL
 from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
@@ -19,17 +16,6 @@ class ClientApi:
 
     def __init__(self):
         self.request: Session = requests.session()
-        self.request.hooks["response"].append(self.attach_response)
-
-    @staticmethod
-    def attach_response(response: 'Response', *args, **kwargs):
-        """Приаттачить request, response к шагу, где происходит запрос.
-
-        *args, **kwargs обязательны, так как в этот метод hook передает свои параметры, и если их не
-        указать, то метод будет падать, от избытка полученных параметров.
-        """
-        attachment_name = response.request.method + " " + response.request.url
-        allure.attach(dump_response(response), attachment_name, attachment_type=AttachmentType.TEXT)
 
     def create_user(self, user_name: str, password: str) -> 'Response':
         """Создать пользователя."""
