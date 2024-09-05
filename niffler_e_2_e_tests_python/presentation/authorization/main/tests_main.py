@@ -149,6 +149,7 @@ class TestHistoryOfSpending:
         'refresh_page_when_there_is_no_spending_on_front_with_required_amount',
         'clear_spend_and_category_after',
     )
+    @allure.step
     def test_spend_delete(self, main_page: 'MainPage'):
         main_page.check_number_of_expenses_in_spending_history(1)
         main_page.click_on_checkbox_at_selected_expense()
@@ -179,5 +180,6 @@ class TestHistoryOfSpending:
     @pytest.mark.usefixtures(
         'goto_main', 'refresh_page_when_front_and_db_amount_of_expenses_are_different',
     )
-    def test_spends_emtpy(self, main_page: 'MainPage'):
+    @allure.step
+    def test_spends_empty(self, main_page: 'MainPage'):
         main_page.check_number_of_expenses_in_spending_history(0)

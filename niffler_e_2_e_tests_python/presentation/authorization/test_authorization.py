@@ -34,6 +34,7 @@ class TestAuthorization:
         'create a database to store registered users',
     )
     @pytest.mark.usefixtures('go_login_page', 'logout_before', 'logout_after')
+    @allure.step
     def test_authorization(self, login_page: 'LoginPage', main_page: 'MainPage'):
         login_page.authorization(TEST_USER, TEST_PASSWORD)
         main_page.check_text_of_page_title()
@@ -57,6 +58,7 @@ class TestAuthorization:
         'create a database to store registered users',
         'create hints on the form, if the data sent is invalid',
     )
+    @allure.step
     def test_error_hint_for_non_existent_creds(
         self, login: str, password: str, login_page: 'LoginPage',
     ):

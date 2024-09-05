@@ -94,7 +94,8 @@ class TestProfile:
     @pytest.mark.parametrize(
         'category', ['yiosdf', '1'], ids=['successful alert', 'unsuccessful alert'],
     )
-    def test_alert_disappears_after_it_appears(self, profile_page: 'ProfilePage', category: str):
+    @allure.step
+    def test_alert_hides_after_appearing(self, profile_page: 'ProfilePage', category: str):
         profile_page.add_category(category)
         profile_page.check_for_popup_appearance()
         profile_page.check_popup_hiding()
@@ -112,6 +113,7 @@ class TestProfile:
         'clear_category_after',
         'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
     )
+    @allure.step
     def test_do_not_create_non_unique_category(self, profile_page: 'ProfilePage'):
         profile_page.check_number_of_existing_categories(1)
         categories: list[str] = profile_page.get_values_from_category_sheet('\n')
@@ -141,6 +143,7 @@ class TestProfile:
         'clear_category_after',
         'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
     )
+    @allure.step
     def test_do_not_create_more_than_8_categories(self, profile_page: 'ProfilePage'):
         profile_page.check_number_of_existing_categories(8)
         profile_page.add_category('yuio')
@@ -156,5 +159,7 @@ class TestProfile:
         'clear_category_before',
         'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
     )
+    @allure.step
     def test_empty_categories(self, profile_page: 'ProfilePage'):
+        """Проверяем, по дефолту у нас нету лишних категорий трат, только те, что сами создаем."""
         profile_page.check_number_of_existing_categories(0)

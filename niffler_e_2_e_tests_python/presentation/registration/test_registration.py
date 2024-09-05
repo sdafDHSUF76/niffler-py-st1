@@ -40,6 +40,7 @@ class TestRegistration:
         'user authentication',
     )
     @pytest.mark.usefixtures('clear_extra_users', 'logout_before')
+    @allure.step
     def test_authorization_with_create_user_random(
         self,
         registration_page: 'RegisterPage',
