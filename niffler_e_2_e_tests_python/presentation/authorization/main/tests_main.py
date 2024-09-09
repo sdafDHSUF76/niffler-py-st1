@@ -2,22 +2,22 @@ from typing import TYPE_CHECKING, Optional
 
 import pytest
 
-from niffler_e_2_e_tests_python.client_api import ClientApi
-from niffler_e_2_e_tests_python.configs import FRONT_URL, TEST_PASSWORD, TEST_USER
-from niffler_e_2_e_tests_python.fixtures.database import db_niffler_spend  # noqa F401
-from niffler_e_2_e_tests_python.presentation.authorization.main.profile.conftest import (  # noqa F401
+from utils.client_api import ClientApi
+from configs import FRONT_URL, TEST_PASSWORD, TEST_USER
+from fixtures.conftest import db_niffler_spend  # noqa F401
+from presentation.authorization.main.profile.conftest import (  # noqa F401
     clear_spend_and_category_after,
     clear_spend_and_category_before,
     create_categories,
 )
-from niffler_e_2_e_tests_python.utils import get_join_url
+from utils.utils import get_join_url
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
     from _pytest.mark import Mark
 
-    from niffler_e_2_e_tests_python.fixtures.database import DB
-    from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
+    from fixtures.database import DB
+    from pages.main_page import MainPage
 
 
 @pytest.fixture

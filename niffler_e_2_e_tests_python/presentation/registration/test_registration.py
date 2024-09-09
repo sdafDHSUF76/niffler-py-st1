@@ -3,18 +3,18 @@ from typing import TYPE_CHECKING
 import pytest
 from faker import Faker
 
-from niffler_e_2_e_tests_python.configs import TEST_USER
-from niffler_e_2_e_tests_python.presentation.authorization.conftest import login_page  # noqa F401
-from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
+from configs import TEST_USER
+from presentation.authorization.conftest import login_page  # noqa F401
+from presentation.authorization.main.conftest import (  # noqa F401
     logout_before,
     main_page,
 )
 
 if TYPE_CHECKING:
-    from niffler_e_2_e_tests_python.fixtures.database import DB
-    from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
-    from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
-    from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
+    from fixtures.database import DB
+    from pages.login_page import LoginPage
+    from pages.main_page import MainPage
+    from pages.register_page import RegisterPage
 
 
 @pytest.fixture
@@ -40,6 +40,6 @@ class TestRegistration:
     ):
         username: str = Faker().user_name()
         password: str = Faker().password()
-        registration_page.register_new_user(username, password)
+        registration_page.register_user(username, password)
         login_page.goto_login_page_and_log_in(username, password)
         main_page.check_text_of_page_title()

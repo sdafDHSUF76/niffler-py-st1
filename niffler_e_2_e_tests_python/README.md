@@ -51,11 +51,11 @@ README."Запуск Niffler в докере" Выполнить 4 и 6 шаг(�
 Перед тем как запустить тесты откройте новую console, чтобы там ввести эту команду
 
 ```bash
-cd ..
+cd niffler_e_2_e_tests_python
 ```
-Так мы попадем в корень проекта, где тесты лежат
+Так мы попадем в папку тестов
 ```bash
-pytest niffler_e_2_e_tests_python/presentation/authorization/main/profile/test_profile.py niffler_e_2_e_tests_python/presentation/authorization/main/tests_main.py niffler_e_2_e_tests_python/presentation/authorization/test_authorization.py niffler_e_2_e_tests_python/presentation/registration/test_registration.py niffler_e_2_e_tests_python/presentation/test_presentation.py -v
+python -m pytest presentation/authorization/main/profile/test_profile.py presentation/authorization/main/tests_main.py presentation/authorization/test_authorization.py presentation/registration/test_registration.py presentation/test_presentation.py -v
 ```
 и сама команда для тестов
 

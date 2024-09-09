@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
+from pages.register_page import RegisterPage
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page

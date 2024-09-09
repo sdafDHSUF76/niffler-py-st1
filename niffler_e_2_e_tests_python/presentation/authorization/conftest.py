@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
+from pages.login_page import LoginPage
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
-    from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
-    from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
+    from pages.main_page import MainPage
+    from pages.presentation_page import PresentationPage
 
 
 @pytest.fixture(scope='session')

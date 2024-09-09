@@ -3,7 +3,7 @@ import os
 import dotenv
 
 dotenv.load_dotenv(''.join((
-    os.path.abspath(__file__).split(__name__.split('.')[1])[0],
+    os.path.abspath(__file__).split(__name__.split('.')[0])[0],
     '.env',
 )))
 

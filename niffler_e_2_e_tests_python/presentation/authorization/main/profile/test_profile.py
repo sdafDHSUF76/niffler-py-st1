@@ -2,14 +2,14 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
-from niffler_e_2_e_tests_python.presentation.authorization.main.profile.profile_page import (
+from configs import TEST_PASSWORD, TEST_USER
+from pages.profile_page import (
     ProfilePage,
 )
 
 if TYPE_CHECKING:
 
-    from niffler_e_2_e_tests_python.fixtures.database import DB
+    from fixtures.database import DB
 
 
 @pytest.fixture
