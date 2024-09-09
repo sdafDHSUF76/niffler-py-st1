@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Union
 
 import allure
-
 from utils.helper_logic import MixinSimplifyingLogic
 
 if TYPE_CHECKING:

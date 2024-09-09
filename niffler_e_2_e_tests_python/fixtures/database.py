@@ -1,11 +1,7 @@
 import re
 from typing import Iterable
 
-import pytest
 import structlog as structlog
-from sqlalchemy import Connection, Engine, Row, create_engine, text
-from sqlalchemy.orm import Session
-
 from configs import (
     DB_HOST,
     DB_NAME_NIFFLER_AUTH,
@@ -16,6 +12,8 @@ from configs import (
     DB_USER_NAME,
     PASSWORD_FOR_DB,
 )
+from sqlalchemy import Connection, Engine, Row, text
+from sqlalchemy.orm import Session
 
 logger = structlog.get_logger('sql')
 

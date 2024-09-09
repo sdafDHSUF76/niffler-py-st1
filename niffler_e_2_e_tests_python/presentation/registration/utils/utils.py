@@ -1,14 +1,13 @@
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
-from utils.client_api import ClientApi
 from configs import TEST_PASSWORD, TEST_USER
+from utils.client_api import ClientApi
 
 if TYPE_CHECKING:
 
-    from requests import Response
-
     from fixtures.database import DB
+    from requests import Response
 
 
 def prepare_test_user(db_niffler_auth: 'DB') -> None:

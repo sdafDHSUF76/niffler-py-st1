@@ -1,8 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
 import pytest
-
-from utils.client_api import ClientApi
 from configs import FRONT_URL, TEST_PASSWORD, TEST_USER
 from fixtures.conftest import db_niffler_spend  # noqa F401
 from presentation.authorization.main.profile.conftest import (  # noqa F401
@@ -10,12 +8,12 @@ from presentation.authorization.main.profile.conftest import (  # noqa F401
     clear_spend_and_category_before,
     create_categories,
 )
+from utils.client_api import ClientApi
 from utils.utils import get_join_url
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
     from _pytest.mark import Mark
-
     from fixtures.database import DB
     from pages.main_page import MainPage
 

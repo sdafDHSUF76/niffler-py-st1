@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 import pkce
 import requests
-
 from configs import AUTH_URL, FRONT_URL, GATEWAY_URL
 from pages.login_page import LoginPage
 from pages.register_page import RegisterPage

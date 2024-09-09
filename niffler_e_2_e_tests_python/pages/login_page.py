@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING
 
 import allure
-
 from configs import AUTH_URL
-from utils.playwright_helper import PlaywrightHelper
 from pages.presentation_page import PresentationPage
+from utils.playwright_helper import PlaywrightHelper
 from utils.utils import get_join_url
 
 if TYPE_CHECKING:

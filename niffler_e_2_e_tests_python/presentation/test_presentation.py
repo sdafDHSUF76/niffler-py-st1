@@ -1,10 +1,6 @@
 import pytest
-
-from presentation.authorization.main.conftest import (  # noqa F401
-    logout_before,
-    main_page,
-)
 from pages.presentation_page import PresentationPage
+from presentation.authorization.main.conftest import logout_before, main_page  # noqa F401
 
 
 class TestDisplay:

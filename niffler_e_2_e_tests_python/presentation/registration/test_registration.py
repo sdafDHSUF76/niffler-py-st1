@@ -1,14 +1,10 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from faker import Faker
-
 from configs import TEST_USER
+from faker import Faker
 from presentation.authorization.conftest import login_page  # noqa F401
-from presentation.authorization.main.conftest import (  # noqa F401
-    logout_before,
-    main_page,
-)
+from presentation.authorization.main.conftest import logout_before, main_page  # noqa F401
 
 if TYPE_CHECKING:
     from fixtures.database import DB

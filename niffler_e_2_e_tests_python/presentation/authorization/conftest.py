@@ -2,14 +2,12 @@ import re
 from typing import TYPE_CHECKING
 
 import pytest
-
 from pages.login_page import LoginPage
 
 if TYPE_CHECKING:
-    from playwright.sync_api import Page
-
     from pages.main_page import MainPage
     from pages.presentation_page import PresentationPage
+    from playwright.sync_api import Page
 
 
 @pytest.fixture(scope='session')

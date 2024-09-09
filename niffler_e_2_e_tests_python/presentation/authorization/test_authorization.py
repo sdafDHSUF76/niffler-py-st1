@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from faker import Faker
-
 from configs import TEST_PASSWORD, TEST_USER
+from faker import Faker
 from presentation.authorization.enums import ErrorAuthorization
 from presentation.authorization.main.conftest import (  # noqa F401
     logout_after,

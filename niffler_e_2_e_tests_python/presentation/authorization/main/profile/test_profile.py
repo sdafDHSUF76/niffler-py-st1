@@ -1,11 +1,8 @@
 from typing import TYPE_CHECKING
 
 import pytest
-
 from configs import TEST_PASSWORD, TEST_USER
-from pages.profile_page import (
-    ProfilePage,
-)
+from pages.profile_page import ProfilePage
 
 if TYPE_CHECKING:
 

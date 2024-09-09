@@ -1,23 +1,19 @@
 from typing import TYPE_CHECKING, Optional
 
 import pytest
-
-from utils.client_api import ClientApi
 from configs import TEST_PASSWORD, TEST_USER
 from fixtures.conftest import db_niffler_spend  # noqa F401
-from pages.profile_page import (
-    ProfilePage,
-)
+from pages.profile_page import ProfilePage
+from utils.client_api import ClientApi
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
     from _pytest.mark import Mark
-    from playwright.sync_api import Page
-
     from fixtures.database import DB
     from pages.login_page import LoginPage
     from pages.main_page import MainPage
     from pages.presentation_page import PresentationPage
+    from playwright.sync_api import Page
 
 
 @pytest.fixture(scope='session')

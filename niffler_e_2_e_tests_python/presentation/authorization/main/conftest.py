@@ -1,15 +1,13 @@
 from typing import TYPE_CHECKING
 
 import pytest
-
 from configs import TEST_PASSWORD, TEST_USER
 from pages.main_page import MainPage
 
 if TYPE_CHECKING:
-    from playwright.sync_api import Page
-
     from pages.login_page import LoginPage
     from pages.presentation_page import PresentationPage
+    from playwright.sync_api import Page
 
 
 @pytest.fixture(scope='session')

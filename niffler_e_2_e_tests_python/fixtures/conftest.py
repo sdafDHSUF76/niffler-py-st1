@@ -1,10 +1,12 @@
 import pytest
-from sqlalchemy import create_engine
-
 from fixtures.database import (
-    DB, DATABASE_NIFFLER_USERDATA_URL, DATABASE_NIFFLER_SPEND_URL,
-    DATABASE_NIFFLER_CURRENCY_URL, DATABASE_NIFFLER_AUTH_URL,
+    DATABASE_NIFFLER_AUTH_URL,
+    DATABASE_NIFFLER_CURRENCY_URL,
+    DATABASE_NIFFLER_SPEND_URL,
+    DATABASE_NIFFLER_USERDATA_URL,
+    DB,
 )
+from sqlalchemy import create_engine
 
 
 @pytest.fixture(scope='session')

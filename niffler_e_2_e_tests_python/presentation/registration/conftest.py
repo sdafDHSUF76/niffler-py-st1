@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 import pytest
-
 from pages.register_page import RegisterPage
 
 if TYPE_CHECKING:

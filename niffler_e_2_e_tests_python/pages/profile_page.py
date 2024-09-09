@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING, Optional
 
 import allure
-
 from configs import FRONT_URL
 from utils.playwright_helper import PlaywrightHelper
 from utils.utils import get_join_url
