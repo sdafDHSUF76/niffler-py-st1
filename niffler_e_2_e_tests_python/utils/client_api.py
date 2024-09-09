@@ -4,11 +4,10 @@ import allure
 import pkce
 import requests
 from allure_commons.types import AttachmentType
+from configs import AUTH_URL, FRONT_URL, GATEWAY_URL
+from pages.login_page import LoginPage
+from pages.register_page import RegisterPage
 from requests_toolbelt.utils.dump import dump_response
-
-from niffler_e_2_e_tests_python.configs import AUTH_URL, FRONT_URL, GATEWAY_URL
-from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
-from niffler_e_2_e_tests_python.presentation.registration.register_page import RegisterPage
 
 if TYPE_CHECKING:
     from requests import Response, Session

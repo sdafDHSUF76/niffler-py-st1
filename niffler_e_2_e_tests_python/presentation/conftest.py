@@ -1,15 +1,13 @@
 from typing import TYPE_CHECKING
 
 import pytest
-
-from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
-from niffler_e_2_e_tests_python.presentation.registration.utils import prepare_test_user
-from niffler_e_2_e_tests_python.fixtures.database import db_niffler_auth  # noqa F401
+from fixtures.conftest import db_niffler_auth  # noqa F401
+from pages.presentation_page import PresentationPage
+from presentation.registration.utils.utils import prepare_test_user
 
 if TYPE_CHECKING:
+    from fixtures.database import DB
     from playwright.sync_api import Page
-
-    from niffler_e_2_e_tests_python.fixtures.database import DB
 
 
 @pytest.fixture(scope='session')

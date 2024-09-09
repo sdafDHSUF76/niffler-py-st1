@@ -2,19 +2,18 @@ from typing import TYPE_CHECKING
 
 import allure
 import pytest
+from configs import TEST_PASSWORD, TEST_USER
 from faker import Faker
-
-from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
-from niffler_e_2_e_tests_python.presentation.authorization.enums import ErrorAuthorization
-from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
+from presentation.authorization.enums import ErrorAuthorization
+from presentation.authorization.main.conftest import (  # noqa F401
     logout_after,
     logout_before,
     main_page,
 )
 
 if TYPE_CHECKING:
-    from niffler_e_2_e_tests_python.presentation.authorization.login_page import LoginPage
-    from niffler_e_2_e_tests_python.presentation.authorization.main.main_page import MainPage
+    from pages.login_page import LoginPage
+    from pages.main_page import MainPage
 
 
 @allure.epic(

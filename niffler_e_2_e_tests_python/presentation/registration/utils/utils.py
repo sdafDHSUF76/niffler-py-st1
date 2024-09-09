@@ -1,14 +1,13 @@
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
-from niffler_e_2_e_tests_python.client_api import ClientApi
-from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
+from configs import TEST_PASSWORD, TEST_USER
+from utils.client_api import ClientApi
 
 if TYPE_CHECKING:
 
+    from fixtures.database import DB
     from requests import Response
-
-    from niffler_e_2_e_tests_python.fixtures.database import DB
 
 
 def prepare_test_user(db_niffler_auth: 'DB') -> None:

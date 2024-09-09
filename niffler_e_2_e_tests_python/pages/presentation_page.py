@@ -1,9 +1,8 @@
 from typing import TYPE_CHECKING
 
 import allure
-
-from niffler_e_2_e_tests_python.configs import FRONT_URL
-from niffler_e_2_e_tests_python.playwright_helper import PlaywrightHelper
+from configs import FRONT_URL
+from utils.playwright_helper import PlaywrightHelper
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page

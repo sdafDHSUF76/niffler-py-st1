@@ -3,9 +3,8 @@ from typing import TYPE_CHECKING
 import pytest
 from _pytest.fixtures import SubRequest
 from allure_commons.reporter import AllureReporter
+from fixtures.conftest import db_niffler_auth  # noqa F401
 from playwright.sync_api import Browser, Page, sync_playwright
-
-from niffler_e_2_e_tests_python.fixtures.database import db_niffler_auth  # noqa F401
 
 if TYPE_CHECKING:
     from _pytest.config import PytestPluginManager

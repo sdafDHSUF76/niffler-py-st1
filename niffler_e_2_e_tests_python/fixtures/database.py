@@ -2,13 +2,9 @@ import re
 from typing import TYPE_CHECKING, Iterable
 
 import allure
-import pytest
 import structlog as structlog
 from allure_commons.types import AttachmentType
-from sqlalchemy import Connection, Engine, Row, create_engine, event, text
-from sqlalchemy.orm import Session
-
-from niffler_e_2_e_tests_python.configs import (
+from configs import (
     DB_HOST,
     DB_NAME_NIFFLER_AUTH,
     DB_NAME_NIFFLER_CURRENCY,
@@ -18,6 +14,8 @@ from niffler_e_2_e_tests_python.configs import (
     DB_USER_NAME,
     PASSWORD_FOR_DB,
 )
+from sqlalchemy import Connection, Engine, Row, event, text
+from sqlalchemy.orm import Session
 
 if TYPE_CHECKING:
     import cursor as cursor_
@@ -114,55 +112,3 @@ class DB:
     def close(self) -> None:
         """Закрыть подключение к базе данных."""
         self.conn.close()
-
-
-@pytest.fixture(scope='session')
-def db_niffler_auth() -> DB:
-    """Получаем доступ к базе данных niffler_auth, чтобы делать в ней запросы."""
-    mydb: DB = DB(
-        create_engine(
-            DATABASE_NIFFLER_AUTH_URL,
-            # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
-        ),
-    )
-    yield mydb
-    mydb.close()
-
-
-@pytest.fixture(scope='session')
-def db_niffler_currency() -> DB:
-    """Получаем доступ к базе данных niffler_currency, чтобы делать в ней запросы."""
-    mydb: DB = DB(
-        create_engine(
-            DATABASE_NIFFLER_CURRENCY_URL,
-            # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
-        ),
-    )
-    yield mydb
-    mydb.close()
-
-
-@pytest.fixture(scope='session')
-def db_niffler_spend() -> DB:
-    """Получаем доступ к базе данных niffler_spend, чтобы делать в ней запросы."""
-    mydb: DB = DB(
-        create_engine(
-            DATABASE_NIFFLER_SPEND_URL,
-            # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
-        ),
-    )
-    yield mydb
-    mydb.close()
-
-
-@pytest.fixture(scope='session')
-def db_niffler_userdata() -> DB:
-    """Получаем доступ к базе данных niffler_userdata, чтобы делать в ней запросы."""
-    mydb: DB = DB(
-        create_engine(
-            DATABASE_NIFFLER_USERDATA_URL,
-            # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
-        ),
-    )
-    yield mydb
-    mydb.close()
