@@ -1,14 +1,13 @@
 from http import HTTPStatus
 from typing import TYPE_CHECKING
 
-from niffler_e_2_e_tests_python.client_api import ClientApi
-from niffler_e_2_e_tests_python.configs import TEST_PASSWORD, TEST_USER
+from configs import configs
+from utils.client_api import ClientApi
 
 if TYPE_CHECKING:
 
     from requests import Response
-
-    from niffler_e_2_e_tests_python.fixtures.database import DB
+    from utils.database import DB
 
 
 def prepare_test_user(db_niffler_auth: 'DB') -> None:
@@ -17,9 +16,11 @@ def prepare_test_user(db_niffler_auth: 'DB') -> None:
     Создаем через базу, если юзер есть, то не создаем.
     """
     number_of_users: int = db_niffler_auth.get_value(
-        'select count(*) from "user" where username = \'%s\'' % TEST_USER,
+        'select count(*) from "user" where username = \'%s\'' % configs['TEST_USER'],
     )[0][0]
     if not number_of_users:
-        response: 'Response' = ClientApi().create_user(TEST_USER, TEST_PASSWORD)
+        response: 'Response' = ClientApi().create_user(
+            configs['TEST_USER'], configs['TEST_PASSWORD'],
+        )
         assert response.status_code == HTTPStatus.CREATED
         assert len(response.history) == 0

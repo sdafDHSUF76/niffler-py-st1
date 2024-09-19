@@ -1,10 +1,9 @@
 from typing import TYPE_CHECKING
 
 import allure
-
-from niffler_e_2_e_tests_python.configs import AUTH_URL
-from niffler_e_2_e_tests_python.playwright_helper import PlaywrightHelper
-from niffler_e_2_e_tests_python.utils import get_join_url
+from configs import configs
+from utils.playwright_helper import PlaywrightHelper
+from utils.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
@@ -12,7 +11,7 @@ if TYPE_CHECKING:
 
 class RegisterPage(PlaywrightHelper):
     path = '/register'
-    url = get_join_url(AUTH_URL, path)
+    url = get_join_url(configs['AUTH_URL'], path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
@@ -24,7 +23,7 @@ class RegisterPage(PlaywrightHelper):
             '//p[text()="Congratulations! You\'ve registered!"]'
         )
 
-    def register_new_user(self, username: str, password: str) -> None:
+    def register_user(self, username: str, password: str) -> None:
         """Регистрация пользователя."""
         with allure.step('registering a new user'):
             self.goto_your_page()

@@ -1,8 +1,7 @@
 from typing import TYPE_CHECKING, Optional, Union
 
 import allure
-
-from niffler_e_2_e_tests_python.helper_logic import MixinSimplifyingLogic
+from utils.helper_logic import MixinSimplifyingLogic
 
 if TYPE_CHECKING:
     from playwright.sync_api import Locator, Page

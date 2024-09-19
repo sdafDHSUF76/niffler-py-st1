@@ -1,10 +1,6 @@
 import pytest
-
-from niffler_e_2_e_tests_python.presentation.authorization.main.conftest import (  # noqa F401
-    logout_before,
-    main_page,
-)
-from niffler_e_2_e_tests_python.presentation.presentation_page import PresentationPage
+from pages.presentation_page import PresentationPage
+from tests.authorization.main.conftest import logout_before, main_page  # noqa F401
 
 
 class TestDisplay:
