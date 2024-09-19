@@ -55,7 +55,7 @@ cd niffler_e_2_e_tests_python
 ```
 Так мы попадем в папку тестов
 ```bash
-python -m pytest presentation/authorization/main/profile/test_profile.py presentation/authorization/main/tests_main.py presentation/authorization/test_authorization.py presentation/registration/test_registration.py presentation/test_presentation.py -v
+python -m pytest tests/authorization/main/profile/test_profile.py tests/authorization/main/tests_main.py tests/authorization/test_authorization.py tests/registration/test_registration.py tests/test_presentation.py -v
 ```
 и сама команда для тестов
 
