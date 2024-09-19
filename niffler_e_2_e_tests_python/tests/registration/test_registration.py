@@ -2,16 +2,16 @@ from typing import TYPE_CHECKING
 
 import allure
 import pytest
-from configs import TEST_USER
+from configs import configs
 from faker import Faker
-from presentation.authorization.conftest import login_page  # noqa F401
-from presentation.authorization.main.conftest import logout_before, main_page  # noqa F401
+from tests.authorization.conftest import login_page  # noqa F401
+from tests.authorization.main.conftest import logout_before, main_page  # noqa F401
 
 if TYPE_CHECKING:
-    from fixtures.database import DB
     from pages.login_page import LoginPage
     from pages.main_page import MainPage
     from pages.register_page import RegisterPage
+    from utils.database import DB
 
 
 @pytest.fixture
@@ -21,9 +21,9 @@ def clear_extra_users(db_niffler_auth: 'DB'):
     db_niffler_auth.execute(
         'delete from authority'
         ' where user_id in (select id from "user" where username != \'%s\')'
-        % TEST_USER,
+        % configs['TEST_USER'],
     )
-    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % TEST_USER)
+    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % configs['TEST_USER'])
 
 
 @allure.story('User registration via the UI')

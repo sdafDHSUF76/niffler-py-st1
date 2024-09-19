@@ -1,13 +1,12 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from fixtures.conftest import db_niffler_auth  # noqa F401
 from pages.presentation_page import PresentationPage
-from presentation.registration.utils.utils import prepare_test_user
+from tests.registration.utils.utils import prepare_test_user
 
 if TYPE_CHECKING:
-    from fixtures.database import DB
     from playwright.sync_api import Page
+    from utils.database import DB
 
 
 @pytest.fixture(scope='session')

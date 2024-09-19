@@ -47,7 +47,7 @@ cd ..
 ```
 Так мы попадем в корень проекта, где тесты лежат
 ```bash
-python -m pytest presentation/authorization/main/profile/test_profile.py presentation/authorization/main/tests_main.py presentation/authorization/test_authorization.py presentation/registration/test_registration.py presentation/test_presentation.py -v --alluredir=allure-result --clean-alluredir --allure-no-capture
+python -m pytest tests/authorization/main/profile/test_profile.py tests/authorization/main/tests_main.py tests/authorization/test_authorization.py tests/registration/test_registration.py tests/test_presentation.py -v --alluredir=allure-result --clean-alluredir --allure-no-capture
 ```
 и сама команда для тестов(тут у нас также сгенерируется allure отчет)
 ```bash
@@ -58,7 +58,7 @@ allure serve .\allure-result\
 
 ----
 ```bash
-python -m pytest presentation/authorization/main/profile/test_profile.py presentation/authorization/main/tests_main.py presentation/authorization/test_authorization.py presentation/registration/test_registration.py presentation/test_presentation.py -v
+python -m pytest tests/authorization/main/profile/test_profile.py tests/authorization/main/tests_main.py tests/authorization/test_authorization.py tests/registration/test_registration.py tests/test_presentation.py -v
 ```
 
 команда, для обычного запуска автотестов(без allure)

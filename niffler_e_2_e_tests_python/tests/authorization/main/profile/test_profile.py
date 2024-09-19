@@ -2,12 +2,12 @@ from typing import TYPE_CHECKING
 
 import allure
 import pytest
-from configs import TEST_PASSWORD, TEST_USER
+from configs import configs
 from pages.profile_page import ProfilePage
 
 if TYPE_CHECKING:
 
-    from fixtures.database import DB
+    from utils.database import DB
 
 
 @pytest.fixture
@@ -49,7 +49,7 @@ def refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db(
     """
     if profile_page.driver.url == profile_page.url:
         categories_in_db: int = db_niffler_spend.get_value(
-            'select count(*) from category where username = \'%s\'' % TEST_USER
+            'select count(*) from category where username = \'%s\'' % configs['TEST_USER']
         )[0][0]
         categories_in_front: int = profile_page.categories_list.count()
         if categories_in_db != categories_in_front:
@@ -102,7 +102,11 @@ class TestProfile:
         'create a database table to store spending categories',
     )
     @pytest.mark.parameter_data(
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'yuio'}},
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'yuio'},
+        },
     )
     @pytest.mark.usefixtures(
         'create_categories',
@@ -125,14 +129,46 @@ class TestProfile:
         'create a database table to store spending categories',
     )
     @pytest.mark.parameter_data(
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category1'}},
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category2'}},
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category3'}},
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category4'}},
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category5'}},
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category6'}},
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category7'}},
-        {'user': TEST_USER, 'password': TEST_PASSWORD, 'category': {'category': 'category8'}},
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'category1'},
+        },
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'category2'},
+        },
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'category3'},
+        },
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'category4'},
+        },
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'category5'},
+        },
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'category6'},
+        },
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'category7'},
+        },
+        {
+            'user': configs['TEST_USER'],
+            'password': configs['TEST_PASSWORD'],
+            'category': {'category': 'category8'},
+        },
     )
     @pytest.mark.usefixtures(
         'create_categories',

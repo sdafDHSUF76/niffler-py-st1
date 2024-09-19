@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import allure
-from configs import FRONT_URL
+from configs import configs
 from utils.playwright_helper import PlaywrightHelper
 from utils.utils import get_join_url
 
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class MainPage(PlaywrightHelper):
     path = '/main'
-    url = get_join_url(FRONT_URL, path)
+    url = get_join_url(configs['FRONT_URL'], path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
