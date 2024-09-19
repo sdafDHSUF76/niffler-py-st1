@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 import allure
 import pkce
 import requests
-from allure_commons.types import AttachmentType
 from configs import configs
 from pages.login_page import LoginPage
 from pages.register_page import RegisterPage

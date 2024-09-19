@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import allure
-from configs import AUTH_URL
+from configs import configs
 from pages.presentation_page import PresentationPage
 from utils.playwright_helper import PlaywrightHelper
 from utils.utils import get_join_url
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class LoginPage(PlaywrightHelper):
     path = '/login'
-    url = get_join_url(AUTH_URL, path)
+    url = get_join_url(configs['AUTH_URL'], path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
@@ -39,6 +39,6 @@ class LoginPage(PlaywrightHelper):
 
         Эти шаги повторяются, поэтому вынес в отдельный метод.
         """
-        self.goto_url(AUTH_URL)
+        self.goto_url(configs['AUTH_URL'])
         PresentationPage(self.driver).click_on_login_button()
         self.authorization(username, password)

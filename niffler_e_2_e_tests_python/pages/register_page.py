@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import allure
-from configs import AUTH_URL
+from configs import configs
 from utils.playwright_helper import PlaywrightHelper
 from utils.utils import get_join_url
 
@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 @allure.epic('features (what the user can do) for an unauthorized user')
 class RegisterPage(PlaywrightHelper):
     path = '/register'
-    url = get_join_url(AUTH_URL, path)
+    url = get_join_url(configs['AUTH_URL'], path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
