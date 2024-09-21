@@ -8,11 +8,11 @@ from utils.client_api import ClientApi
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
     from _pytest.mark import Mark
-    from utils.database import DB
     from pages.login_page import LoginPage
     from pages.main_page import MainPage
     from pages.presentation_page import PresentationPage
     from playwright.sync_api import Page
+    from utils.database import DB
 
 
 @pytest.fixture(scope='session')

@@ -3,8 +3,9 @@ from typing import TYPE_CHECKING, Iterable
 
 import allure
 import structlog as structlog
+from allure_commons.types import AttachmentType
 from configs import configs
-from sqlalchemy import Connection, Engine, Row, text
+from sqlalchemy import Connection, Engine, Row, event, text
 from sqlalchemy.orm import Session
 
 if TYPE_CHECKING:

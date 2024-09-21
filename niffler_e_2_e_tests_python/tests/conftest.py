@@ -5,8 +5,8 @@ from pages.presentation_page import PresentationPage
 from tests.registration.utils.utils import prepare_test_user
 
 if TYPE_CHECKING:
-    from utils.database import DB
     from playwright.sync_api import Page
+    from utils.database import DB
 
 pytest_plugins = ('tests.authorization.main.conftest')
 
