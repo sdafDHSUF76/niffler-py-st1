@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pkce
 import requests
-from configs import configs
+from configs import AUTH_URL, FRONT_URL, GATEWAY_URL
 from pages.login_page import LoginPage
 from pages.register_page import RegisterPage
 
@@ -19,12 +19,12 @@ class ClientApi:
     def create_user(self, user_name: str, password: str) -> 'Response':
         """Создать пользователя."""
         cookie: str = '; '.join((
-            self.request.get(configs['AUTH_URL']).history[0].headers['Set-Cookie'].replace(
-                ', ', ''
-            ).split('; Path=/')[:2]
+            self.request.get(AUTH_URL).history[0].headers['Set-Cookie'].replace(', ', '').split(
+                '; Path=/',
+            )[:2]
         ))
         return self.request.post(
-            f'{configs["AUTH_URL"]}{RegisterPage.path}',
+            f'{AUTH_URL}{RegisterPage.path}',
             data=dict(
                 _csrf=cookie.split('; ')[0].split('XSRF-TOKEN=')[1],
                 username=user_name,
@@ -37,7 +37,7 @@ class ClientApi:
     def add_spend(self, data_spend: dict, token: str) -> None:
         """Добавить трату."""
         self.request.post(
-            f'{configs["GATEWAY_URL"]}/api/spends/add',
+            f'{GATEWAY_URL}/api/spends/add',
             json=data_spend,
             headers={
                 'Authorization': token,
@@ -48,7 +48,7 @@ class ClientApi:
     def add_category(self, data_category: dict, token: str) -> None:
         """Добавить трату."""
         self.request.post(
-            f'{configs["GATEWAY_URL"]}/api/categories/add',
+            f'{GATEWAY_URL}/api/categories/add',
             json=data_category,
             headers={
                 'Authorization': token,
@@ -61,12 +61,12 @@ class ClientApi:
         code_verifier: str = pkce.generate_code_verifier(length=43)
         code_challenge: str = pkce.get_code_challenge(code_verifier)
         response0: 'Response' = self.request.get(
-            f'{configs["AUTH_URL"]}/oauth2/authorize?',
+            f'{AUTH_URL}/oauth2/authorize?',
             params={
                 'response_type': 'code',
                 'client_id': 'client',
                 'scope': 'openid',
-                'redirect_uri': f'{configs["FRONT_URL"]}/authorized',
+                'redirect_uri': f'{FRONT_URL}/authorized',
                 'code_challenge': code_challenge,
                 'code_challenge_method': 'S256',
             },
@@ -74,7 +74,7 @@ class ClientApi:
         xsrf: str = response0.headers.get('X-XSRF-TOKEN')
         jsessionid1: str = response0.history[0].headers.get('Set-Cookie').split('; Path=/')[0]
         response1: 'Response' = self.request.post(
-            f'{configs["AUTH_URL"]}{LoginPage.path}',
+            f'{AUTH_URL}{LoginPage.path}',
             data={
                 '_csrf': xsrf,
                 'username': user_name,
@@ -86,14 +86,14 @@ class ClientApi:
             },
         )
         url_token: str = response1.history[1].headers.get('Location').split(
-            f'{configs["FRONT_URL"]}/authorized?code=',
+            f'{FRONT_URL}/authorized?code=',
         )[1]
         jsessionid2: str = response1.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
         response2: 'Response' = self.request.post(
-            f'{configs["AUTH_URL"]}/oauth2/token',
+            f'{AUTH_URL}/oauth2/token',
             data={
                 'code': url_token,
-                'redirect_uri': f'{configs["FRONT_URL"]}/authorized',
+                'redirect_uri': f'{FRONT_URL}/authorized',
                 'code_verifier': code_verifier,
                 'grant_type': "authorization_code",
                 'client_id': 'client'

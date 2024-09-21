@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from configs import configs
+from configs import FRONT_URL
 from utils.playwright_helper import PlaywrightHelper
 
 if TYPE_CHECKING:
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class PresentationPage(PlaywrightHelper):
-    url = configs['FRONT_URL']
+    url = FRONT_URL
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
