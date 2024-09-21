@@ -7,7 +7,7 @@ from pages.profile_page import ProfilePage
 
 if TYPE_CHECKING:
 
-    from fixtures.database import DB
+    from utils.database import DB
 
 
 @pytest.fixture
