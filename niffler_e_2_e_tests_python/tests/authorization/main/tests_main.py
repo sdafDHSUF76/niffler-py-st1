@@ -3,11 +3,6 @@ from typing import TYPE_CHECKING, Optional
 import allure
 import pytest
 from configs import configs
-from tests.authorization.main.profile.conftest import (  # noqa F401
-    clear_spend_and_category_after,
-    clear_spend_and_category_before,
-    create_categories,
-)
 from utils.client_api import ClientApi
 from utils.utils import get_join_url
 

@@ -10,6 +10,9 @@ if TYPE_CHECKING:
     from playwright.sync_api import Page
 
 
+pytest_plugins = ('tests.authorization.main.profile.conftest')
+
+
 @pytest.fixture(scope='session')
 def main_page(driver: 'Page') -> MainPage:
     """Получаем страницу Main со всей логикой ее."""

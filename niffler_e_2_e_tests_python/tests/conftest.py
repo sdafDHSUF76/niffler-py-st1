@@ -8,6 +8,8 @@ if TYPE_CHECKING:
     from playwright.sync_api import Page
     from utils.database import DB
 
+pytest_plugins = ('tests.authorization.main.conftest')
+
 
 @pytest.fixture(scope='session')
 def presentation_page(driver: 'Page') -> PresentationPage:

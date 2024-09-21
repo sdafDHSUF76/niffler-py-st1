@@ -6,6 +6,8 @@ from pages.register_page import RegisterPage
 if TYPE_CHECKING:
     from playwright.sync_api import Page
 
+pytest_plugins = ('tests.authorization.conftest', 'tests.authorization.main.conftest')
+
 
 @pytest.fixture(scope='session')
 def registration_page(driver: 'Page') -> RegisterPage:

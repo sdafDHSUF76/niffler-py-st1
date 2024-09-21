@@ -5,7 +5,6 @@ import pytest
 from configs import configs
 from faker import Faker
 from tests.authorization.enums import ErrorAuthorization
-from tests.authorization.main.conftest import logout_after, logout_before, main_page  # noqa F401
 
 if TYPE_CHECKING:
     from pages.login_page import LoginPage
