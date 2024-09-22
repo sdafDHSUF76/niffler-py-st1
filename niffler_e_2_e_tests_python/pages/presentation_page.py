@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import allure
 from configs import configs
-from utils.playwright_helper import PlaywrightHelper
+from tests_ui.utils.playwright_helper import PlaywrightHelper
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page

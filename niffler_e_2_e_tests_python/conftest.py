@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 import pytest
 from _pytest.fixtures import SubRequest
 from allure_commons.reporter import AllureReporter
-from playwright.sync_api import Browser, Page, sync_playwright
 from sqlalchemy import create_engine
 from utils.database import (
     DATABASE_NIFFLER_AUTH_URL,
@@ -87,14 +86,3 @@ def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
         scope_letter = fixturedef.scope[0].upper()
         item.name = f"[{scope_letter}] " + " ".join(fixturedef.argname.split("_")).title()
     # TODO сделать так и для teardown, а то у них нету буквы
-
-
-@pytest.fixture(scope='session')
-def driver() -> Page:
-    """Получить WebDriver."""
-    with sync_playwright() as playwright:
-        browser: Browser = playwright.chromium.launch(channel="chrome", headless=False)
-        page: Page = browser.new_page()
-        yield page
-        page.close()
-        browser.close()

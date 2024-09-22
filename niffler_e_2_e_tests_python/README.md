@@ -58,7 +58,7 @@ allure serve .\allure-result\
 
 ----
 ```bash
-python -m pytest tests/authorization/main/profile/test_profile.py tests/authorization/main/tests_main.py tests/authorization/test_authorization.py tests/registration/test_registration.py tests/test_presentation.py -v
+python -m pytest tests_ui/presentation/test_presentation.py tests_ui/presentation/registration/test_registration.py tests_ui/presentation/authorization/test_authorization.py tests_ui/presentation/authorization/main/tests_main.py tests_ui/presentation/authorization/main/profile/test_profile.py -v
 ```
 
 команда, для обычного запуска автотестов(без allure)

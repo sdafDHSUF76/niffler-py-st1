@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING, Optional
 import pytest
 from configs import configs
 from pages.profile_page import ProfilePage
-from utils.client_api import ClientApi
+from tests_api.clients_api.client_api import ClientApi
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest

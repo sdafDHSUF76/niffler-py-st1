@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING, Optional
 import allure
 import pytest
 from configs import configs
-from utils.client_api import ClientApi
-from utils.utils import get_join_url
+from tests_api.clients_api.client_api import ClientApi
+from tests_ui.utils.utils import get_join_url
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 @pytest.fixture
 def create_spends(request: 'SubRequest'):
-    """Создаем категории через API.
+    """Создаем трату через API.
 
     На самом деле тут только через API категория создается, а вот токен берется из UI.
     """

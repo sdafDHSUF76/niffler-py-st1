@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from pages.presentation_page import PresentationPage
     from playwright.sync_api import Page
 
-pytest_plugins = ('tests.authorization.main.conftest')
+pytest_plugins = ('tests_ui.presentation.authorization.main.conftest')
 
 
 @pytest.fixture(scope='session')

@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING, Optional
 
 import allure
 from configs import configs
-from utils.playwright_helper import PlaywrightHelper
-from utils.utils import get_join_url
+from tests_ui.utils.playwright_helper import PlaywrightHelper
+from tests_ui.utils.utils import get_join_url
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page

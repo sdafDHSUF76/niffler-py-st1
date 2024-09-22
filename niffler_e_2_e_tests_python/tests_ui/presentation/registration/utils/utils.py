@@ -2,7 +2,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from configs import configs
-from utils.client_api import ClientApi
+from tests_api.clients_api.client_api import ClientApi
 
 if TYPE_CHECKING:
 
