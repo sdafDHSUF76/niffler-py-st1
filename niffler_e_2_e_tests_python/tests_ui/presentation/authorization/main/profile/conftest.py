@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, Optional
 import pytest
 from configs import configs
 from pages.profile_page import ProfilePage
-from tests_api.clients_api.client_api import ClientApi
+from tests_api.clients_api.client_api import ClientApi, AuthorizationApi
+from tests_api.clients_api.hidden_client_api import HiddenClientApi
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
@@ -88,6 +89,6 @@ def create_categories(request: 'SubRequest'):
     for unit in marker.args:
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
-            token: str = ClientApi().get_token(unit['user'], unit['password'])
-        ClientApi().add_category(unit['category'], token)
+            token: str = AuthorizationApi().get_token(unit['user'], unit['password'])
+        HiddenClientApi().add_category(unit['category'], token)
         user_old, password_old = user, password

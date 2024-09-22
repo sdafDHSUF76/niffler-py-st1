@@ -9,36 +9,27 @@ from pages.login_page import LoginPage
 from pages.register_page import RegisterPage
 from requests_toolbelt.utils.dump import dump_response
 
+from tests_api.clients_api.base_api import BaseApi
+from tests_api.clients_api.enums import HttpMethods
+
 if TYPE_CHECKING:
     from requests import Response, Session
 
 
-class ClientApi:
-    """Методы, для работы с клиентом."""
-
-    def __init__(self):
-        self.request: Session = requests.session()
-        self.request.hooks["response"].append(self.attach_response)
-
-    @staticmethod
-    def attach_response(response: 'Response', *args, **kwargs):
-        """Приаттачить request, response к шагу, где происходит запрос.
-
-        *args, **kwargs обязательны, так как в этот метод hook передает свои параметры, и если их не
-        указать, то метод будет падать, от избытка полученных параметров.
-        """
-        attachment_name = response.request.method + " " + response.request.url
-        allure.attach(dump_response(response), attachment_name, attachment_type=AttachmentType.TEXT)
+class AuthorizationApi(BaseApi):
+    def __init__(self, base_url: str = configs['AUTH_URL']):
+        super().__init__(base_url)
 
     def create_user(self, user_name: str, password: str) -> 'Response':
         """Создать пользователя."""
         cookie: str = '; '.join((
-            self.request.get(configs['AUTH_URL']).history[0].headers['Set-Cookie'].replace(
+            self.request(HttpMethods.GET, '/').history[0].headers['Set-Cookie'].replace(
                 ', ', ''
             ).split('; Path=/')[:2]
         ))
-        return self.request.post(
-            f'{configs["AUTH_URL"]}{RegisterPage.path}',
+        return self.request(
+            HttpMethods.POST,
+            f'{RegisterPage.path}',
             data=dict(
                 _csrf=cookie.split('; ')[0].split('XSRF-TOKEN=')[1],
                 username=user_name,
@@ -48,34 +39,13 @@ class ClientApi:
             headers={'Content-Type': 'application/x-www-form-urlencoded', 'Cookie': cookie},
         )
 
-    def add_spend(self, data_spend: dict, token: str) -> None:
-        """Добавить трату."""
-        self.request.post(
-            f'{configs["GATEWAY_URL"]}/api/spends/add',
-            json=data_spend,
-            headers={
-                'Authorization': token,
-                'Content-Type': 'application/json',
-            }
-        )
-
-    def add_category(self, data_category: dict, token: str) -> None:
-        """Добавить трату."""
-        self.request.post(
-            f'{configs["GATEWAY_URL"]}/api/categories/add',
-            json=data_category,
-            headers={
-                'Authorization': token,
-                'Content-Type': 'application/json',
-            }
-        )
-
     def get_token(self, user_name: str, password: str) -> str:
         """Получить токен."""
         code_verifier: str = pkce.generate_code_verifier(length=43)
         code_challenge: str = pkce.get_code_challenge(code_verifier)
-        response0: 'Response' = self.request.get(
-            f'{configs["AUTH_URL"]}/oauth2/authorize?',
+        response0: 'Response' = self.request(
+            HttpMethods.GET,
+            '/oauth2/authorize?',
             params={
                 'response_type': 'code',
                 'client_id': 'client',
@@ -87,13 +57,10 @@ class ClientApi:
         )
         xsrf: str = response0.headers.get('X-XSRF-TOKEN')
         jsessionid1: str = response0.history[0].headers.get('Set-Cookie').split('; Path=/')[0]
-        response1: 'Response' = self.request.post(
-            f'{configs["AUTH_URL"]}{LoginPage.path}',
-            data={
-                '_csrf': xsrf,
-                'username': user_name,
-                'password': password,
-            },
+        response1: 'Response' = self.request(
+            HttpMethods.POST,
+            f'{LoginPage.path}',
+            data={'_csrf': xsrf, 'username': user_name, 'password': password},
             headers={
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Cookie': '; XSRF-TOKEN='.join((jsessionid1, xsrf)),
@@ -103,8 +70,9 @@ class ClientApi:
             f'{configs["FRONT_URL"]}/authorized?code=',
         )[1]
         jsessionid2: str = response1.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
-        response2: 'Response' = self.request.post(
-            f'{configs["AUTH_URL"]}/oauth2/token',
+        response2: 'Response' = self.request(
+            HttpMethods.POST,
+            '/oauth2/token',
             data={
                 'code': url_token,
                 'redirect_uri': f'{configs["FRONT_URL"]}/authorized',
@@ -121,3 +89,12 @@ class ClientApi:
         return ' '.join(
             (response2.json().get('token_type'), response2.json().get('access_token'))
         )
+
+
+class ClientApi(BaseApi):
+    """Методы, для работы с клиентом."""
+
+    def __init__(self, base_url: str = configs['FRONT_URL']):
+        super().__init__(base_url)
+
+

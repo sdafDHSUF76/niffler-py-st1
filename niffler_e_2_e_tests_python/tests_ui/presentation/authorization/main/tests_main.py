@@ -3,7 +3,8 @@ from typing import TYPE_CHECKING, Optional
 import allure
 import pytest
 from configs import configs
-from tests_api.clients_api.client_api import ClientApi
+from tests_api.clients_api.client_api import AuthorizationApi
+from tests_api.clients_api.hidden_client_api import HiddenClientApi
 from tests_ui.utils.utils import get_join_url
 
 if TYPE_CHECKING:
@@ -24,8 +25,8 @@ def create_spends(request: 'SubRequest'):
     for unit in marker.args:
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
-            token: str = ClientApi().get_token(unit['user'], unit['password'])
-        ClientApi().add_spend(unit['spend'], token)
+            token: str = AuthorizationApi().get_token(unit['user'], unit['password'])
+        HiddenClientApi().add_spend(unit['spend'], token)
         user_old, password_old = user, password
 
 
