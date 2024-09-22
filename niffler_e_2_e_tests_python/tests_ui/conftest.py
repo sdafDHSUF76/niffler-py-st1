@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 from pages.presentation_page import PresentationPage
-from tests.registration.utils.utils import prepare_test_user
+from tests_ui.registration.utils.utils import prepare_test_user
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page
