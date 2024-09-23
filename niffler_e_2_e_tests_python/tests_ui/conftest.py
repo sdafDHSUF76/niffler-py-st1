@@ -1,5 +1,5 @@
 import pytest
-from playwright.sync_api import Page, sync_playwright, Browser
+from playwright.sync_api import Browser, Page, sync_playwright
 
 
 @pytest.fixture(scope='session')

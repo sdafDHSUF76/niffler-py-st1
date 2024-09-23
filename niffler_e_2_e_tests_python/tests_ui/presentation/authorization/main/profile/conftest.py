@@ -17,21 +17,13 @@ if TYPE_CHECKING:
     from utils.database import DB
 
 
-pytest_plugins = (
-    'fixtures.helper_database',
-)
+pytest_plugins = ('fixtures.helper_database', 'fixtures.helper_category')
 
 
 @pytest.fixture(scope='session')
 def profile_page(driver: 'Page') -> ProfilePage:
     """Получаем страницу Profile со всей логикой ее."""
     return ProfilePage(driver)
-
-
-# @pytest.fixture
-# def clear_category_before(db_niffler_spend: 'DB') -> None:
-#     """Чистим таблицу category."""
-#     db_niffler_spend.execute('delete from category')
 
 
 @pytest.fixture(scope='class')
@@ -74,21 +66,3 @@ def goto_profile(
     пользователь авторизован и не авторизован.
     """
     pass
-
-
-@pytest.fixture
-def create_categories(request: 'SubRequest'):
-    """Создаем категории через API.
-
-    На самом деле тут только через API категория создается, а вот токен берется из UI.
-    """
-    marker: Optional['Mark'] = request.node.get_closest_marker('parameter_data')
-    user_old, password_old = None, None
-    for unit in marker.args:
-        user, password = unit['user'], unit['password']
-        if user_old != user and password_old != password:
-            token: str = AuthorizationApi().get_token(unit['user'], unit['password'])
-        HiddenClientApi().add_category(
-            RequestCreateCategory(**unit['category']), token,
-        )
-        user_old, password_old = user, password

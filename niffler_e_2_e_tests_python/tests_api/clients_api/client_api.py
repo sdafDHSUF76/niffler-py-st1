@@ -1,19 +1,13 @@
 from typing import TYPE_CHECKING
 
-import allure
 import pkce
-import requests
-from allure_commons.types import AttachmentType
 from configs import configs
-from pages.login_page import LoginPage
-from pages.register_page import RegisterPage
-from requests_toolbelt.utils.dump import dump_response
-
 from tests_api.clients_api.base_api import BaseApi
 from tests_api.clients_api.enums import HttpMethods
+from tests_api.enums.api_paths import PathUrl
 
 if TYPE_CHECKING:
-    from requests import Response, Session
+    from requests import Response
 
 
 class AuthorizationApi(BaseApi):
@@ -29,7 +23,7 @@ class AuthorizationApi(BaseApi):
         ))
         return self.request(
             HttpMethods.POST,
-            f'{RegisterPage.path}',
+            PathUrl.register.value,
             data=dict(
                 _csrf=cookie.split('; ')[0].split('XSRF-TOKEN=')[1],
                 username=user_name,
@@ -45,12 +39,12 @@ class AuthorizationApi(BaseApi):
         code_challenge: str = pkce.get_code_challenge(code_verifier)
         response0: 'Response' = self.request(
             HttpMethods.GET,
-            '/oauth2/authorize?',
+            f'{PathUrl.oauth2_authorization.value}?',
             params={
                 'response_type': 'code',
                 'client_id': 'client',
                 'scope': 'openid',
-                'redirect_uri': f'{configs["FRONT_URL"]}/authorized',
+                'redirect_uri': f'{configs["FRONT_URL"]}{PathUrl.authorization.value}',
                 'code_challenge': code_challenge,
                 'code_challenge_method': 'S256',
             },
@@ -59,7 +53,7 @@ class AuthorizationApi(BaseApi):
         jsessionid1: str = response0.history[0].headers.get('Set-Cookie').split('; Path=/')[0]
         response1: 'Response' = self.request(
             HttpMethods.POST,
-            f'{LoginPage.path}',
+            PathUrl.login.value,
             data={'_csrf': xsrf, 'username': user_name, 'password': password},
             headers={
                 'Content-Type': 'application/x-www-form-urlencoded',
@@ -67,15 +61,15 @@ class AuthorizationApi(BaseApi):
             },
         )
         url_token: str = response1.history[1].headers.get('Location').split(
-            f'{configs["FRONT_URL"]}/authorized?code=',
+            f'{configs["FRONT_URL"]}{PathUrl.authorization.value}?code=',
         )[1]
         jsessionid2: str = response1.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
         response2: 'Response' = self.request(
             HttpMethods.POST,
-            '/oauth2/token',
+            PathUrl.oauth2_token.value,
             data={
                 'code': url_token,
-                'redirect_uri': f'{configs["FRONT_URL"]}/authorized',
+                'redirect_uri': f'{configs["FRONT_URL"]}{PathUrl.authorization.value}',
                 'code_verifier': code_verifier,
                 'grant_type': "authorization_code",
                 'client_id': 'client'

@@ -4,17 +4,20 @@ from typing import TYPE_CHECKING
 
 import pytest
 import pytz as pytz
-
 from configs import configs
 from tests_api.clients_api.client_api import AuthorizationApi
 from tests_api.clients_api.hidden_client_api import HiddenClientApi
+from tests_api.enums.api_paths import PathUrl
 from tests_api.enums.category_errors import Error
-from tests_api.models.create_category import RequestCreateCategory, ResponseCreateCategory, \
-    ResponseErrorCreateCategory
+from tests_api.models.create_category import (
+    RequestCreateCategory,
+    ResponseCreateCategory,
+    ResponseErrorCreateCategory,
+)
 
 if TYPE_CHECKING:
-    from utils.database import DB
     from requests import Response
+    from utils.database import DB
 
 
 @pytest.mark.usefixtures('clear_category')
@@ -69,7 +72,7 @@ class TestUniqueCategory:
             response.json(),
         )
         assert response.status == HTTPStatus.INTERNAL_SERVER_ERROR
-        assert response.path == '/api/categories/add'
+        assert response.path == PathUrl.add_category.value
         assert response.error == Error.internal_server_error.value
         timestamp: datetime = (
             datetime.fromisoformat(response.timestamp).astimezone(moscow_timezone).replace(

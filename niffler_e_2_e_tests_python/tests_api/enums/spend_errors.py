@@ -8,5 +8,6 @@ class Type(Enum):
 class Title(Enum):
     bad_request = 'Bad Request'
 
+
 class Detail(Enum):
     bad_request = 'Failed to read request'

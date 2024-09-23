@@ -1,22 +1,30 @@
 from datetime import datetime
 from http import HTTPStatus
 
-from pydantic import BaseModel, Extra, Field, UUID4, field_validator
-
+from pydantic import UUID4, BaseModel, ConfigDict, Extra, Field, field_validator
 from tests_api.models.create_spend import UnexpectedResponseStatus
 
 
-class RequestCreateCategory(BaseModel, extra=Extra.forbid):
+class RequestCreateCategory(BaseModel):
+
+    model_config = ConfigDict(extra='forbid')
+
     category: str
 
 
-class ResponseCreateCategory(BaseModel, extra=Extra.forbid):
+class ResponseCreateCategory(BaseModel):
+
+    model_config = ConfigDict(extra='forbid')
+
     id: UUID4
     category: str = Field(min_length=3)
     username: str = Field(min_length=3)
 
 
-class ResponseErrorCreateCategory(BaseModel, extra=Extra.forbid):
+class ResponseErrorCreateCategory(BaseModel):
+
+    model_config = ConfigDict(extra='forbid')
+
     timestamp: str
     status: int
     error: str

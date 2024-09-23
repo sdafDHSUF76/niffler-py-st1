@@ -1,8 +1,7 @@
 from datetime import datetime
 from http import HTTPStatus
 
-from pydantic import BaseModel, Extra, field_validator, UUID4
-
+from pydantic import UUID4, BaseModel, ConfigDict, Extra, field_validator
 from tests_api.enums.currencies import Currencies
 
 
@@ -10,18 +9,24 @@ class UnexpectedResponseStatus(Exception):
     pass
 
 
-class RequestCreateSpend(BaseModel, extra=Extra.forbid):
+class RequestCreateSpend(BaseModel):
+
+    model_config = ConfigDict(extra='forbid')
+    
     amount: str
     description: str
     category: str
     spendDate: str
-    currency: Currencies
+    currency: str
 
 
     @field_validator('currency')
     @classmethod
-    def convert_enum_to_str(cls, v: Currencies) -> str:
-        return v.name
+    def check_currency(cls, v: str) -> str:
+        try:
+            return Currencies.__getitem__(v).name
+        except KeyError:
+            raise KeyError(f'Нету такой валюты: {v}')
 
 
     @field_validator('spendDate')
@@ -36,7 +41,10 @@ class RequestCreateSpend(BaseModel, extra=Extra.forbid):
         return ''.join((date_time, 'Z'))
 
 
-class ResponseCreateSpend(BaseModel, extra=Extra.forbid):
+class ResponseCreateSpend(BaseModel):
+
+    model_config = ConfigDict(extra='forbid')
+    
     id: UUID4
     spendDate: str
     category: str
@@ -65,7 +73,10 @@ class ResponseCreateSpend(BaseModel, extra=Extra.forbid):
             raise ValueError(f'дата не в формате isoformat: {v}')
 
 
-class ResponseErrorCreateSpend(BaseModel, extra=Extra.forbid):
+class ResponseErrorCreateSpend(BaseModel):
+
+    model_config = ConfigDict(extra='forbid')
+    
     type: str
     title: str
     status: int

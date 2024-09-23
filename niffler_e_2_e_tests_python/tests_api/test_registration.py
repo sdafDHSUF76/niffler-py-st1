@@ -2,12 +2,11 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 import pytest
-
 from tests_api.clients_api.client_api import AuthorizationApi
 
 if TYPE_CHECKING:
-    from utils.database import DB
     from requests import Response
+    from utils.database import DB
 
 
 @pytest.mark.usefixtures('clear_extra_users')

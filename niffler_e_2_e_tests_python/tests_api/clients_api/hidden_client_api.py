@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-
 from configs import configs
 from tests_api.clients_api.base_api import BaseApi
 from tests_api.clients_api.enums import HttpMethods
+from tests_api.enums.api_paths import PathUrl
 from tests_api.models.create_category import RequestCreateCategory
 from tests_api.models.create_spend import RequestCreateSpend
 
@@ -20,7 +20,7 @@ class HiddenClientApi(BaseApi):
         json: dict = data_spend if isinstance(data_spend, dict) else data_spend.model_dump()
         return self.request(
             HttpMethods.POST,
-            '/api/spends/add',
+            PathUrl.add_spend.value,
             json=json,
             headers={'Authorization': token, 'Content-Type': 'application/json'}
         )
@@ -32,7 +32,7 @@ class HiddenClientApi(BaseApi):
         )
         return self.request(
             HttpMethods.POST,
-            '/api/categories/add',
+            PathUrl.add_category.value,
             json=json,
             headers={'Authorization': token, 'Content-Type': 'application/json'}
         )
