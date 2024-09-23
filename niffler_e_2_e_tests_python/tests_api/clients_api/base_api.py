@@ -1,5 +1,5 @@
 from requests import Session
-from tests_api.clients_api.enums import HttpMethods
+from tests_api.enums.http_methods import HttpMethods
 from tests_api.utils.allure_helper import allure_attach_request
 
 

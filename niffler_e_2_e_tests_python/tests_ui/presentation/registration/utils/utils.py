@@ -2,7 +2,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 from configs import configs
-from tests_api.clients_api.client_api import ClientApi
+from tests_api.clients_api.client_api import AuthorizationApi
 
 if TYPE_CHECKING:
 
@@ -19,7 +19,7 @@ def prepare_test_user(db_niffler_auth: 'DB') -> None:
         'select count(*) from "user" where username = \'%s\'' % configs['TEST_USER'],
     )[0][0]
     if not number_of_users:
-        response: 'Response' = ClientApi().create_user(
+        response: 'Response' = AuthorizationApi().create_user(
             configs['TEST_USER'], configs['TEST_PASSWORD'],
         )
         assert response.status_code == HTTPStatus.CREATED

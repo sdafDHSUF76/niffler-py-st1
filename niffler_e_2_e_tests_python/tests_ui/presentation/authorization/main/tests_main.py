@@ -142,7 +142,7 @@ class TestHistoryOfSpending:
                 "description": "sdff",
                 "category": "category1",
                 "spendDate": "2024-08-19T19:10:07.256Z",
-                "currency": Currencies.RUB,
+                "currency": Currencies.RUB.name,
             }
         },
     )

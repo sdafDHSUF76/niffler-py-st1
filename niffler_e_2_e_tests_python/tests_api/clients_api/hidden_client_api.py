@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from configs import configs
 from tests_api.clients_api.base_api import BaseApi
-from tests_api.clients_api.enums import HttpMethods
+from tests_api.enums.http_methods import HttpMethods
 from tests_api.enums.api_paths import PathUrl
 from tests_api.models.create_category import RequestCreateCategory
 from tests_api.models.create_spend import RequestCreateSpend

@@ -1,14 +1,16 @@
 import json
-import logging
 from json import JSONDecodeError
 from typing import TYPE_CHECKING
 
 import allure
 import curlify as curlify
+import structlog
 from allure_commons.types import AttachmentType
 
 if TYPE_CHECKING:
     from requests import Response
+
+logger = structlog.get_logger('requests')
 
 
 def allure_attach_request(function):
@@ -17,15 +19,27 @@ def allure_attach_request(function):
     Декоратор логироваания запроса, хедеров запроса, хедеров ответа в allure шаг и аллюр аттачмент
     и в консоль.
     """
-    def wrapper(*args, **kwargs):
-        method, url = args[1].name, args[2]
+    def wrapper(
+        *unnamed_fields_of_api_request_from_method,
+        **named_fields_of_api_request_from_method,
+    ):
+        method, url = (
+            unnamed_fields_of_api_request_from_method[1].name,
+            unnamed_fields_of_api_request_from_method[2]
+        )
         with allure.step(f"{method} {url}"):
 
-            response: 'Response' = function(*args, **kwargs)
+            response: 'Response' = function(
+                *unnamed_fields_of_api_request_from_method,
+                **named_fields_of_api_request_from_method
+            )
 
             curl: str = curlify.to_curl(response.request)
-            logging.debug(curl)
-            logging.debug(response.text)
+            logger.debug('request\t', curl=curl)
+            logger.debug('response header\t', body=response.headers)
+            logger.debug('response body\t', body=response.text)
+            # logging.debug(curl) #не понял, как работает, но оставлю
+            # logging.debug(response.text)
 
             allure.attach(
                 body=curlify.to_curl(response.request).encode("utf8"),
@@ -45,7 +59,8 @@ def allure_attach_request(function):
                     body=response.text.encode("utf8"),
                     name=f"Response text {response.status_code}",
                     attachment_type=AttachmentType.TEXT,
-                    extension=".txt")
+                    extension=".txt"
+                )
             allure.attach(
                 body=json.dumps(dict(response.headers), indent=4).encode("utf8"),
                 name=f"Response headers {response.status_code}",

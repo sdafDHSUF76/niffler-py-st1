@@ -35,7 +35,7 @@ class TestSuccess:
         assert response.username == configs['TEST_USER']
         assert response.category == category
 
-    def test_create_category_in_database(self, db_niffler_spend: 'DB'):
+    def test_check_created_category_in_database(self, db_niffler_spend: 'DB'):
         category = 'sdf'
 
         response: 'Response' = HiddenClientApi().add_category(
@@ -90,7 +90,7 @@ class TestUniqueCategory:
 
 
 @pytest.mark.usefixtures('clear_category')
-class TestCategoryName:
+class TestCategoryTitle:
 
     @pytest.mark.parametrize(
         'category',

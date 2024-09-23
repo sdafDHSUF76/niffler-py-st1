@@ -29,7 +29,7 @@ class TestSuccess:
         },
     )
     @pytest.mark.usefixtures('clear_spend_and_category', 'create_categories')
-    def test_create_category(self):
+    def test_create_spend(self):
         spend = {
             "amount": "45",
             "description": "ee",
@@ -71,7 +71,7 @@ class TestNegative:
         },
     )
     @pytest.mark.usefixtures('clear_spend_and_category', 'create_categories')
-    def test_invalid_date_format(self):
+    def test_invalid_date_format_date_in_request_body(self):
         spend = {
             "amount": "45",
             "description": "ee",

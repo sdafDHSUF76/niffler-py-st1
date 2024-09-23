@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pkce
 from configs import configs
 from tests_api.clients_api.base_api import BaseApi
-from tests_api.clients_api.enums import HttpMethods
+from tests_api.enums.http_methods import HttpMethods
 from tests_api.enums.api_paths import PathUrl
 
 if TYPE_CHECKING:
@@ -83,10 +83,3 @@ class AuthorizationApi(BaseApi):
         return ' '.join(
             (response2.json().get('token_type'), response2.json().get('access_token'))
         )
-
-
-class ClientApi(BaseApi):
-    """Методы, для работы с клиентом."""
-
-    def __init__(self, base_url: str = configs['FRONT_URL']):
-        super().__init__(base_url)
