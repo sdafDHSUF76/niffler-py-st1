@@ -1,11 +1,6 @@
-# ДЗ #7
-1. Добавить allure steps в существующие библиотеки (page object, клиенты) и тесты;
+# ДЗ #9
+1. Написать 10-20 автотестов на API Niffler
 
-2. Добавить attachments для http и sql запросов;
-
-3. Уберите теги usefixtures из отчета с помощью pytest hooks;
-
-4. Разметить тесты с помощью epic и/или story и/или feature для организации древовидной структуры отчета во вкладке Behaviors.
 
 **Установка**
 
@@ -49,6 +44,9 @@ cd ..
 ```bash
 python -m pytest tests/authorization/main/profile/test_profile.py tests/authorization/main/tests_main.py tests/authorization/test_authorization.py tests/registration/test_registration.py tests/test_presentation.py -v --alluredir=allure-result --clean-alluredir --allure-no-capture
 ```
+```bash
+python -m pytest tests_api -v --alluredir=allure-result --clean-alluredir --allure-no-capture
+```
 и сама команда для тестов(тут у нас также сгенерируется allure отчет)
 ```bash
 allure serve .\allure-result\
@@ -59,6 +57,9 @@ allure serve .\allure-result\
 ----
 ```bash
 python -m pytest tests_ui/presentation/test_presentation.py tests_ui/presentation/registration/test_registration.py tests_ui/presentation/authorization/test_authorization.py tests_ui/presentation/authorization/main/tests_main.py tests_ui/presentation/authorization/main/profile/test_profile.py -v
+```
+```bash
+python -m pytest tests_api -v
 ```
 
 команда, для обычного запуска автотестов(без allure)

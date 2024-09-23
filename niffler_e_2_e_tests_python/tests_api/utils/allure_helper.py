@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 def allure_attach_request(function):
     """Декоратор логироваания запроса, хедеров запроса, хедеров ответа в allure шаг и аллюр аттачмент и в консоль."""
     def wrapper(*args, **kwargs):
-        method, url = args[1], args[2]
+        method, url = args[1].name, args[2]
         with allure.step(f"{method} {url}"):
 
             response: 'Response' = function(*args, **kwargs)

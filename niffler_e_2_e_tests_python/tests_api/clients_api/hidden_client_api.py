@@ -1,26 +1,38 @@
+from typing import TYPE_CHECKING
+
+
 from configs import configs
 from tests_api.clients_api.base_api import BaseApi
 from tests_api.clients_api.enums import HttpMethods
+from tests_api.models.create_category import RequestCreateCategory
+from tests_api.models.create_spend import RequestCreateSpend
+
+if TYPE_CHECKING:
+    from requests import Response
 
 
 class HiddenClientApi(BaseApi):
     def __init__(self, base_url: str = configs['GATEWAY_URL']):
         super().__init__(base_url)
 
-    def add_spend(self, data_spend: dict, token: str) -> None:
+    def add_spend(self, data_spend: RequestCreateSpend | dict, token: str) -> 'Response':
         """Добавить трату."""
-        self.request(
+        json: dict = data_spend if isinstance(data_spend, dict) else data_spend.model_dump()
+        return self.request(
             HttpMethods.POST,
             '/api/spends/add',
-            json=data_spend,
+            json=json,
             headers={'Authorization': token, 'Content-Type': 'application/json'}
         )
 
-    def add_category(self, data_category: dict, token: str) -> None:
+    def add_category(self, data_category: RequestCreateCategory | dict, token: str) -> 'Response':
         """Добавить категорию трат."""
-        self.request(
+        json: dict = (
+            data_category if isinstance(data_category, dict) else data_category.model_dump()
+        )
+        return self.request(
             HttpMethods.POST,
             '/api/categories/add',
-            json=data_category,
+            json=json,
             headers={'Authorization': token, 'Content-Type': 'application/json'}
         )

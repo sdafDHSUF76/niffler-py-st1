@@ -3,8 +3,9 @@ from typing import TYPE_CHECKING, Optional
 import pytest
 from configs import configs
 from pages.profile_page import ProfilePage
-from tests_api.clients_api.client_api import ClientApi, AuthorizationApi
+from tests_api.clients_api.client_api import AuthorizationApi
 from tests_api.clients_api.hidden_client_api import HiddenClientApi
+from tests_api.models.create_category import RequestCreateCategory
 
 if TYPE_CHECKING:
     from _pytest.fixtures import SubRequest
@@ -16,24 +17,21 @@ if TYPE_CHECKING:
     from utils.database import DB
 
 
+pytest_plugins = (
+    'fixtures.helper_database',
+)
+
+
 @pytest.fixture(scope='session')
 def profile_page(driver: 'Page') -> ProfilePage:
     """Получаем страницу Profile со всей логикой ее."""
     return ProfilePage(driver)
 
 
-@pytest.fixture
-def clear_spend_and_category_after(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category и spend."""
-    yield
-    db_niffler_spend.execute('delete from spend')
-    db_niffler_spend.execute('delete from category')
-
-
-@pytest.fixture
-def clear_category_before(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category."""
-    db_niffler_spend.execute('delete from category')
+# @pytest.fixture
+# def clear_category_before(db_niffler_spend: 'DB') -> None:
+#     """Чистим таблицу category."""
+#     db_niffler_spend.execute('delete from category')
 
 
 @pytest.fixture(scope='class')
@@ -90,5 +88,7 @@ def create_categories(request: 'SubRequest'):
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
             token: str = AuthorizationApi().get_token(unit['user'], unit['password'])
-        HiddenClientApi().add_category(unit['category'], token)
+        HiddenClientApi().add_category(
+            RequestCreateCategory(**unit['category']), token,
+        )
         user_old, password_old = user, password

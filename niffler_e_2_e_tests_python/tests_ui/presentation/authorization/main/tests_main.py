@@ -5,6 +5,8 @@ import pytest
 from configs import configs
 from tests_api.clients_api.client_api import AuthorizationApi
 from tests_api.clients_api.hidden_client_api import HiddenClientApi
+from tests_api.enums.currencies import Currencies
+from tests_api.models.create_spend import RequestCreateSpend
 from tests_ui.utils.utils import get_join_url
 
 if TYPE_CHECKING:
@@ -26,7 +28,7 @@ def create_spends(request: 'SubRequest'):
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
             token: str = AuthorizationApi().get_token(unit['user'], unit['password'])
-        HiddenClientApi().add_spend(unit['spend'], token)
+        HiddenClientApi().add_spend(RequestCreateSpend(**unit['spend']), token)
         user_old, password_old = user, password
 
 
@@ -54,7 +56,7 @@ class TestsCreatingExpenses:
             'category': {'category': 'category1'},
         },
     )
-    @pytest.mark.usefixtures('create_categories', 'goto_main', 'clear_spend_and_category_after')
+    @pytest.mark.usefixtures('clear_spend_and_category', 'create_categories', 'goto_main')
     def test_create_spend(self, main_page: 'MainPage'):
         main_page.fill_input_category('category1')
         main_page.choose_on_drop_down_list_of_spending_categories()
@@ -140,16 +142,16 @@ class TestHistoryOfSpending:
                 "description": "sdff",
                 "category": "category1",
                 "spendDate": "2024-08-19T19:10:07.256Z",
-                "currency": "RUB",
+                "currency": Currencies.RUB,
             }
         },
     )
     @pytest.mark.usefixtures(
+        'clear_spend_and_category',
         'create_categories',
         'create_spends',
         'goto_main',
         'refresh_page_when_there_is_no_spending_on_front_with_required_amount',
-        'clear_spend_and_category_after',
     )
     @allure.step
     def test_spend_delete(self, main_page: 'MainPage'):

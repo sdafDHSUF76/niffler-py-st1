@@ -11,26 +11,6 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture
-def clear_category_after(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category после теста."""
-    yield
-    db_niffler_spend.execute('delete from category')
-
-
-@pytest.fixture
-def clear_category_before(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category."""
-    db_niffler_spend.execute('delete from category')
-
-
-@pytest.fixture
-def clear_category_after(db_niffler_spend: 'DB') -> None:
-    """Чистим таблицу category после теста."""
-    yield
-    db_niffler_spend.execute('delete from category')
-
-
-@pytest.fixture
 def close_alert_after(profile_page: 'ProfilePage'):
     """Закрыть popup уведомления после теста."""
     yield
@@ -78,7 +58,7 @@ class TestProfile:
         'the form of category creations',
         'create a database table to store spending categories',
     )
-    @pytest.mark.usefixtures('goto_profile', 'clear_category_after', 'close_alert_after')
+    @pytest.mark.usefixtures('clear_category', 'goto_profile', 'close_alert_after')
     def test_crete_category(self, profile_page: 'ProfilePage'):
         categories_before: int = len(profile_page.get_values_from_category_sheet())
         profile_page.add_category('yio2')
@@ -87,7 +67,7 @@ class TestProfile:
         assert 'yio2' in categories
 
     @allure.story('an alert is displayed about the success of creating a category')
-    @pytest.mark.usefixtures('goto_profile', 'clear_category_after')
+    @pytest.mark.usefixtures('clear_category', 'goto_profile')
     @pytest.mark.parametrize(
         'category', ['yiosdf', '1'], ids=['successful alert', 'unsuccessful alert'],
     )
@@ -109,9 +89,9 @@ class TestProfile:
         },
     )
     @pytest.mark.usefixtures(
+        'clear_category',
         'create_categories',
         'goto_profile',
-        'clear_category_after',
         'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
     )
     @allure.step
@@ -171,9 +151,9 @@ class TestProfile:
         },
     )
     @pytest.mark.usefixtures(
+        'clear_category',
         'create_categories',
         'goto_profile',
-        'clear_category_after',
         'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
     )
     @allure.step
@@ -188,8 +168,8 @@ class TestProfile:
 
     @allure.story('create a database table to store spending categories')
     @pytest.mark.usefixtures(
+        'clear_category',
         'goto_profile',
-        'clear_category_before',
         'refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db',
     )
     @allure.step

@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 pytest_plugins = (
     'tests_ui.presentation.authorization.conftest',
     'tests_ui.presentation.authorization.main.conftest',
+    'fixtures.helper_database',
 )
 
 

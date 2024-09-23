@@ -2,26 +2,12 @@ from typing import TYPE_CHECKING
 
 import allure
 import pytest
-from configs import configs
 from faker import Faker
 
 if TYPE_CHECKING:
     from pages.login_page import LoginPage
     from pages.main_page import MainPage
     from pages.register_page import RegisterPage
-    from utils.database import DB
-
-
-@pytest.fixture
-def clear_extra_users(db_niffler_auth: 'DB'):
-    """Чистим созданных юзеров, кроме тестового."""
-    yield
-    db_niffler_auth.execute(
-        'delete from authority'
-        ' where user_id in (select id from "user" where username != \'%s\')'
-        % configs['TEST_USER'],
-    )
-    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % configs['TEST_USER'])
 
 
 @allure.story('User registration via the UI')

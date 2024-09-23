@@ -10,7 +10,10 @@ if TYPE_CHECKING:
     from playwright.sync_api import Page
 
 
-pytest_plugins = ('tests_ui.presentation.authorization.main.profile.conftest')
+pytest_plugins = (
+    'tests_ui.presentation.authorization.main.profile.conftest',
+    'fixtures.helper_database',
+)
 
 
 @pytest.fixture(scope='session')
