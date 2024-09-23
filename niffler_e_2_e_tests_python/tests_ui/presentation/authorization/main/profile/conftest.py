@@ -1,15 +1,10 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 import pytest
 from configs import configs
 from pages.profile_page import ProfilePage
-from tests_api.clients_api.client_api import AuthorizationApi
-from tests_api.clients_api.hidden_client_api import HiddenClientApi
-from tests_api.models.create_category import RequestCreateCategory
 
 if TYPE_CHECKING:
-    from _pytest.fixtures import SubRequest
-    from _pytest.mark import Mark
     from pages.login_page import LoginPage
     from pages.main_page import MainPage
     from pages.presentation_page import PresentationPage

@@ -1,21 +1,19 @@
 from datetime import datetime
 from http import HTTPStatus
 
-from pydantic import UUID4, BaseModel, ConfigDict, Extra, Field, field_validator
+from pydantic import UUID4, BaseModel, ConfigDict, Field, field_validator
 from tests_api.models.create_spend import UnexpectedResponseStatus
 
 
 class RequestCreateCategory(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
-
     category: str
 
 
 class ResponseCreateCategory(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
-
     id: UUID4
     category: str = Field(min_length=3)
     username: str = Field(min_length=3)
@@ -24,7 +22,6 @@ class ResponseCreateCategory(BaseModel):
 class ResponseErrorCreateCategory(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
-
     timestamp: str
     status: int
     error: str
@@ -37,7 +34,6 @@ class ResponseErrorCreateCategory(BaseModel):
             if v == value.value:
                 return v
         raise UnexpectedResponseStatus(f'Пришел неподдерживаемый http статус: {v}')
-
 
     @field_validator('timestamp')
     @classmethod

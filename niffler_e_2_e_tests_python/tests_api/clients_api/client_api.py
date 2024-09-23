@@ -90,5 +90,3 @@ class ClientApi(BaseApi):
 
     def __init__(self, base_url: str = configs['FRONT_URL']):
         super().__init__(base_url)
-
-

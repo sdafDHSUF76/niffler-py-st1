@@ -85,7 +85,9 @@ class TestNegative:
         )
 
         assert response.status_code == HTTPStatus.BAD_REQUEST
-        response: ResponseErrorCreateSpend = ResponseErrorCreateSpend.model_validate(response.json())
+        response: ResponseErrorCreateSpend = ResponseErrorCreateSpend.model_validate(
+            response.json(),
+        )
         assert response.type == Type.default.value
         assert response.title == Title.bad_request.value
         assert response.status == HTTPStatus.BAD_REQUEST

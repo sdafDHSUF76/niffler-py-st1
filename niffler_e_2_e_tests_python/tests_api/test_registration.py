@@ -38,6 +38,3 @@ class TestSuccess:
             f'Не нашелся такой юзер: {username}, по query выше\n'
             'Проверьте вручную в базе данных, что там.'
         )
-
-class TestForAnInvalidUsername:
-    pass

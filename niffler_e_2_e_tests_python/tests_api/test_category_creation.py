@@ -50,6 +50,7 @@ class TestSuccess:
         assert db_category == category
         assert db_username == configs['TEST_USER']
 
+
 @pytest.mark.usefixtures('clear_category')
 class TestUniqueCategory:
 
@@ -110,5 +111,3 @@ class TestCategoryName:
         response: ResponseCreateCategory = ResponseCreateCategory.model_validate(response.json())
         assert response.username == configs['TEST_USER']
         assert response.category == category == db_category
-
-

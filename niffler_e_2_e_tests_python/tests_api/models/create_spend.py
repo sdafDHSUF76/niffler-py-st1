@@ -1,7 +1,7 @@
 from datetime import datetime
 from http import HTTPStatus
 
-from pydantic import UUID4, BaseModel, ConfigDict, Extra, field_validator
+from pydantic import UUID4, BaseModel, ConfigDict, field_validator
 from tests_api.enums.currencies import Currencies
 
 
@@ -12,13 +12,11 @@ class UnexpectedResponseStatus(Exception):
 class RequestCreateSpend(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
-    
     amount: str
     description: str
     category: str
     spendDate: str
     currency: str
-
 
     @field_validator('currency')
     @classmethod
@@ -27,7 +25,6 @@ class RequestCreateSpend(BaseModel):
             return Currencies.__getitem__(v).name
         except KeyError:
             raise KeyError(f'Нету такой валюты: {v}')
-
 
     @field_validator('spendDate')
     @classmethod
@@ -44,7 +41,6 @@ class RequestCreateSpend(BaseModel):
 class ResponseCreateSpend(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
-    
     id: UUID4
     spendDate: str
     category: str
@@ -53,7 +49,6 @@ class ResponseCreateSpend(BaseModel):
     description: str
     username: str
 
-
     @field_validator('currency')
     @classmethod
     def check_currency(cls, v: str) -> str:
@@ -61,7 +56,6 @@ class ResponseCreateSpend(BaseModel):
             return Currencies.__getitem__(v).name
         except KeyError:
             raise KeyError(f'Нету такой валюты: {v}')
-
 
     @field_validator('spendDate')
     @classmethod
@@ -76,7 +70,6 @@ class ResponseCreateSpend(BaseModel):
 class ResponseErrorCreateSpend(BaseModel):
 
     model_config = ConfigDict(extra='forbid')
-    
     type: str
     title: str
     status: int
