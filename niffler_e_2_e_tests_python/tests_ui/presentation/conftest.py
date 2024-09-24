@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from pages.presentation_page import PresentationPage
+from tests_ui.pages.presentation_page import PresentationPage
 from tests_ui.presentation.registration.utils.utils import prepare_test_user
 
 if TYPE_CHECKING:

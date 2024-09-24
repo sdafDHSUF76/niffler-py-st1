@@ -7,8 +7,8 @@ from faker import Faker
 from tests_ui.presentation.authorization.enums import ErrorAuthorization
 
 if TYPE_CHECKING:
-    from pages.login_page import LoginPage
-    from pages.main_page import MainPage
+    from tests_ui.pages.login_page import LoginPage
+    from tests_ui.pages.main_page import MainPage
 
 
 @allure.epic(

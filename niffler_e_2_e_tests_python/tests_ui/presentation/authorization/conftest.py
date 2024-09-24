@@ -2,12 +2,12 @@ import re
 from typing import TYPE_CHECKING
 
 import pytest
-from pages.login_page import LoginPage
+from tests_ui.pages.login_page import LoginPage
 
 if TYPE_CHECKING:
-    from pages.main_page import MainPage
-    from pages.presentation_page import PresentationPage
     from playwright.sync_api import Page
+    from tests_ui.pages.main_page import MainPage
+    from tests_ui.pages.presentation_page import PresentationPage
 
 pytest_plugins = ('tests_ui.presentation.authorization.main.conftest')
 

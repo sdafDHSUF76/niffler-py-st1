@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 import pytest
 from configs import Configs
-from tests_api.clients_api.client_api import AuthorizationApi
-from tests_api.clients_api.hidden_client_api import HiddenClientApi
-from tests_api.enums.api_paths import PathUrl
+from tests_api.clients_api.authorization import Authorization
+from tests_api.clients_api.constants.api_paths import PathUrl
+from tests_api.clients_api.constants.spend_errors import Detail, Title, Type
+from tests_api.clients_api.spend import Spend
 from tests_api.enums.currencies import Currencies
-from tests_api.enums.spend_errors import Detail, Title, Type
 from tests_api.models.create_spend import (
     RequestCreateSpend,
     ResponseCreateSpend,
@@ -37,9 +37,9 @@ class TestSuccess:
             "spendDate": "2024-09-22T14:13:49.814Z",
             "currency": Currencies.RUB.name,
         }
-        response: 'Response' = HiddenClientApi().add_spend(
+        response: 'Response' = Spend().add_spend(
             RequestCreateSpend(**spend),
-            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
+            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
 
         assert response.status_code == HTTPStatus.CREATED
@@ -79,17 +79,17 @@ class TestNegative:
             "spendDate": "2024-09-22 14:13:49.814Z",
             "currency": Currencies.RUB.name,
         }
-        response: 'Response' = HiddenClientApi().add_spend(
+        response: 'Response' = Spend().add_spend(
             spend,
-            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD)
+            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD)
         )
 
         assert response.status_code == HTTPStatus.BAD_REQUEST
         response: ResponseErrorCreateSpend = ResponseErrorCreateSpend.model_validate(
             response.json(),
         )
-        assert response.type == Type.default.value
-        assert response.title == Title.bad_request.value
+        assert response.type == Type.DEFAULT
+        assert response.title == Title.BAD_REQUEST
         assert response.status == HTTPStatus.BAD_REQUEST
-        assert response.instance == PathUrl.add_spend.value
-        assert response.detail == Detail.bad_request.value
+        assert response.instance == PathUrl.ADD_SPEND
+        assert response.detail == Detail.BAD_REQUEST

@@ -3,10 +3,7 @@ from dataclasses import dataclass
 
 import dotenv
 
-dotenv.load_dotenv(''.join((
-    os.path.abspath(__file__).split(__name__.split('.')[0])[0],
-    '.env',
-)))
+dotenv.load_dotenv(''.join((os.path.abspath(__file__).split(__name__.split('.')[0])[0], '.env')))
 
 
 @dataclass

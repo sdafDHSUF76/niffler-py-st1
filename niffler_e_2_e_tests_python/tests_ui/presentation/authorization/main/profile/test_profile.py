@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 import allure
 import pytest
 from configs import Configs
-from pages.profile_page import ProfilePage
 
 if TYPE_CHECKING:
 
+    from tests_ui.pages.profile_page import ProfilePage
     from utils.database import DB
 
 
@@ -20,7 +20,7 @@ def close_alert_after(profile_page: 'ProfilePage'):
 
 @pytest.fixture
 def refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db(
-    db_niffler_spend: 'DB', profile_page: ProfilePage,
+    db_niffler_spend: 'DB', profile_page: 'ProfilePage',
 ) -> None:
     """Обновить страницу, если количество на фронте категории трат не совпадают с базой данных.
 
@@ -37,7 +37,7 @@ def refresh_page_when_there_are_no_spending_categories_on_front_what_is_in_db(
 
 
 @pytest.fixture
-def close_alert_after(profile_page: ProfilePage):
+def close_alert_after(profile_page: 'ProfilePage'):
     yield
     profile_page.close_popup()
     profile_page.check_popup_is_hidden()

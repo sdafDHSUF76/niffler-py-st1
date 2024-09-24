@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from pages.register_page import RegisterPage
+from tests_ui.pages.register_page import RegisterPage
 
 if TYPE_CHECKING:
     from playwright.sync_api import Page

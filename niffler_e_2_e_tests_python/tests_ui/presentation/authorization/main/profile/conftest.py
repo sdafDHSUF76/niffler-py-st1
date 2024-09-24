@@ -2,13 +2,13 @@ from typing import TYPE_CHECKING
 
 import pytest
 from configs import Configs
-from pages.profile_page import ProfilePage
+from tests_ui.pages.profile_page import ProfilePage
 
 if TYPE_CHECKING:
-    from pages.login_page import LoginPage
-    from pages.main_page import MainPage
-    from pages.presentation_page import PresentationPage
     from playwright.sync_api import Page
+    from tests_ui.pages.login_page import LoginPage
+    from tests_ui.pages.main_page import MainPage
+    from tests_ui.pages.presentation_page import PresentationPage
     from utils.database import DB
 
 

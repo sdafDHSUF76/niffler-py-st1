@@ -2,7 +2,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 import pytest
-from tests_api.clients_api.client_api import AuthorizationApi
+from tests_api.clients_api.user import User
 
 if TYPE_CHECKING:
     from requests import Response
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class TestSuccess:
 
     def test_registration(self):
-        response: 'Response' = AuthorizationApi().create_user('vbn', 'hjk')
+        response: 'Response' = User().create_user('vbn', 'hjk')
         assert response.status_code == HTTPStatus.CREATED
         assert response.text
         # TODO сделать парсер, что пришла html и все, что тут конкретно еще проверить не скажу
@@ -24,7 +24,7 @@ class TestSuccess:
         Тут также проверяются определенные права у юзера при создании.
         """
         username = 'vbn'
-        AuthorizationApi().create_user(username, 'hjk')
+        User().create_user(username, 'hjk')
         result_query: None | str = db_niffler_auth.get_value(
             'select 1 from "user"'
             ' where username = \'%s\''

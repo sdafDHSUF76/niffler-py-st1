@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import allure
 from configs import Configs
-from pages.presentation_page import PresentationPage
+from tests_ui.pages.presentation_page import PresentationPage
 from tests_ui.utils.playwright_helper import PlaywrightHelper
 from tests_ui.utils.utils import get_join_url
 

@@ -5,9 +5,9 @@ import pytest
 from faker import Faker
 
 if TYPE_CHECKING:
-    from pages.login_page import LoginPage
-    from pages.main_page import MainPage
-    from pages.register_page import RegisterPage
+    from tests_ui.pages.login_page import LoginPage
+    from tests_ui.pages.main_page import MainPage
+    from tests_ui.pages.register_page import RegisterPage
 
 
 @allure.story('User registration via the UI')

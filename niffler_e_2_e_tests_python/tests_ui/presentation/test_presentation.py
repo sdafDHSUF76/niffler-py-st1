@@ -1,6 +1,10 @@
+from typing import TYPE_CHECKING
+
 import allure
 import pytest
-from pages.presentation_page import PresentationPage
+
+if TYPE_CHECKING:
+    from tests_ui.pages.presentation_page import PresentationPage
 
 
 @allure.epic(
@@ -15,11 +19,11 @@ class TestDisplay:
     @allure.story('displaying buttons on the presentation page')
     @pytest.mark.usefixtures('logout_before', 'goto_presentation_url')
     @allure.step
-    def test_button_login_is_visible(self, presentation_page: PresentationPage):
+    def test_button_login_is_visible(self, presentation_page: 'PresentationPage'):
         presentation_page.check_visibility_of_login_button()
 
     @allure.story('displaying buttons on the presentation page')
     @pytest.mark.usefixtures('logout_before', 'goto_presentation_url')
     @allure.step
-    def test_button_register_is_visible(self, presentation_page: PresentationPage):
+    def test_button_register_is_visible(self, presentation_page: 'PresentationPage'):
         presentation_page.check_visibility_of_register_button()
