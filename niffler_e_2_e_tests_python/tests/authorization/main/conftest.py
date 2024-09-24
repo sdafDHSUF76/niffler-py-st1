@@ -1,13 +1,16 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from configs import TEST_PASSWORD, TEST_USER
+from configs import configs
 from pages.main_page import MainPage
 
 if TYPE_CHECKING:
     from pages.login_page import LoginPage
     from pages.presentation_page import PresentationPage
     from playwright.sync_api import Page
+
+
+pytest_plugins = ('tests.authorization.main.profile.conftest')
 
 
 @pytest.fixture(scope='session')
@@ -32,7 +35,7 @@ def goto_main_if_you_not_logged_in(
 ) -> None:
     """Перейти на страницу main если не авторизован и находишься на разных местах сайта."""
     if presentation_page.driver.url != MainPage.url:
-        login_page.goto_login_page_and_log_in(TEST_USER, TEST_PASSWORD)
+        login_page.goto_login_page_and_log_in(configs['TEST_USER'], configs['TEST_PASSWORD'])
 
 
 @pytest.fixture

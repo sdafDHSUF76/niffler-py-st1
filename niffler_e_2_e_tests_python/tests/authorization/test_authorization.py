@@ -1,25 +1,36 @@
 from typing import TYPE_CHECKING
 
+import allure
 import pytest
-from configs import TEST_PASSWORD, TEST_USER
+from configs import configs
 from faker import Faker
-from presentation.authorization.enums import ErrorAuthorization
-from presentation.authorization.main.conftest import (  # noqa F401
-    logout_after,
-    logout_before,
-    main_page,
-)
+from tests.authorization.enums import ErrorAuthorization
 
 if TYPE_CHECKING:
     from pages.login_page import LoginPage
     from pages.main_page import MainPage
 
 
+@allure.epic(
+    'Authorization page',
+    'features (what the user can do) for an unauthorized\\authorized user',
+)
+@allure.feature(
+    'features (what the user can do) for an unauthorized user',
+    'User authorization',
+)
 class TestAuthorization:
 
+    @allure.story(
+        'user authentication',
+        'After successful authorization, show the main page',
+        'Upon successful authorization, show the main page',
+        'create a database to store registered users',
+    )
     @pytest.mark.usefixtures('go_login_page', 'logout_before', 'logout_after')
+    @allure.step
     def test_authorization(self, login_page: 'LoginPage', main_page: 'MainPage'):
-        login_page.authorization(TEST_USER, TEST_PASSWORD)
+        login_page.authorization(configs['TEST_USER'], configs['TEST_PASSWORD'])
         main_page.check_text_of_page_title()
 
     @pytest.mark.usefixtures('go_login_page', 'logout_before')
@@ -35,8 +46,15 @@ class TestAuthorization:
             (Faker().user_name(), Faker().password()),
         ]
     )
+    @allure.story(
+        'user authentication',
+        'display field hints in case of authentication error',
+        'create a database to store registered users',
+        'create hints on the form, if the data sent is invalid',
+    )
+    @allure.step
     def test_error_hint_for_non_existent_creds(
         self, login: str, password: str, login_page: 'LoginPage',
     ):
-        login_page.authorization(login, TEST_PASSWORD)
+        login_page.authorization(login, configs['TEST_PASSWORD'])
         login_page.check_hint_text(ErrorAuthorization.INVALID_USER_CREDENTIALS)

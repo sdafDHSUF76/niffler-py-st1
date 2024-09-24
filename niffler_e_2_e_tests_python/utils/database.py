@@ -1,37 +1,38 @@
 import re
-from typing import Iterable
+from typing import TYPE_CHECKING, Iterable
 
+import allure
 import structlog as structlog
-from configs import (
-    DB_HOST,
-    DB_NAME_NIFFLER_AUTH,
-    DB_NAME_NIFFLER_CURRENCY,
-    DB_NAME_NIFFLER_SPEND,
-    DB_NAME_NIFFLER_USERDATA,
-    DB_PORT,
-    DB_USER_NAME,
-    PASSWORD_FOR_DB,
-)
-from sqlalchemy import Connection, Engine, Row, text
+from allure_commons.types import AttachmentType
+from configs import configs
+from sqlalchemy import Connection, Engine, Row, event, text
 from sqlalchemy.orm import Session
+
+if TYPE_CHECKING:
+    import cursor as cursor_
+    from sqlalchemy.dialects.postgresql.psycopg2 import PGExecutionContext_psycopg2
 
 logger = structlog.get_logger('sql')
 
 DATABASE_NIFFLER_USERDATA_URL = (
-    f'postgresql+psycopg2://'
-    f'{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_USERDATA}'
+    'postgresql+psycopg2://'
+    f'{configs["DB_USER_NAME"]}:{configs["PASSWORD_FOR_DB"]}'
+    f'@{configs["DB_HOST"]}:{configs["DB_PORT"]}/{configs["DB_NAME_NIFFLER_USERDATA"]}'
 )
 DATABASE_NIFFLER_SPEND_URL = (
-    f'postgresql+psycopg2://'
-    f'{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_SPEND}'
+    'postgresql+psycopg2://'
+    f'{configs["DB_USER_NAME"]}:{configs["PASSWORD_FOR_DB"]}'
+    f'@{configs["DB_HOST"]}:{configs["DB_PORT"]}/{configs["DB_NAME_NIFFLER_SPEND"]}'
 )
 DATABASE_NIFFLER_CURRENCY_URL = (
-    f'postgresql+psycopg2://'
-    f'{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_CURRENCY}'
+    'postgresql+psycopg2://'
+    f'{configs["DB_USER_NAME"]}:{configs["PASSWORD_FOR_DB"]}'
+    f'@{configs["DB_HOST"]}:{configs["DB_PORT"]}/{configs["DB_NAME_NIFFLER_CURRENCY"]}'
 )
 DATABASE_NIFFLER_AUTH_URL = (
-    f'postgresql+psycopg2://'
-    f'{DB_USER_NAME}:{PASSWORD_FOR_DB}@{DB_HOST}:{DB_PORT}/{DB_NAME_NIFFLER_AUTH}'
+    'postgresql+psycopg2://'
+    f'{configs["DB_USER_NAME"]}:{configs["PASSWORD_FOR_DB"]}'
+    f'@{configs["DB_HOST"]}:{configs["DB_PORT"]}/{configs["DB_NAME_NIFFLER_AUTH"]}'
 )
 
 
@@ -40,6 +41,21 @@ class DB:
     def __init__(self, connect: Engine):
         self.engine = connect
         self.conn: Connection = self.engine.connect()
+        event.listen(self.engine, "do_execute", fn=self.attach_sql)
+
+    @staticmethod
+    def attach_sql(
+        cursor: 'cursor_', statement: str, parameters: dict, context: 'PGExecutionContext_psycopg2',
+    ):
+        """Приаттачить sql query к шагу, где происходит запрос.
+
+        *cursor обязателен, как и другие параметры,
+        так как в этот метод hook передает свои параметры, и если их не
+        указать, то метод будет падать, от избытка полученных параметров.
+        """
+        statement_with_params: str = statement % parameters
+        name = statement.split(" ")[0] + " " + context.engine.url.database
+        allure.attach(statement_with_params, name=name, attachment_type=AttachmentType.TEXT)
 
     def get_db_name(self) -> str:
         """Get database name."""
