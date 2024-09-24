@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from _pytest.fixtures import SubRequest
 from allure_commons.reporter import AllureReporter
 from sqlalchemy import create_engine
 from utils.database import (
@@ -14,6 +13,7 @@ from utils.database import (
 
 if TYPE_CHECKING:
     from _pytest.config import PytestPluginManager
+    from _pytest.fixtures import SubRequest
     from pytest import FixtureDef
 
 
@@ -70,7 +70,7 @@ def db_niffler_userdata() -> DB:
 
 
 @pytest.hookimpl(hookwrapper=True, trylast=True)
-def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
+def pytest_fixture_setup(fixturedef: 'FixtureDef', request: 'SubRequest'):
     yield
     # Очищаем из тега allure упоминание о usefixtures
     if len(request.node.own_markers):
