@@ -1,11 +1,10 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 import allure
 import pytest
 from faker import Faker
 
 if TYPE_CHECKING:
-    from tests_ui.pages.login_page import LoginPage
     from tests_ui.pages.main_page import MainPage
     from tests_ui.pages.register_page import RegisterPage
 
@@ -24,11 +23,11 @@ class TestRegistration:
     def test_authorization_with_create_user_random(
         self,
         registration_page: 'RegisterPage',
-        login_page: 'LoginPage',
         main_page: 'MainPage',
+        goto_login_page_and_log_in: Callable[[str, str], None],
     ):
         username: str = Faker().user_name()
         password: str = Faker().password()
         registration_page.register_user(username, password)
-        login_page.goto_login_page_and_log_in(username, password)
+        goto_login_page_and_log_in(username, password)
         main_page.check_text_of_page_title()

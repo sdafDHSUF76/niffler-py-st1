@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 import allure
 from configs import Configs
-from tests_ui.pages.presentation_page import PresentationPage
 from tests_ui.utils.playwright_helper import PlaywrightHelper
 from tests_ui.utils.utils import get_join_url
 
@@ -32,13 +31,3 @@ class LoginPage(PlaywrightHelper):
         """Проверить текст подсказки."""
         with allure.step('Checking the hint message'):
             self.check_text_in_element(self.text_error, text)
-
-    @allure.step('Go to the authorization page and log in')
-    def goto_login_page_and_log_in(self, username: str, password: str) -> None:
-        """Перейти на страницу авторизации и авторизоваться.
-
-        Эти шаги повторяются, поэтому вынес в отдельный метод.
-        """
-        self.goto_url(Configs.AUTH_URL)
-        PresentationPage(self.driver).click_on_login_button()
-        self.authorization(username, password)

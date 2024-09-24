@@ -5,17 +5,17 @@ import pytest
 from tests_ui.pages.login_page import LoginPage
 
 if TYPE_CHECKING:
-    from playwright.sync_api import Page
     from tests_ui.pages.main_page import MainPage
     from tests_ui.pages.presentation_page import PresentationPage
 
-pytest_plugins = ('tests_ui.presentation.authorization.main.conftest')
 
-
-@pytest.fixture(scope='session')
-def login_page(driver: 'Page') -> LoginPage:
-    """Получаем страницу Login со всей логикой ее."""
-    return LoginPage(driver)
+@pytest.fixture
+def logout_after(main_page: 'MainPage') -> None:
+    """Выходим из под учетки юзера после теста."""
+    yield
+    if main_page.profile_button.is_visible():
+        main_page.click_logout()
+        main_page.check_that_you_not_logged_in()
 
 
 @pytest.fixture
