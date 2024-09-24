@@ -87,4 +87,4 @@ def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
         item.name = f"[{scope_letter}] " + " ".join(fixturedef.argname.split("_")).title()
     # TODO сделать так и для teardown, а то у них нету буквы
 
-#TODO сделать фикстуру, что удаляет после всех тестов юзеров, что не тестовый
+# TODO сделать фикстуру, что удаляет после всех тестов юзеров, что не тестовый

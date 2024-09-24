@@ -3,7 +3,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING
 
 import pytest
-from configs import configs
+from configs import Configs
 from tests_api.clients_api.client_api import AuthorizationApi
 from tests_api.clients_api.hidden_client_api import HiddenClientApi
 from tests_api.enums.api_paths import PathUrl
@@ -23,8 +23,8 @@ class TestSuccess:
 
     @pytest.mark.parameter_data(
         {
-            'user': configs['TEST_USER'],
-            'password': configs['TEST_PASSWORD'],
+            'user': Configs.TEST_USER,
+            'password': Configs.TEST_PASSWORD,
             'category': {'category': 'fgh'},
         },
     )
@@ -39,12 +39,12 @@ class TestSuccess:
         }
         response: 'Response' = HiddenClientApi().add_spend(
             RequestCreateSpend(**spend),
-            AuthorizationApi().get_token(configs['TEST_USER'], configs['TEST_PASSWORD']),
+            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
 
         assert response.status_code == HTTPStatus.CREATED
         response: ResponseCreateSpend = ResponseCreateSpend.model_validate(response.json())
-        assert response.username == configs['TEST_USER']
+        assert response.username == Configs.TEST_USER
         assert response.description == 'ee'
         assert response.currency == Currencies.RUB.name
         assert response.category == 'fgh'
@@ -65,8 +65,8 @@ class TestNegative:
 
     @pytest.mark.parameter_data(
         {
-            'user': configs['TEST_USER'],
-            'password': configs['TEST_PASSWORD'],
+            'user': Configs.TEST_USER,
+            'password': Configs.TEST_PASSWORD,
             'category': {'category': 'fgh'},
         },
     )
@@ -81,7 +81,7 @@ class TestNegative:
         }
         response: 'Response' = HiddenClientApi().add_spend(
             spend,
-            AuthorizationApi().get_token(configs['TEST_USER'], configs['TEST_PASSWORD'])
+            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD)
         )
 
         assert response.status_code == HTTPStatus.BAD_REQUEST

@@ -38,9 +38,9 @@ README."Запуск Niffler в докере" Выполнить 4 и 6 шаг(�
 Перед тем как запустить тесты откройте новую console, чтобы там ввести эту команду
 
 ```bash
-cd ..
+cd .\niffler_e_2_e_tests_python\
 ```
-Так мы попадем в корень проекта, где тесты лежат
+Так мы попадем в папку проекта тестов, где тесты лежат
 ```bash
 python -m pytest tests/authorization/main/profile/test_profile.py tests/authorization/main/tests_main.py tests/authorization/test_authorization.py tests/registration/test_registration.py tests/test_presentation.py -v --alluredir=allure-result --clean-alluredir --allure-no-capture
 ```
@@ -55,11 +55,10 @@ allure serve .\allure-result\
 
 
 ----
+команды, для обычного запуска автотестов(без allure)
 ```bash
 python -m pytest tests_ui/presentation/test_presentation.py tests_ui/presentation/registration/test_registration.py tests_ui/presentation/authorization/test_authorization.py tests_ui/presentation/authorization/main/tests_main.py tests_ui/presentation/authorization/main/profile/test_profile.py -v
 ```
 ```bash
 python -m pytest tests_api -v
 ```
-
-команда, для обычного запуска автотестов(без allure)

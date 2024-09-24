@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-from configs import configs
+from configs import Configs
 from tests_api.clients_api.base_api import BaseApi
-from tests_api.enums.http_methods import HttpMethods
 from tests_api.enums.api_paths import PathUrl
+from tests_api.enums.http_methods import HttpMethods
 from tests_api.models.create_category import RequestCreateCategory
 from tests_api.models.create_spend import RequestCreateSpend
 
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class HiddenClientApi(BaseApi):
-    def __init__(self, base_url: str = configs['GATEWAY_URL']):
+    def __init__(self, base_url: str = Configs.GATEWAY_URL):
         super().__init__(base_url)
 
     def add_spend(self, data_spend: RequestCreateSpend | dict, token: str) -> 'Response':

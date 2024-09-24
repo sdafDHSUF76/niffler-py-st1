@@ -1,17 +1,17 @@
 from typing import TYPE_CHECKING
 
 import pkce
-from configs import configs
+from configs import Configs
 from tests_api.clients_api.base_api import BaseApi
-from tests_api.enums.http_methods import HttpMethods
 from tests_api.enums.api_paths import PathUrl
+from tests_api.enums.http_methods import HttpMethods
 
 if TYPE_CHECKING:
     from requests import Response
 
 
 class AuthorizationApi(BaseApi):
-    def __init__(self, base_url: str = configs['AUTH_URL']):
+    def __init__(self, base_url: str = Configs.AUTH_URL):
         super().__init__(base_url)
 
     def create_user(self, user_name: str, password: str) -> 'Response':
@@ -44,7 +44,7 @@ class AuthorizationApi(BaseApi):
                 'response_type': 'code',
                 'client_id': 'client',
                 'scope': 'openid',
-                'redirect_uri': f'{configs["FRONT_URL"]}{PathUrl.authorization.value}',
+                'redirect_uri': f'{Configs.FRONT_URL}{PathUrl.authorization.value}',
                 'code_challenge': code_challenge,
                 'code_challenge_method': 'S256',
             },
@@ -61,7 +61,7 @@ class AuthorizationApi(BaseApi):
             },
         )
         url_token: str = response1.history[1].headers.get('Location').split(
-            f'{configs["FRONT_URL"]}{PathUrl.authorization.value}?code=',
+            f'{Configs.FRONT_URL}{PathUrl.authorization.value}?code=',
         )[1]
         jsessionid2: str = response1.history[0].headers.get('Set-Cookie').split('; Path=/, ')[0]
         response2: 'Response' = self.request(
@@ -69,7 +69,7 @@ class AuthorizationApi(BaseApi):
             PathUrl.oauth2_token.value,
             data={
                 'code': url_token,
-                'redirect_uri': f'{configs["FRONT_URL"]}{PathUrl.authorization.value}',
+                'redirect_uri': f'{Configs.FRONT_URL}{PathUrl.authorization.value}',
                 'code_verifier': code_verifier,
                 'grant_type': "authorization_code",
                 'client_id': 'client'

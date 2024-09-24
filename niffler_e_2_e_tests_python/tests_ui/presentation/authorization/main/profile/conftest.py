@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from configs import configs
+from configs import Configs
 from pages.profile_page import ProfilePage
 
 if TYPE_CHECKING:
@@ -44,7 +44,7 @@ def goto_profile_if_you_not_logged_in(
 ) -> None:
     """Перейти на страницу main если не авторизован и находишься на разных местах сайта."""
     if presentation_page.driver.url != ProfilePage.url:
-        login_page.goto_login_page_and_log_in(configs['TEST_USER'], configs['TEST_PASSWORD'])
+        login_page.goto_login_page_and_log_in(Configs.TEST_USER, Configs.TEST_PASSWORD)
         main_page.click_profile_button()
 
 

@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 import allure
-from configs import configs
+from configs import Configs
 from tests_ui.utils.playwright_helper import PlaywrightHelper
 
 if TYPE_CHECKING:
@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 class PresentationPage(PlaywrightHelper):
-    url = configs['FRONT_URL']
+    url = Configs.FRONT_URL
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)

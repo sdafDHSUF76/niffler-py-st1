@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 import pytz as pytz
-from configs import configs
+from configs import Configs
 from tests_api.clients_api.client_api import AuthorizationApi
 from tests_api.clients_api.hidden_client_api import HiddenClientApi
 from tests_api.enums.api_paths import PathUrl
@@ -27,12 +27,12 @@ class TestSuccess:
 
         response: 'Response' = HiddenClientApi().add_category(
             RequestCreateCategory(category=category),
-            AuthorizationApi().get_token(configs['TEST_USER'], configs['TEST_PASSWORD']),
+            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
 
         assert response.status_code == HTTPStatus.OK
         response: ResponseCreateCategory = ResponseCreateCategory.model_validate(response.json())
-        assert response.username == configs['TEST_USER']
+        assert response.username == Configs.TEST_USER
         assert response.category == category
 
     def test_check_created_category_in_database(self, db_niffler_spend: 'DB'):
@@ -40,7 +40,7 @@ class TestSuccess:
 
         response: 'Response' = HiddenClientApi().add_category(
             RequestCreateCategory(category=category),
-            AuthorizationApi().get_token(configs['TEST_USER'], configs['TEST_PASSWORD']),
+            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
 
         db_category, db_username = db_niffler_spend.get_value(
@@ -48,7 +48,7 @@ class TestSuccess:
             % response.json()['id']
         )[0]
         assert db_category == category
-        assert db_username == configs['TEST_USER']
+        assert db_username == Configs.TEST_USER
 
 
 @pytest.mark.usefixtures('clear_category')
@@ -61,11 +61,11 @@ class TestUniqueCategory:
 
         HiddenClientApi().add_category(
             RequestCreateCategory(category=category),
-            AuthorizationApi().get_token(configs['TEST_USER'], configs['TEST_PASSWORD']),
+            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
         response: 'Response' = HiddenClientApi().add_category(
             RequestCreateCategory(category=category),
-            AuthorizationApi().get_token(configs['TEST_USER'], configs['TEST_PASSWORD']),
+            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
 
         assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
@@ -100,7 +100,7 @@ class TestCategoryTitle:
     def test_different_names_category(self, category: str, db_niffler_spend: 'DB'):
         response: 'Response' = HiddenClientApi().add_category(
             RequestCreateCategory(category=category),
-            AuthorizationApi().get_token(configs['TEST_USER'], configs['TEST_PASSWORD']),
+            AuthorizationApi().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
         db_category = db_niffler_spend.get_value(
             'select category from category where id = \'%s\''
@@ -109,5 +109,5 @@ class TestCategoryTitle:
 
         assert response.status_code == HTTPStatus.OK
         response: ResponseCreateCategory = ResponseCreateCategory.model_validate(response.json())
-        assert response.username == configs['TEST_USER']
+        assert response.username == Configs.TEST_USER
         assert response.category == category == db_category

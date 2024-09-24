@@ -1,5 +1,5 @@
 import pytest
-from configs import configs
+from configs import Configs
 from utils.database import DB
 
 
@@ -9,16 +9,16 @@ def clear_extra_users(db_niffler_auth: 'DB'):
     db_niffler_auth.execute(
         'delete from authority'
         ' where user_id in (select id from "user" where username != \'%s\')'
-        % configs['TEST_USER'],
+        % Configs.TEST_USER,
     )
-    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % configs['TEST_USER'])
+    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % Configs.TEST_USER)
     yield
     db_niffler_auth.execute(
         'delete from authority'
         ' where user_id in (select id from "user" where username != \'%s\')'
-        % configs['TEST_USER'],
+        % Configs.TEST_USER,
     )
-    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % configs['TEST_USER'])
+    db_niffler_auth.execute('delete from "user" where username != \'%s\'' % Configs.TEST_USER)
 
 
 @pytest.fixture

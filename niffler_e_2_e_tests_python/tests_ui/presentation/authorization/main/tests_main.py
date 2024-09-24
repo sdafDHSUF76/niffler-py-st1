@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING, Optional
 
 import allure
 import pytest
-from configs import configs
+from configs import Configs
 from tests_api.clients_api.client_api import AuthorizationApi
 from tests_api.clients_api.hidden_client_api import HiddenClientApi
 from tests_api.enums.currencies import Currencies
@@ -51,8 +51,8 @@ class TestsCreatingExpenses:
     )
     @pytest.mark.parameter_data(
         {
-            'user': configs['TEST_USER'],
-            'password': configs['TEST_PASSWORD'],
+            'user': Configs.TEST_USER,
+            'password': Configs.TEST_PASSWORD,
             'category': {'category': 'category1'},
         },
     )
@@ -71,9 +71,9 @@ class TestsCreatingExpenses:
     def refresh_page_when_front_and_db_category_are_different(
         self, db_niffler_spend: 'DB', main_page: 'MainPage',
     ):
-        if main_page.driver.url == get_join_url(configs['FRONT_URL'], main_page.path):
+        if main_page.driver.url == get_join_url(Configs.FRONT_URL, main_page.path):
             categories_in_db: int = db_niffler_spend.get_value(
-                'select count(*) from category where username = \'%s\'' % configs['TEST_USER']
+                'select count(*) from category where username = \'%s\'' % Configs.TEST_USER
             )[0][0]
             main_page.click_on_input_category()
             categories_in_front: int = main_page.category_drop_down_list.count()
@@ -110,10 +110,10 @@ class TestHistoryOfSpending:
         Это нужно чтобы фикстуры setup делали через api запросы и подготавливали состояние, для
         теста быстро, чтобы через UI не делать те же шаги, но медленнее.
         """
-        if main_page.driver.url == get_join_url(configs['FRONT_URL'], main_page.path):
+        if main_page.driver.url == get_join_url(Configs.FRONT_URL, main_page.path):
             categories_in_db: int = db_niffler_spend.get_value(
                 'select count(*) from spend where username = \'%s\' and amount  = 123'
-                % configs['TEST_USER']
+                % Configs.TEST_USER
             )[0][0]
             categories_in_front: int = main_page.spends.count()
             is_amount_spend: bool = False
@@ -128,15 +128,15 @@ class TestHistoryOfSpending:
     )
     @pytest.mark.parameter_data(
         {
-            'user': configs['TEST_USER'],
-            'password': configs['TEST_PASSWORD'],
+            'user': Configs.TEST_USER,
+            'password': Configs.TEST_PASSWORD,
             'category': {'category': 'category1'},
         },
     )
     @pytest.mark.spend_data(
         {
-            'user': configs['TEST_USER'],
-            'password': configs['TEST_PASSWORD'],
+            'user': Configs.TEST_USER,
+            'password': Configs.TEST_PASSWORD,
             'spend': {
                 "amount": "123",
                 "description": "sdff",
@@ -169,9 +169,9 @@ class TestHistoryOfSpending:
         Это нужно чтобы фикстуры setup делали через api запросы и подготавливали состояние, для
         теста быстро, чтобы через UI не делать те же шаги, но медленнее.
         """
-        if main_page.driver.url == get_join_url(configs['FRONT_URL'], main_page.path):
+        if main_page.driver.url == get_join_url(Configs.FRONT_URL, main_page.path):
             categories_in_db: int = db_niffler_spend.get_value(
-                'select count(*) from spend where username = \'%s\'' % configs['TEST_USER']
+                'select count(*) from spend where username = \'%s\'' % Configs.TEST_USER
             )[0][0]
             categories_in_front: int = main_page.spends.count()
             if categories_in_db != categories_in_front:
