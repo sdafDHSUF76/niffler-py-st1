@@ -45,9 +45,9 @@ class TestSuccess:
         assert response.status_code == HTTPStatus.CREATED
         response: ResponseCreateSpend = ResponseCreateSpend.model_validate(response.json())
         assert response.username == Configs.TEST_USER
-        assert response.description == 'ee'
+        assert response.description == spend['description']
         assert response.currency == Currencies.RUB.name
-        assert response.category == 'fgh'
+        assert response.category == spend['category']
         assert (
             datetime.fromisoformat(spend['spendDate'].replace('Z', ''))
             == datetime.fromisoformat(response.spendDate).replace(tzinfo=None)
