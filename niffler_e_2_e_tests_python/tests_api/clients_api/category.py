@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 
 class Category(Gateway):
+    """API логика, для запросов на категории."""
     def add_category(
         self, data_category: Union['RequestCreateCategory', dict], token: str
     ) -> 'Response':

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 
 class Spend(Gateway):
+    """API логика, для запросов на траты."""
 
     def add_spend(
         self, data_spend: Union['RequestCreateSpend', dict], token: str,

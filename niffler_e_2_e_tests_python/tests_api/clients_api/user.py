@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 
 class User(Authorization):
+    """API логика, для запросов на юзера."""
 
     def create_user(self, user_name: str, password: str) -> 'Response':
         """Создать пользователя."""

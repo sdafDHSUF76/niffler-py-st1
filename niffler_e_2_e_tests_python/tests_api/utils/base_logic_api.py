@@ -20,5 +20,8 @@ class BaseLogicApi(Session):
         url: Union[str, 'PathUrl'],
         **other_fields_for_request_request
     ) -> 'Response':
-        """Логирование запроса и вклейка base_url."""
+        """Базовый запрос.
+
+        Так мы сделали логирование через один запрос, без дублирования.
+        """
         return super().request(method.name, self.base_url + url, **other_fields_for_request_request)

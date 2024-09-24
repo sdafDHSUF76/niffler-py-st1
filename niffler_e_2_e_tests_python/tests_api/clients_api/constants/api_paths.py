@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class PathUrl(str, Enum):
+    """Все пути из API niffler."""
     ADD_CATEGORY = '/api/categories/add'
     ADD_SPEND = '/api/spends/add'
     REGISTER = '/register'
