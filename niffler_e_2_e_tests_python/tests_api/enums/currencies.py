@@ -1,7 +1,6 @@
-from enum import Enum, auto, unique
+from enum import Enum, auto
 
 
-@unique
 class Currencies(Enum):
     RUB = auto()
     EUR = auto()
