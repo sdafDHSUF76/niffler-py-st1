@@ -4,7 +4,7 @@ import allure
 import pytest
 from configs import Configs
 from faker import Faker
-from tests_ui.presentation.authorization.enums import ErrorAuthorization
+from tests_ui.enums.error_authorization import ErrorAuthorization
 
 if TYPE_CHECKING:
     from tests_ui.pages.login_page import LoginPage
