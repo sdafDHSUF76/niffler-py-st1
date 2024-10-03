@@ -1,9 +1,7 @@
 from typing import TYPE_CHECKING
 
 import pytest
-from _pytest.fixtures import SubRequest
 from allure_commons.reporter import AllureReporter
-from playwright.sync_api import Browser, Page, sync_playwright
 from sqlalchemy import create_engine
 from utils.database import (
     DATABASE_NIFFLER_AUTH_URL,
@@ -15,6 +13,7 @@ from utils.database import (
 
 if TYPE_CHECKING:
     from _pytest.config import PytestPluginManager
+    from _pytest.fixtures import SubRequest
     from pytest import FixtureDef
 
 
@@ -71,7 +70,7 @@ def db_niffler_userdata() -> DB:
 
 
 @pytest.hookimpl(hookwrapper=True, trylast=True)
-def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
+def pytest_fixture_setup(fixturedef: 'FixtureDef', request: 'SubRequest'):
     yield
     # Очищаем из тега allure упоминание о usefixtures
     if len(request.node.own_markers):
@@ -88,13 +87,4 @@ def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
         item.name = f"[{scope_letter}] " + " ".join(fixturedef.argname.split("_")).title()
     # TODO сделать так и для teardown, а то у них нету буквы
 
-
-@pytest.fixture(scope='session')
-def driver() -> Page:
-    """Получить WebDriver."""
-    with sync_playwright() as playwright:
-        browser: Browser = playwright.chromium.launch(channel="chrome", headless=False)
-        page: Page = browser.new_page()
-        yield page
-        page.close()
-        browser.close()
+# TODO сделать фикстуру, что удаляет после всех тестов юзеров, что не тестовый
