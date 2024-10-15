@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 
 class LoginPage(PlaywrightHelper):
     path = '/login'
-    url = get_join_url(Configs.AUTH_URL, path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
+        self.url = get_join_url(Configs.AUTH_URL, self.path)
         self.input_username = self.driver.locator("//input[@name='username']")
         self.input_password = self.driver.locator("//input[@name='password']")
         self.button_sign_in = self.driver.locator("//button[@type='submit']")

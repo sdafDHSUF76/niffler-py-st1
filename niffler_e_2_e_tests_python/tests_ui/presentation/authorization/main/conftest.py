@@ -30,9 +30,10 @@ def goto_main_if_you_logged_in(main_page: MainPage) -> None:
 def goto_main_if_you_not_logged_in(
     presentation_page: 'PresentationPage',
     goto_login_page_and_log_in: Callable[[str, str], None],
+    main_page: MainPage
 ) -> None:
     """Перейти на страницу main если не авторизован и находишься на разных местах сайта."""
-    if presentation_page.driver.url != MainPage.url:
+    if presentation_page.driver.url != main_page.url:
         goto_login_page_and_log_in(Configs.TEST_USER, Configs.TEST_PASSWORD)
 
 

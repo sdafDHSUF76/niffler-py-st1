@@ -9,10 +9,10 @@ if TYPE_CHECKING:
 
 
 class PresentationPage(PlaywrightHelper):
-    url = Configs.FRONT_URL
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
+        self.url = Configs.FRONT_URL
         self.button_login = self.driver.locator("//a[text()='Login']")
         self.button_register = self.driver.locator("//a[text()='Register']")
 

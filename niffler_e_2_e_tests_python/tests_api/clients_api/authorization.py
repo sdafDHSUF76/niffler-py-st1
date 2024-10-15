@@ -12,8 +12,10 @@ if TYPE_CHECKING:
 
 class Authorization(BaseLogicApi):
     """API логика, для авторизации."""
-    def __init__(self, base_url: str = Configs.AUTH_URL):
-        super().__init__(base_url)
+    def __init__(self, base_url: str = None):
+
+        self.base_url = base_url or Configs.AUTH_URL
+        super().__init__(self.base_url)
 
     def get_token(self, user_name: str, password: str) -> str:
         """Получить токен."""

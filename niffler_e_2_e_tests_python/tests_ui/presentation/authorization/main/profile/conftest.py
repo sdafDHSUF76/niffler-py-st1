@@ -31,9 +31,10 @@ def goto_profile_if_you_not_logged_in(
     presentation_page: 'PresentationPage',
     main_page: 'MainPage',
     goto_login_page_and_log_in: Callable[[str, str], None],
+    profile_page: ProfilePage
 ) -> None:
     """Перейти на страницу main если не авторизован и находишься на разных местах сайта."""
-    if presentation_page.driver.url != ProfilePage.url:
+    if presentation_page.driver.url != profile_page.url:
         goto_login_page_and_log_in(Configs.TEST_USER, Configs.TEST_PASSWORD)
         main_page.click_profile_button()
 

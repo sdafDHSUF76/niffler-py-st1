@@ -57,8 +57,12 @@ allure serve .\allure-result\
 ----
 команды, для обычного запуска автотестов(без allure)
 ```bash
-python -m pytest tests_ui/presentation/test_presentation.py tests_ui/presentation/registration/test_registration.py tests_ui/presentation/authorization/test_authorization.py tests_ui/presentation/authorization/main/tests_main.py tests_ui/presentation/authorization/main/profile/test_profile.py -v
+python -m pytest tests_ui/presentation/test_presentation.py tests_ui/presentation/registration/test_registration.py tests_ui/presentation/authorization/test_authorization.py tests_ui/presentation/authorization/main/tests_main.py tests_ui/presentation/authorization/main/profile/test_profile.py -v  --env=.env
 ```
+```bash
+python -m pytest tests_api -v --env=.env
+```
+env необязательно указывать, он дефолтный env возьмет
 ```bash
 python -m pytest tests_api -v
 ```

@@ -16,10 +16,10 @@ if TYPE_CHECKING:
 @allure.epic('features (what the user can do) for an unauthorized user')
 class RegisterPage(PlaywrightHelper):
     path = '/register'
-    url = get_join_url(Configs.AUTH_URL, path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
+        self.url = get_join_url(Configs.AUTH_URL, self.path)
         self.input_username = self.driver.locator("//input[@name='username']")
         self.input_password = self.driver.locator("//input[@name='password']")
         self.input_password_submit = self.driver.locator("//input[@name='passwordSubmit']")

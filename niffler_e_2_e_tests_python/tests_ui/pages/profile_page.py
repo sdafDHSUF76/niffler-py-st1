@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 
 class ProfilePage(PlaywrightHelper):
     path = '/profile'
-    url = get_join_url(Configs.FRONT_URL, path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
+        self.url = get_join_url(Configs.FRONT_URL, self.path)
         self.alert_add_category = "//div[@role='alert']"
         self.profile_button = self.driver.locator("//a[@href='/profile']")
         self.alert_add_category_text = self.driver.locator(f"{self.alert_add_category}/div[2]")

@@ -11,10 +11,10 @@ if TYPE_CHECKING:
 
 class MainPage(PlaywrightHelper):
     path = '/main'
-    url = get_join_url(Configs.FRONT_URL, path)
 
     def __init__(self, driver: 'Page'):
         super().__init__(driver)
+        self.url = get_join_url(Configs.FRONT_URL, self.path)
         self.header = self.driver.locator('//h1')
         self.logout_button = self.driver.locator(
             "//button[contains(@class,'button-icon_type_logout')]"
