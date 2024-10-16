@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Iterable
 import allure
 import structlog as structlog
 from allure_commons.types import AttachmentType
-from configs import configs
 from sqlalchemy import Connection, Engine, Row, event, text
 from sqlalchemy.orm import Session
 
@@ -13,27 +12,6 @@ if TYPE_CHECKING:
     from sqlalchemy.dialects.postgresql.psycopg2 import PGExecutionContext_psycopg2
 
 logger = structlog.get_logger('sql')
-
-DATABASE_NIFFLER_USERDATA_URL = (
-    'postgresql+psycopg2://'
-    f'{configs["DB_USER_NAME"]}:{configs["PASSWORD_FOR_DB"]}'
-    f'@{configs["DB_HOST"]}:{configs["DB_PORT"]}/{configs["DB_NAME_NIFFLER_USERDATA"]}'
-)
-DATABASE_NIFFLER_SPEND_URL = (
-    'postgresql+psycopg2://'
-    f'{configs["DB_USER_NAME"]}:{configs["PASSWORD_FOR_DB"]}'
-    f'@{configs["DB_HOST"]}:{configs["DB_PORT"]}/{configs["DB_NAME_NIFFLER_SPEND"]}'
-)
-DATABASE_NIFFLER_CURRENCY_URL = (
-    'postgresql+psycopg2://'
-    f'{configs["DB_USER_NAME"]}:{configs["PASSWORD_FOR_DB"]}'
-    f'@{configs["DB_HOST"]}:{configs["DB_PORT"]}/{configs["DB_NAME_NIFFLER_CURRENCY"]}'
-)
-DATABASE_NIFFLER_AUTH_URL = (
-    'postgresql+psycopg2://'
-    f'{configs["DB_USER_NAME"]}:{configs["PASSWORD_FOR_DB"]}'
-    f'@{configs["DB_HOST"]}:{configs["DB_PORT"]}/{configs["DB_NAME_NIFFLER_AUTH"]}'
-)
 
 
 class DB:

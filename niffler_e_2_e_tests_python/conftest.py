@@ -1,20 +1,16 @@
+import os
 from typing import TYPE_CHECKING
 
+import dotenv
 import pytest
-from _pytest.fixtures import SubRequest
 from allure_commons.reporter import AllureReporter
-from playwright.sync_api import Browser, Page, sync_playwright
+from configs import Configs
 from sqlalchemy import create_engine
-from utils.database import (
-    DATABASE_NIFFLER_AUTH_URL,
-    DATABASE_NIFFLER_CURRENCY_URL,
-    DATABASE_NIFFLER_SPEND_URL,
-    DATABASE_NIFFLER_USERDATA_URL,
-    DB,
-)
+from utils.database import DB
 
 if TYPE_CHECKING:
-    from _pytest.config import PytestPluginManager
+    from _pytest.config import Config, Parser, PytestPluginManager
+    from _pytest.fixtures import SubRequest
     from pytest import FixtureDef
 
 
@@ -23,7 +19,7 @@ def db_niffler_auth() -> DB:
     """Получаем доступ к базе данных niffler_auth, чтобы делать в ней запросы."""
     mydb: DB = DB(
         create_engine(
-            DATABASE_NIFFLER_AUTH_URL,
+            Configs.DATABASE_NIFFLER_AUTH_URL,
             # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
         ),
     )
@@ -36,7 +32,7 @@ def db_niffler_currency() -> DB:
     """Получаем доступ к базе данных niffler_currency, чтобы делать в ней запросы."""
     mydb: DB = DB(
         create_engine(
-            DATABASE_NIFFLER_CURRENCY_URL,
+            Configs.DATABASE_NIFFLER_CURRENCY_URL,
             # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
         ),
     )
@@ -49,7 +45,7 @@ def db_niffler_spend() -> DB:
     """Получаем доступ к базе данных niffler_spend, чтобы делать в ней запросы."""
     mydb: DB = DB(
         create_engine(
-            DATABASE_NIFFLER_SPEND_URL,
+            Configs.DATABASE_NIFFLER_SPEND_URL,
             # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
         ),
     )
@@ -62,7 +58,7 @@ def db_niffler_userdata() -> DB:
     """Получаем доступ к базе данных niffler_userdata, чтобы делать в ней запросы."""
     mydb: DB = DB(
         create_engine(
-            DATABASE_NIFFLER_USERDATA_URL,
+            Configs.DATABASE_NIFFLER_USERDATA_URL,
             # pool_size=os.getenv("DATABASE_POOL_SIZE", 10)
         ),
     )
@@ -71,7 +67,7 @@ def db_niffler_userdata() -> DB:
 
 
 @pytest.hookimpl(hookwrapper=True, trylast=True)
-def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
+def pytest_fixture_setup(fixturedef: 'FixtureDef', request: 'SubRequest'):
     yield
     # Очищаем из тега allure упоминание о usefixtures
     if len(request.node.own_markers):
@@ -88,13 +84,36 @@ def pytest_fixture_setup(fixturedef: 'FixtureDef', request: SubRequest):
         item.name = f"[{scope_letter}] " + " ".join(fixturedef.argname.split("_")).title()
     # TODO сделать так и для teardown, а то у них нету буквы
 
+# TODO сделать фикстуру, что удаляет после всех тестов юзеров, что не тестовый
 
-@pytest.fixture(scope='session')
-def driver() -> Page:
-    """Получить WebDriver."""
-    with sync_playwright() as playwright:
-        browser: Browser = playwright.chromium.launch(channel="chrome", headless=False)
-        page: Page = browser.new_page()
-        yield page
-        page.close()
-        browser.close()
+
+def pytest_addoption(parser: 'Parser') -> None:
+    """функция добавления опции командной строки"""
+    parser.addoption(
+        "--env",
+        action="store",
+        default=".env",
+        type=str,
+        help="choosing a config.",
+        choices=['.env', '.env.simple'],
+    )
+
+
+def pytest_configure(config: 'Config') -> None:
+    env: str = config.getoption("--env")
+    dotenv.load_dotenv(''.join((os.path.abspath(__file__).split(__name__.split('.')[1])[0], env)))
+    Configs(
+        front_url=os.getenv('FRONT_URL'),
+        gateway_url=os.getenv('GATEWAY_URL'),
+        auth_url=os.getenv('AUTH_URL'),
+        test_user=os.getenv('TEST_USER'),
+        test_password=os.getenv('TEST_PASSWORD'),
+        db_host=os.getenv('DB_HOST'),
+        db_port=os.getenv('PORT_DB'),
+        db_user_name=os.getenv('DB_USER_NAME'),
+        password_for_db=os.getenv('PASSWORD_FOR_DB'),
+        db_name_niffler_userdata=os.getenv('DB_NAME_NIFFLER_USERDATA'),
+        db_name_niffler_spend=os.getenv('DB_NAME_NIFFLER_SPEND'),
+        db_name_niffler_currency=os.getenv('DB_NAME_NIFFLER_CURRENCY'),
+        db_name_niffler_auth=os.getenv('DB_NAME_NIFFLER_AUTH'),
+    )
