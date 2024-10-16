@@ -1,26 +1,31 @@
+from dataclasses import dataclass
+
+
+@dataclass(eq=False, repr=False, order=False)
 class Configs:
-    FRONT_URL: str = ''
-    GATEWAY_URL: str = ''
-    AUTH_URL: str = ''
-    TEST_USER: str = None
-    TEST_PASSWORD: str = None
-    DB_HOST: str = None
-    DB_PORT: str = None
-    DB_USER_NAME: str = None
-    PASSWORD_FOR_DB: str = None
-    DB_NAME_NIFFLER_USERDATA: str = None
-    DB_NAME_NIFFLER_SPEND: str = None
-    DB_NAME_NIFFLER_CURRENCY: str = None
-    DB_NAME_NIFFLER_AUTH: str = None
-    DATABASE_NIFFLER_USERDATA_URL: str = None
-    DATABASE_NIFFLER_SPEND_URL: str = None
-    DATABASE_NIFFLER_CURRENCY_URL: str = None
-    DATABASE_NIFFLER_AUTH_URL: str = None
+    FRONT_URL: str
+    GATEWAY_URL: str
+    AUTH_URL: str
+    TEST_USER: str
+    TEST_PASSWORD: str
+    DB_HOST: str
+    DB_PORT: str
+    DB_USER_NAME: str
+    PASSWORD_FOR_DB: str
+    DB_NAME_NIFFLER_USERDATA: str
+    DB_NAME_NIFFLER_SPEND: str
+    DB_NAME_NIFFLER_CURRENCY: str
+    DB_NAME_NIFFLER_AUTH: str
+    DATABASE_NIFFLER_USERDATA_URL: str
+    DATABASE_NIFFLER_SPEND_URL: str
+    DATABASE_NIFFLER_CURRENCY_URL: str
+    DATABASE_NIFFLER_AUTH_URL: str
 
     def __init__(
-        self, front_url, gateway_url, auth_url, test_user, test_password, db_host, db_port,
-        db_user_name, password_for_db, db_name_niffler_userdata, db_name_niffler_spend,
-        db_name_niffler_currency, db_name_niffler_auth,
+        self, front_url: str, gateway_url: str, auth_url: str, test_user: str, test_password: str,
+        db_host: str, db_port: str, db_user_name: str, password_for_db: str,
+        db_name_niffler_userdata: str, db_name_niffler_spend: str, db_name_niffler_currency: str,
+        db_name_niffler_auth: str,
     ):
         self.FRONT_URL = front_url
         self.GATEWAY_URL = gateway_url
@@ -67,10 +72,12 @@ class Configs:
 
     @classmethod
     def fill_class_with_data(
-        cls, front_url, gateway_url, auth_url, test_user, test_password, db_host, db_port,
-        db_user_name, password_for_db, db_name_niffler_userdata, db_name_niffler_spend,
-        db_name_niffler_currency, db_name_niffler_auth, database_niffler_userdata_url,
-        database_niffler_spend_url, database_niffler_currency_url, database_niffler_auth_url,
+        cls, front_url: str, gateway_url: str, auth_url: str, test_user: str, test_password: str,
+        db_host: str, db_port: str, db_user_name: str, password_for_db: str,
+        db_name_niffler_userdata: str, db_name_niffler_spend: str, db_name_niffler_currency: str,
+        db_name_niffler_auth: str, database_niffler_userdata_url: str,
+        database_niffler_spend_url: str, database_niffler_currency_url: str,
+        database_niffler_auth_url: str,
     ):
         cls.FRONT_URL = front_url
         cls.GATEWAY_URL = gateway_url
