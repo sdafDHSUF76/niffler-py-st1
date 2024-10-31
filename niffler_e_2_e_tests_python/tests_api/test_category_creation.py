@@ -27,7 +27,6 @@ class TestSuccess:
 
         response: 'Response' = Category().add_category(
             RequestCreateCategory(category=category),
-            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
 
         assert response.status_code == HTTPStatus.OK
@@ -40,7 +39,6 @@ class TestSuccess:
 
         response: 'Response' = Category().add_category(
             RequestCreateCategory(category=category),
-            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
 
         db_category, db_username = db_niffler_spend.get_value(
@@ -61,11 +59,9 @@ class TestUniqueCategory:
 
         Category().add_category(
             RequestCreateCategory(category=category),
-            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
         response: 'Response' = Category().add_category(
             RequestCreateCategory(category=category),
-            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
 
         assert response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR
@@ -100,7 +96,6 @@ class TestCategoryTitle:
     def test_different_names_category(self, category: str, db_niffler_spend: 'DB'):
         response: 'Response' = Category().add_category(
             RequestCreateCategory(category=category),
-            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
         )
         db_category = db_niffler_spend.get_value(
             'select category from category where id = \'%s\''

@@ -7,6 +7,6 @@ class Gateway(BaseLogicApi):
 
     Есть дочерние класс, что используют тот же base_url и вынес этот класс, как родитель для них.
     """
-    def __init__(self, base_url: str = None):
+    def __init__(self, base_url: str | None):
         self.base_url = base_url or Configs.GATEWAY_URL
         super().__init__(self.base_url)

@@ -27,8 +27,8 @@ def create_spends(request: 'SubRequest'):
     for unit in marker.args:
         user, password = unit['user'], unit['password']
         if user_old != user and password_old != password:
-            token: str = Authorization().get_token(unit['user'], unit['password'])
-        Spend().add_spend(RequestCreateSpend(**unit['spend']), token)
+            user_and_password: tuple[str, str] = (unit['user'], unit['password'])
+        Spend().add_spend(RequestCreateSpend(**unit['spend']), user_and_password)
         user_old, password_old = user, password
 
 

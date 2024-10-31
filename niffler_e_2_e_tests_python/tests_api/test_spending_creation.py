@@ -37,10 +37,7 @@ class TestSuccess:
             "spendDate": "2024-09-22T14:13:49.814Z",
             "currency": Currencies.RUB.name,
         }
-        response: 'Response' = Spend().add_spend(
-            RequestCreateSpend(**spend),
-            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD),
-        )
+        response: 'Response' = Spend().add_spend(RequestCreateSpend(**spend))
 
         assert response.status_code == HTTPStatus.CREATED
         response: ResponseCreateSpend = ResponseCreateSpend.model_validate(response.json())
@@ -79,17 +76,14 @@ class TestNegative:
             "spendDate": "2024-09-22 14:13:49.814Z",
             "currency": Currencies.RUB.name,
         }
-        response: 'Response' = Spend().add_spend(
-            spend,
-            Authorization().get_token(Configs.TEST_USER, Configs.TEST_PASSWORD)
-        )
+        response: 'Response' = Spend().add_spend(spend)
 
         assert response.status_code == HTTPStatus.BAD_REQUEST
-        response: ResponseErrorCreateSpend = ResponseErrorCreateSpend.model_validate(
-            response.json(),
-        )
-        assert response.type == Type.DEFAULT
-        assert response.title == Title.BAD_REQUEST
-        assert response.status == HTTPStatus.BAD_REQUEST
-        assert response.instance == PathUrl.ADD_SPEND
-        assert response.detail == Detail.BAD_REQUEST
+        response: dict = ResponseErrorCreateSpend.model_validate(response.json()).model_dump()
+        assert response == {
+            'type': Type.DEFAULT,
+            'title': Title.BAD_REQUEST,
+            'status': HTTPStatus.BAD_REQUEST,
+            'instance': PathUrl.ADD_SPEND,
+            'detail': Detail.BAD_REQUEST,
+        }
