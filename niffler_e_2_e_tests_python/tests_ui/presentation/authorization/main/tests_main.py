@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING, Optional
 import allure
 import pytest
 from configs import Configs
-from tests_api.clients_api.authorization import Authorization
 from tests_api.clients_api.spend import Spend
 from tests_api.enums.currencies import Currencies
 from tests_api.models.create_spend import RequestCreateSpend

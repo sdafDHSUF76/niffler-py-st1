@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from configs import Configs
-from tests_api.clients_api.authorization import Authorization
 from tests_api.clients_api.constants.api_paths import PathUrl
 from tests_api.clients_api.constants.spend_errors import Detail, Title, Type
 from tests_api.clients_api.spend import Spend

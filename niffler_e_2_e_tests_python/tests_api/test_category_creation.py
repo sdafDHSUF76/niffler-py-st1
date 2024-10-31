@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 import pytest
 import pytz as pytz
 from configs import Configs
-from tests_api.clients_api.authorization import Authorization
 from tests_api.clients_api.category import Category
 from tests_api.clients_api.constants.api_paths import PathUrl
 from tests_api.clients_api.constants.category_errors import Error

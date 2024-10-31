@@ -3,7 +3,6 @@ from typing import Optional
 import pytest
 from _pytest.fixtures import SubRequest
 from _pytest.mark import Mark
-from tests_api.clients_api.authorization import Authorization
 from tests_api.clients_api.category import Category
 from tests_api.models.create_category import RequestCreateCategory
 
