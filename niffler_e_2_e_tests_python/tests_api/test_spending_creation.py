@@ -75,14 +75,20 @@ class TestNegative:
             "spendDate": "2024-09-22 14:13:49.814Z",
             "currency": Currencies.RUB.name,
         }
+        expected_response: ResponseErrorCreateSpend = (
+            ResponseErrorCreateSpend(
+                type=Type.DEFAULT,
+                title=Title.BAD_REQUEST,
+                status=HTTPStatus.BAD_REQUEST,
+                instance=PathUrl.ADD_SPEND,
+                detail=Detail.BAD_REQUEST,
+            )
+        )
+
         response: 'Response' = Spend().add_spend(spend)
 
         assert response.status_code == HTTPStatus.BAD_REQUEST
-        response: dict = ResponseErrorCreateSpend.model_validate(response.json()).model_dump()
-        assert response == {
-            'type': Type.DEFAULT,
-            'title': Title.BAD_REQUEST,
-            'status': HTTPStatus.BAD_REQUEST,
-            'instance': PathUrl.ADD_SPEND,
-            'detail': Detail.BAD_REQUEST,
-        }
+        current_response: ResponseErrorCreateSpend = (
+            ResponseErrorCreateSpend.model_validate(response.json())
+        )
+        assert current_response == expected_response

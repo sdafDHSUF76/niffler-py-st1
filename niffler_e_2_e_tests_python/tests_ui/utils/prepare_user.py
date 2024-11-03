@@ -1,9 +1,12 @@
 from http import HTTPStatus
+from typing import TYPE_CHECKING
 
 from configs import Configs
-from requests import Response
 from tests_api.clients_api.user import User
 from utils.database import DB
+
+if TYPE_CHECKING:
+    from requests import Response
 
 
 def prepare_test_user(db_niffler_auth: 'DB') -> None:
