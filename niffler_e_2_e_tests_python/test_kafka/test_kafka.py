@@ -33,7 +33,9 @@ class TestAuthRegistrationKafkaTest:
 
         assert response.status_code == HTTPStatus.CREATED
         event: bytes | None = client_kafka.log_msg_and_json(topic_partitions)
-        assert event != b'' and event is not None, 'сообщения в kafka нету! Проверьте топик.'
+        assert event != b'' and event is not None, (
+            f'сообщения в kafka нету! Проверьте топик: {Topics.USERS.value}.'
+        )
         current_authorization_user: str = AuthorizationDataUser.model_validate(
             json.loads(event.decode('utf8')),
         ).model_dump()['user_name']
