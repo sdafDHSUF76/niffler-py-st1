@@ -20,12 +20,13 @@ class Configs:
     DATABASE_NIFFLER_SPEND_URL: str
     DATABASE_NIFFLER_CURRENCY_URL: str
     DATABASE_NIFFLER_AUTH_URL: str
+    KAFKA_ADDRESS: str
 
     def __init__(
         self, front_url: str, gateway_url: str, auth_url: str, test_user: str, test_password: str,
         db_host: str, db_port: str, db_user_name: str, password_for_db: str,
         db_name_niffler_userdata: str, db_name_niffler_spend: str, db_name_niffler_currency: str,
-        db_name_niffler_auth: str,
+        db_name_niffler_auth: str, kafka_address: str,
     ):
         self.FRONT_URL = front_url
         self.GATEWAY_URL = gateway_url
@@ -40,6 +41,7 @@ class Configs:
         self.DB_NAME_NIFFLER_SPEND = db_name_niffler_spend
         self.DB_NAME_NIFFLER_CURRENCY = db_name_niffler_currency
         self.DB_NAME_NIFFLER_AUTH = db_name_niffler_auth
+        self.KAFKA_ADDRESS = kafka_address
         self.DATABASE_NIFFLER_USERDATA_URL = (
             'postgresql+psycopg2://'
             f'{self.DB_USER_NAME}:{self.PASSWORD_FOR_DB}'
@@ -67,7 +69,7 @@ class Configs:
             self.DB_NAME_NIFFLER_USERDATA, self.DB_NAME_NIFFLER_SPEND,
             self.DB_NAME_NIFFLER_CURRENCY, self.DB_NAME_NIFFLER_AUTH,
             self.DATABASE_NIFFLER_USERDATA_URL, self.DATABASE_NIFFLER_SPEND_URL,
-            self.DATABASE_NIFFLER_CURRENCY_URL, self.DATABASE_NIFFLER_AUTH_URL,
+            self.DATABASE_NIFFLER_CURRENCY_URL, self.DATABASE_NIFFLER_AUTH_URL, self.KAFKA_ADDRESS,
         )
 
     @classmethod
@@ -77,7 +79,7 @@ class Configs:
         db_name_niffler_userdata: str, db_name_niffler_spend: str, db_name_niffler_currency: str,
         db_name_niffler_auth: str, database_niffler_userdata_url: str,
         database_niffler_spend_url: str, database_niffler_currency_url: str,
-        database_niffler_auth_url: str,
+        database_niffler_auth_url: str, kafka_address: str,
     ):
         cls.FRONT_URL = front_url
         cls.GATEWAY_URL = gateway_url
@@ -96,3 +98,4 @@ class Configs:
         cls.DATABASE_NIFFLER_SPEND_URL = database_niffler_spend_url
         cls.DATABASE_NIFFLER_CURRENCY_URL = database_niffler_currency_url
         cls.DATABASE_NIFFLER_AUTH_URL = database_niffler_auth_url
+        cls.KAFKA_ADDRESS = kafka_address
