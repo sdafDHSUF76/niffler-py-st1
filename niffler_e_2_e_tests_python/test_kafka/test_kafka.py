@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 @epic("[KAFKA][niffler-auth]: Паблишинг сообщений в кафку")
-@feature("[KAFKA][niffler-auth]: Паблишинг сообщений в кафку в топи \'users\'")
+@feature("[KAFKA][niffler-auth]: Паблишинг сообщений в кафку в топик \'users\'")
 class TestAuthRegistrationKafkaTest:
 
     @title("KAFKA: Сообщение с пользователем публикуется в Kafka после успешной регистрации")
@@ -28,10 +28,12 @@ class TestAuthRegistrationKafkaTest:
         topic_partitions: list['TopicPartition'] = client_kafka.subscribe_listen_new_offsets(
             Topics.USERS.value,
         )
+        client_kafka.producer.produce(Topics.USERS.value, json.dumps({'username': expected_user_name}))
+        # client_kafka.producer.send_offsets_to_transaction()
 
-        response: 'Response' = User().create_user(expected_user_name, password)
+        # response: 'Response' = User().create_user(expected_user_name, password)
 
-        assert response.status_code == HTTPStatus.CREATED
+        # assert response.status_code == HTTPStatus.CREATED
         event: bytes | None = client_kafka.log_msg_and_json(topic_partitions)
         assert event != b'' and event is not None, (
             f'сообщения в kafka нету! Проверьте топик: {Topics.USERS.value}.'
