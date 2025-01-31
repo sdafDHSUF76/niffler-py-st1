@@ -27,13 +27,15 @@ class TestAuthRegistrationKafkaTest:
                 try:
                     assert db_niffler_userdata.get_value(
                         'select 1 from "user" where username = \'%s\'' % expected_user_name
-                    ), (
-                        'В базе: \'niffler-userdata\' данных не нашлось совпадений с'
-                        f' {expected_user_name} в столбце username'
                     )
+                    return
                 except AssertionError:
                     time.sleep(sleep)
                     continue
+            raise AssertionError(
+                'В базе: \'niffler-userdata\' данных не нашлось совпадений с'
+                f' {expected_user_name} в столбце username'
+            )
         return _method
 
     @title("KAFKA: Сообщение с пользователем публикуется в Kafka после успешной регистрации")
