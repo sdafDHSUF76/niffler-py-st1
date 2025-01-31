@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 import dotenv
 import pytest
 from allure_commons.reporter import AllureReporter
+from client.kafka_client import KafkaClient
 from configs import Configs
 from sqlalchemy import create_engine
 from utils.database import DB
@@ -116,4 +117,11 @@ def pytest_configure(config: 'Config') -> None:
         db_name_niffler_spend=os.getenv('DB_NAME_NIFFLER_SPEND'),
         db_name_niffler_currency=os.getenv('DB_NAME_NIFFLER_CURRENCY'),
         db_name_niffler_auth=os.getenv('DB_NAME_NIFFLER_AUTH'),
+        kafka_address=os.getenv('KAFKA_ADDRESS'),
     )
+
+
+@pytest.fixture(scope="session")
+def client_kafka() -> KafkaClient:
+    with KafkaClient() as kafka:
+        yield kafka
