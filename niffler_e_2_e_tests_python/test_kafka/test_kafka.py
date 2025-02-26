@@ -51,9 +51,9 @@ class TestAuthRegistrationKafkaTest:
             headers={'__TypeId__': 'guru.qa.niffler.model.UserJson'},
         )
 
-        current_from_database_username = get_appearance_of_data_in_userdate(expected_user_name)
-        assert current_from_database_username == expected_user_name, (
+        current_user_name = get_appearance_of_data_in_userdate(expected_user_name)
+        assert current_user_name == expected_user_name, (
             'В базе: \'niffler-userdata\' в столбце username находятся данные: '
-            f'{current_from_database_username}, что не совпали с'
+            f'{current_user_name}, что не совпали с'
             f'ожидаемыми: {expected_user_name}.'
         )
